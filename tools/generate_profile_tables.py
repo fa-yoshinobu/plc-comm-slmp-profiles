@@ -62,6 +62,32 @@ def md_table(headers: list[str], rows: list[list[Any]]) -> str:
     return "\n".join(lines)
 
 
+def grouped_difference_cell(profile_ids: list[str], values: dict[str, str]) -> str:
+    groups: dict[str, list[str]] = {}
+    for profile_id in profile_ids:
+        value = values.get(profile_id, "-")
+        groups.setdefault(value, []).append(profile_id)
+    return "<br>".join(
+        f"`{value}`: {', '.join(grouped_profiles)}"
+        for value, grouped_profiles in groups.items()
+    )
+
+
+def difference_rows(
+    profile_ids: list[str],
+    items: list[tuple[str, dict[str, str]]],
+    *,
+    include_same: bool = False,
+) -> list[list[str]]:
+    rows = []
+    for label, values in items:
+        distinct_values = {values.get(profile_id, "-") for profile_id in profile_ids}
+        if not include_same and len(distinct_values) <= 1:
+            continue
+        rows.append([label, grouped_difference_cell(profile_ids, values)])
+    return rows
+
+
 def state_cell(feature: dict[str, Any] | None) -> str:
     if not feature:
         return "-"
@@ -112,6 +138,127 @@ def range_rule_cell(rule: dict[str, Any] | None) -> str:
     if "clip_value" in rule:
         parts.append(f"clip {rule['clip_value']}")
     return " ".join(parts)
+
+
+def build_difference_section(
+    capability: dict[str, Any],
+    device_ranges: dict[str, Any],
+) -> str:
+    capability_profiles: dict[str, Any] = capability["profiles"]
+    capability_profile_ids = list(capability_profiles)
+    range_profiles: dict[str, Any] = device_ranges["profiles"]
+    range_profile_ids = list(range_profiles)
+
+    profile_setting_items: list[tuple[str, dict[str, str]]] = []
+    for label, getter in [
+        ("Frame", lambda profile: profile.get("frame", "-")),
+        ("Compatibility", lambda profile: profile.get("compat", "-")),
+        ("Word subcommand", lambda profile: profile.get("subcommands", {}).get("word", "-")),
+        ("Bit subcommand", lambda profile: profile.get("subcommands", {}).get("bit", "-")),
+        ("Extended word subcommand", lambda profile: profile.get("subcommands", {}).get("ext_word", "-")),
+        ("Extended bit subcommand", lambda profile: profile.get("subcommands", {}).get("ext_bit", "-")),
+        ("Derived profile", lambda profile: profile.get("derived_from", "-")),
+    ]:
+        profile_setting_items.append(
+            (
+                label,
+                {
+                    profile_id: str(getter(capability_profiles[profile_id]))
+                    for profile_id in capability_profile_ids
+                },
+            )
+        )
+
+    feature_ids = [
+        feature_id
+        for feature_id in FEATURE_LABELS
+        if any(feature_id in capability_profiles[profile_id].get("features", {}) for profile_id in capability_profile_ids)
+    ]
+    feature_items = []
+    for feature_id in feature_ids:
+        feature_items.append(
+            (
+                FEATURE_LABELS.get(feature_id, feature_id),
+                {
+                    profile_id: state_cell(capability_profiles[profile_id].get("features", {}).get(feature_id))
+                    for profile_id in capability_profile_ids
+                },
+            )
+        )
+
+    limit_ids = [
+        limit_id
+        for limit_id in LIMIT_LABELS
+        if any(limit_id in capability_profiles[profile_id].get("limits", {}) for profile_id in capability_profile_ids)
+    ]
+    limit_items = []
+    for limit_id in limit_ids:
+        limit_items.append(
+            (
+                LIMIT_LABELS.get(limit_id, limit_id),
+                {
+                    profile_id: limit_cell(capability_profiles[profile_id].get("limits", {}).get(limit_id))
+                    for profile_id in capability_profile_ids
+                },
+            )
+        )
+
+    write_policy_items = [
+        (
+            "Write policy",
+            {
+                profile_id: write_policy_cell(capability_profiles[profile_id].get("write_policy"))
+                for profile_id in capability_profile_ids
+            },
+        )
+    ]
+
+    range_block_items = []
+    for label, key in [
+        ("SD register start", "register_start"),
+        ("SD register count", "register_count"),
+    ]:
+        range_block_items.append(
+            (
+                label,
+                {
+                    profile_id: str(range_profiles[profile_id].get(key, "-"))
+                    for profile_id in range_profile_ids
+                },
+            )
+        )
+
+    range_rule_items = []
+    for item in device_ranges["ordered_items"]:
+        range_rule_items.append(
+            (
+                item,
+                {
+                    profile_id: range_rule_cell(range_profiles[profile_id].get("rules", {}).get(item))
+                    for profile_id in range_profile_ids
+                },
+            )
+        )
+
+    return "\n\n".join(
+        [
+            "## Difference Views",
+            "These tables group profiles that have the same value. Rows where every profile has the same value are omitted.",
+            "### Profile Setting Differences",
+            md_table(["Item", "Value groups"], difference_rows(capability_profile_ids, profile_setting_items)),
+            "### Feature State Differences",
+            "Cell format inside each value group is `state/source`.",
+            md_table(["Feature", "Value groups"], difference_rows(capability_profile_ids, feature_items)),
+            "### Point Limit Differences",
+            md_table(["Limit", "Value groups"], difference_rows(capability_profile_ids, limit_items)),
+            "### Write Policy Differences",
+            md_table(["Item", "Value groups"], difference_rows(capability_profile_ids, write_policy_items)),
+            "### Device Range Block Differences",
+            md_table(["Item", "Value groups"], difference_rows(range_profile_ids, range_block_items)),
+            "### Device Family Rule Differences",
+            md_table(["Device family", "Value groups"], difference_rows(range_profile_ids, range_rule_items)),
+        ]
+    )
 
 
 def build_capability_section(capability: dict[str, Any]) -> str:
@@ -245,6 +392,7 @@ def main() -> None:
             "<!-- Generated by tools/generate_profile_tables.py. Do not edit manually. -->",
             f"Generated from `{CAPABILITY_JSON.relative_to(ROOT).as_posix()}` and `{DEVICE_RANGES_JSON.relative_to(ROOT).as_posix()}`.",
             "The JSON files remain the canonical source of truth; this file is only a maintenance view.",
+            build_difference_section(capability, device_ranges),
             build_capability_section(capability),
             build_device_range_section(device_ranges),
             "",

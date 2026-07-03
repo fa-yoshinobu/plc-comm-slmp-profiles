@@ -6,6 +6,95 @@ Generated from `capability/slmp_builtin_ethernet_profiles.json` and `device-rang
 
 The JSON files remain the canonical source of truth; this file is only a maintenance view.
 
+## Difference Views
+
+These tables group profiles that have the same value. Rows where every profile has the same value are omitted.
+
+### Profile Setting Differences
+
+| Item | Value groups |
+| --- | --- |
+| Frame | `4E`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`3E`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
+| Compatibility | `iQ-R`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`Q/L`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
+| Word subcommand | `0002`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0000`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
+| Bit subcommand | `0003`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0001`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
+| Extended word subcommand | `0082`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0080`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
+| Extended bit subcommand | `0083`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0081`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
+| Derived profile | `-`: melsec:iq-r, melsec:iq-l, melsec:iq-f, melsec:lcpu, melsec:qnudv<br>`melsec:iq-r`: melsec:mx-r, melsec:mx-f |
+
+### Feature State Differences
+
+Cell format inside each value group is `state/source`.
+
+| Feature | Value groups |
+| --- | --- |
+| Type name | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`blocked/live`: melsec:lcpu, melsec:qnudv |
+| Direct read/write | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f, melsec:lcpu, melsec:qnudv<br>`supported/policy`: melsec:mx-r, melsec:mx-f |
+| Random read/write | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f, melsec:lcpu, melsec:qnudv<br>`supported/policy`: melsec:mx-r, melsec:mx-f |
+| Block read/write | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`blocked/live`: melsec:lcpu, melsec:qnudv |
+| Monitor | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`blocked/live`: melsec:iq-f |
+| U\G module access | `config-dependent/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`config-dependent/policy`: melsec:mx-r, melsec:mx-f<br>`blocked/live`: melsec:lcpu, melsec:qnudv |
+| Link direct | `config-dependent/policy`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`unverified/policy`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
+| HG CPU buffer | `supported/live`: melsec:iq-r<br>`blocked/policy`: melsec:iq-l, melsec:iq-f, melsec:lcpu, melsec:qnudv<br>`blocked/spec`: melsec:mx-r, melsec:mx-f |
+| Long-device route | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`delegated/live`: melsec:lcpu, melsec:qnudv |
+| LZ 32-bit route | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`delegated/live`: melsec:lcpu<br>`delegated/policy`: melsec:qnudv |
+
+### Point Limit Differences
+
+| Limit | Value groups |
+| --- | --- |
+| Direct word read | `max 960, over C051, [live]`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`max 960, over C051, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 960, over C052, [live]`: melsec:iq-f |
+| Direct word write | `max 960, over C051, [live]`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`max 960, over C051, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 960, over C052, [live]`: melsec:iq-f |
+| Direct bit read | `max 7168, over C052, [live]`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`max 7168, over C052, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 3584, over C051, [live]`: melsec:iq-f |
+| Direct bit write | `max 7168, over C052, [live]`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`max 7168, over C052, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 3584, over C051, [live]`: melsec:iq-f |
+| Random word read | `max 96, over C054, [live]`: melsec:iq-r, melsec:iq-l<br>`max 96, over C054, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 192, over C054, [live]`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
+| Random word write | `max 80, weighted 960, over C054, [live]`: melsec:iq-r<br>`max 80, over C054, [live]`: melsec:iq-l<br>`max 80, weighted 960, over C054, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 160, over C054, [live]`: melsec:iq-f<br>`max 160, weighted 1920, over C054, [live]`: melsec:lcpu, melsec:qnudv |
+| Random bit write | `max 94, over C053, [live]`: melsec:iq-r, melsec:iq-l<br>`max 94, over C053, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 188, over C053, [live]`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
+| Monitor word register | `max 96, over C054, [live]`: melsec:iq-r<br>`max 96, [inferred]`: melsec:iq-l<br>`max 96, over C054, [inferred]`: melsec:mx-r, melsec:mx-f<br>`-`: melsec:iq-f<br>`max 192, [inferred]`: melsec:lcpu<br>`max 192, over C054, [live]`: melsec:qnudv |
+
+### Write Policy Differences
+
+| Item | Value groups |
+| --- | --- |
+| Write policy | `LCS=read-only, S=read-only`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`X=read-only`: melsec:iq-f<br>`-`: melsec:lcpu, melsec:qnudv |
+
+### Device Range Block Differences
+
+| Item | Value groups |
+| --- | --- |
+| SD register start | `260`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`290`: melsec:qcpu<br>`286`: melsec:lcpu, melsec:qnu, melsec:qnudv |
+| SD register count | `50`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`46`: melsec:iq-f<br>`15`: melsec:qcpu<br>`26`: melsec:lcpu, melsec:qnu, melsec:qnudv |
+
+### Device Family Rule Differences
+
+| Device family | Value groups |
+| --- | --- |
+| X | `dword-register SD260-SD261 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD290`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| Y | `dword-register SD262-SD263 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD291`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| M | `dword-register SD264-SD265 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register-clipped SD292 clip 32768`: melsec:qcpu<br>`dword-register SD286-SD287 (32-bit)`: melsec:lcpu, melsec:qnu, melsec:qnudv |
+| B | `dword-register SD266-SD267 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register-clipped SD294 clip 32768`: melsec:qcpu<br>`dword-register SD288-SD289 (32-bit)`: melsec:lcpu, melsec:qnu, melsec:qnudv |
+| SB | `dword-register SD268-SD269 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD296`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| F | `dword-register SD270-SD271 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD295`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| V | `dword-register SD272-SD273 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`unsupported`: melsec:iq-f<br>`word-register SD297`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| L | `dword-register SD274-SD275 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD293`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| S | `dword-register SD276-SD277 (32-bit)`: melsec:iq-r, melsec:iq-l<br>`unsupported`: melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD298`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| D | `dword-register SD280-SD281 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register-clipped SD302 clip 32768`: melsec:qcpu<br>`dword-register SD308-SD309 (32-bit)`: melsec:lcpu, melsec:qnu, melsec:qnudv |
+| W | `dword-register SD282-SD283 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register-clipped SD303 clip 32768`: melsec:qcpu<br>`dword-register SD310-SD311 (32-bit)`: melsec:lcpu, melsec:qnu, melsec:qnudv |
+| SW | `dword-register SD284-SD285 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD304`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| R | `dword-register-clipped SD306-SD307 (32-bit) clip 32768`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:lcpu, melsec:qnu, melsec:qnudv<br>`dword-register SD304-SD305 (32-bit)`: melsec:iq-f<br>`fixed 32768`: melsec:qcpu |
+| T | `dword-register SD288-SD289 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD299`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| ST | `dword-register SD290-SD291 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD300`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| C | `dword-register SD292-SD293 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD301`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| LT | `dword-register SD294-SD295 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`unsupported`: melsec:iq-f, melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| LST | `dword-register SD296-SD297 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`unsupported`: melsec:iq-f, melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| LC | `dword-register SD298-SD299 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`unsupported`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| Z | `word-register SD300`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`fixed 10`: melsec:qcpu<br>`fixed 20`: melsec:lcpu, melsec:qnu, melsec:qnudv |
+| LZ | `word-register SD302`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`unsupported`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| ZR | `dword-register SD306-SD307 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:lcpu, melsec:qnu, melsec:qnudv<br>`unsupported`: melsec:iq-f<br>`undefined`: melsec:qcpu |
+| RD | `dword-register SD308-SD309 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`unsupported`: melsec:iq-f, melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
+| SM | `fixed 4096`: melsec:iq-r, melsec:iq-l<br>`fixed 10000`: melsec:mx-f, melsec:iq-f<br>`fixed 4496`: melsec:mx-r<br>`fixed 1024`: melsec:qcpu<br>`fixed 2048`: melsec:lcpu, melsec:qnu, melsec:qnudv |
+| SD | `fixed 4096`: melsec:iq-r, melsec:iq-l<br>`fixed 10000`: melsec:mx-f<br>`fixed 4496`: melsec:mx-r<br>`fixed 12000`: melsec:iq-f<br>`fixed 1024`: melsec:qcpu<br>`fixed 2048`: melsec:lcpu, melsec:qnu, melsec:qnudv |
+
 ## Capability Profiles
 
 ### Profile Summary
