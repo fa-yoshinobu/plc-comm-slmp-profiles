@@ -2,20 +2,20 @@
   "schema_version": 1,
   "date": "2026-07-03",
   "scope": "builtin-ethernet-port",
-  "description": "SLMPライブラリ6兄弟の機種プロファイル正準定義。内蔵Ethernetポートで使える機能のみを基準とする。この JSON が唯一の正であり、各言語実装・適合テストはここから生成する。編集時は必ず evidence を伴うこと。",
+  "description": "Canonical PLC model profile definitions for the SLMP library family. The scope is features available through built-in Ethernet ports only. This JSON is the source of truth for language implementations and conformance tests. Every edit must include evidence.",
   "policy": {
     "default_strict": true,
     "state_semantics": {
-      "supported": "実機で成功を確認済み。通常送信する",
-      "blocked": "実機で不可を確認済み。strict時は送信前ガードでエラーにする",
-      "config-dependent": "PLC構成（ユニット実在等）に依存。ガードせず送信し、PLC応答に委ねる",
-      "unverified": "未検証。strict時はガード（blocked扱い）、strict解除で送信可",
-      "delegated": "既存の実行時機構（SD由来のデバイス範囲取得関数・グローバル規則）が判定する。プロファイルは関与せずガードしない"
+      "supported": "Verified on live hardware. Send normally.",
+      "blocked": "Verified as unavailable on live hardware. In strict mode, fail before transport.",
+      "config-dependent": "Depends on the PLC configuration, such as whether the target unit exists. Do not guard; send and let the PLC respond.",
+      "unverified": "Unverified. In strict mode, guard as blocked; with strict disabled, allow sending.",
+      "delegated": "Delegated to existing runtime mechanisms, such as SD-derived device range lookup and global rules. The profile does not decide or guard this feature."
     },
     "notes": [
-      "デバイスファミリの存在有無・デバイス範囲はプロファイルに持たない（SD読出しの既存範囲取得関数が判定する）",
-      "limits はプロトコル上限（実測根拠つき）であり strict 解除でも常に強制する",
-      "standalone G/HG の拒否は全プロファイル共通の既存グローバル規則であり、ここには持たない"
+      "The profile does not own device-family existence or ranges; existing SD-read range lookup decides them.",
+      "Limits are protocol limits backed by live evidence and are always enforced, even when strict mode is disabled.",
+      "Standalone G/HG rejection is an existing global rule shared by all profiles and is not modeled here."
     ]
   },
   "evidence_files": {
@@ -54,7 +54,7 @@
         "block": {
           "state": "supported",
           "source": "live",
-          "note": "mixed word+bit 1リクエスト成功"
+          "note": "Mixed word+bit succeeded in one request."
         },
         "monitor": {
           "state": "supported",
@@ -63,27 +63,27 @@
         "ext_module_access": {
           "state": "config-dependent",
           "source": "live",
-          "note": "U3E0\\G10 / U2\\G100 は本構成で成功。ユニット実在はPLC構成依存のためガードしない"
+          "note": "U3E0\\G10 / U2\\G100 succeeded in this configuration. Unit existence is PLC-configuration-dependent, so do not guard."
         },
         "ext_link_direct": {
           "state": "config-dependent",
           "source": "policy",
-          "note": "未実測。ネットワークユニット構成依存としてガードしない（iQ-Lの2026-07-03判断に整合させた推定。要ユーザー承認）"
+          "note": "Not live-verified. Treat as network-unit-configuration-dependent and do not guard; this inference follows the 2026-07-03 iQ-L decision and requires user approval."
         },
         "hg_cpu_buffer": {
           "state": "supported",
           "source": "live",
-          "note": "iQ-R専用経路。U3E0\\HG20 direct/random/monitor成功"
+          "note": "iQ-R-only route. U3E0\\HG20 direct/random/monitor succeeded."
         },
         "long_device_path": {
           "state": "supported",
           "source": "live",
-          "note": "LT/LST/LCは専用ロング系経路のみ。LTS/LTC/LSTS/LSTCのdirect/block bitは経路規則で禁止（write 4030実測）"
+          "note": "LT/LST/LC use dedicated long-device routes only. Direct/block bit routes for LTS/LTC/LSTS/LSTC are forbidden by route rules; writes returned 4030 in live testing."
         },
         "lz_32bit_path": {
           "state": "supported",
           "source": "live",
-          "note": "LZは32-bit経路のみ。16-bit direct/blockは経路規則で禁止"
+          "note": "LZ uses 32-bit routes only. 16-bit direct/block routes are forbidden by route rules."
         }
       },
       "limits": {
@@ -170,27 +170,27 @@
         "ext_module_access": {
           "state": "config-dependent",
           "source": "live",
-          "note": "U1\\G10 は本構成で成功。ユニット実在はPLC構成依存のためガードしない"
+          "note": "U1\\G10 succeeded in this configuration. Unit existence is PLC-configuration-dependent, so do not guard."
         },
         "ext_link_direct": {
           "state": "config-dependent",
           "source": "policy",
-          "note": "機材なしで未実測だが使用可能性が高い。2026-07-03 ユーザー判断で許可（ガードしない）"
+          "note": "Not live-verified because the required hardware was unavailable, but likely usable. Allowed by the 2026-07-03 user decision; do not guard."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
           "source": "policy",
-          "note": "iQ-R専用経路。iQ-Lには定義しない"
+          "note": "iQ-R-only route; not defined for iQ-L."
         },
         "long_device_path": {
           "state": "supported",
           "source": "live",
-          "note": "LTN/LSTN/LCN/LCC write-read-restore実測。専用ロング系経路のみ"
+          "note": "LTN/LSTN/LCN/LCC write-read-restore was live-verified. Use dedicated long-device routes only."
         },
         "lz_32bit_path": {
           "state": "supported",
           "source": "live",
-          "note": "LZは32-bit経路のみ（LZ1:D実測）"
+          "note": "LZ uses 32-bit routes only; LZ1:D was live-verified."
         }
       },
       "limits": {
@@ -223,7 +223,7 @@
           "max": 80,
           "over_end_code": "C054",
           "source": "live",
-          "note": "weighted上限は未実測（iq-rでは960）"
+          "note": "Weighted limit is not live-verified; iQ-R uses 960."
         },
         "random_write_bit": {
           "max": 94,
@@ -233,7 +233,7 @@
         "monitor_register_word": {
           "max": 96,
           "source": "inferred",
-          "note": "未実測。同一サブコマンド組のiq-r実測96から推定"
+          "note": "Not live-verified. Inferred from the iQ-R live value 96 with the same subcommand group."
         }
       },
       "write_policy": {
@@ -252,57 +252,57 @@
       },
       "verified_models": [],
       "derived_from": "melsec:iq-r",
-      "profile_note": "機器がないため実機未検証。2026-07-03 ユーザー判断で iQ-R 同等扱いとする。ただしマルチCPU構成が組めないため HG CPUバッファ経路のみ使用不可で確定",
+      "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to iQ-R, except the HG CPU-buffer route is confirmed unavailable because multi-CPU configuration is not possible.",
       "features": {
         "type_name": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "direct": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "random": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "block": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "monitor": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "ext_module_access": {
           "state": "config-dependent",
           "source": "policy",
-          "note": "iQ-R同等扱い。ユニット実在はPLC構成依存のためガードしない"
+          "note": "Treated as equivalent to iQ-R. Unit existence is PLC-configuration-dependent, so do not guard."
         },
         "ext_link_direct": {
           "state": "config-dependent",
           "source": "policy",
-          "note": "iQ-R同等扱い。ネットワークユニット構成依存としてガードしない"
+          "note": "Treated as equivalent to iQ-R. Network-unit configuration dependent, so do not guard."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
           "source": "spec",
-          "note": "マルチCPU構成不可のため使用不可で確定（2026-07-03 ユーザー判断）"
+          "note": "Confirmed unavailable because multi-CPU configuration is not possible; 2026-07-03 user decision."
         },
         "long_device_path": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い。専用ロング系経路のみ"
+          "note": "Treated as equivalent to iQ-R. Use dedicated long-device routes only."
         },
         "lz_32bit_path": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い。LZは32-bit経路のみ"
+          "note": "Treated as equivalent to iQ-R. LZ uses 32-bit routes only."
         }
       },
       "limits": {
@@ -310,7 +310,7 @@
           "max": 960,
           "over_end_code": "C051",
           "source": "inferred",
-          "note": "iq-r実測値を採用"
+          "note": "Uses the iQ-R live-verified value."
         },
         "direct_word_write": {
           "max": 960,
@@ -365,57 +365,57 @@
       },
       "verified_models": [],
       "derived_from": "melsec:iq-r",
-      "profile_note": "機器がないため実機未検証。2026-07-03 ユーザー判断で iQ-R 同等扱いとする。ただしマルチCPU構成が組めないため HG CPUバッファ経路のみ使用不可で確定",
+      "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to iQ-R, except the HG CPU-buffer route is confirmed unavailable because multi-CPU configuration is not possible.",
       "features": {
         "type_name": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "direct": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "random": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "block": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "monitor": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い（実機未検証）"
+          "note": "Treated as equivalent to iQ-R; not live-verified."
         },
         "ext_module_access": {
           "state": "config-dependent",
           "source": "policy",
-          "note": "iQ-R同等扱い。ユニット実在はPLC構成依存のためガードしない"
+          "note": "Treated as equivalent to iQ-R. Unit existence is PLC-configuration-dependent, so do not guard."
         },
         "ext_link_direct": {
           "state": "config-dependent",
           "source": "policy",
-          "note": "iQ-R同等扱い。ネットワークユニット構成依存としてガードしない"
+          "note": "Treated as equivalent to iQ-R. Network-unit configuration dependent, so do not guard."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
           "source": "spec",
-          "note": "マルチCPU構成不可のため使用不可で確定（2026-07-03 ユーザー判断）"
+          "note": "Confirmed unavailable because multi-CPU configuration is not possible; 2026-07-03 user decision."
         },
         "long_device_path": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い。専用ロング系経路のみ"
+          "note": "Treated as equivalent to iQ-R. Use dedicated long-device routes only."
         },
         "lz_32bit_path": {
           "state": "supported",
           "source": "policy",
-          "note": "iQ-R同等扱い。LZは32-bit経路のみ"
+          "note": "Treated as equivalent to iQ-R. LZ uses 32-bit routes only."
         }
       },
       "limits": {
@@ -423,7 +423,7 @@
           "max": 960,
           "over_end_code": "C051",
           "source": "inferred",
-          "note": "iq-r実測値を採用"
+          "note": "Uses the iQ-R live-verified value."
         },
         "direct_word_write": {
           "max": 960,
@@ -500,32 +500,32 @@
         "monitor": {
           "state": "blocked",
           "source": "live",
-          "evidence": "D10単独登録でも C059（FX5UC/FX5U両方）"
+          "evidence": "C059 even for single D10 registration on both FX5UC and FX5U."
         },
         "ext_module_access": {
           "state": "config-dependent",
           "source": "live",
-          "note": "特殊ユニットあり構成で U1\\G0/G1/G10 成功、ユニットなしは C060。構成差として扱いガードしない"
+          "note": "U1\\G0/G1/G10 succeeded with a special-unit configuration; without the unit, the PLC returned C060. Treat this as a configuration difference and do not guard."
         },
         "ext_link_direct": {
           "state": "unverified",
           "source": "policy",
-          "note": "未実測。strict時はガード"
+          "note": "Not live-verified. Guard in strict mode."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
           "source": "policy",
-          "note": "iQ-R専用経路。iQ-Fには定義しない"
+          "note": "iQ-R-only route; not defined for iQ-F."
         },
         "long_device_path": {
           "state": "supported",
           "source": "live",
-          "note": "LCロングカウンタのみ（LC0..LC63実測）。LT/LSTファミリはFX5に存在せず範囲取得関数が判定"
+          "note": "Only LC long counters are available; LC0..LC63 was live-verified. LT/LST families do not exist on FX5 and are handled by range lookup."
         },
         "lz_32bit_path": {
           "state": "supported",
           "source": "live",
-          "note": "LZは32-bit経路のみ"
+          "note": "LZ uses 32-bit routes only."
         }
       },
       "limits": {
@@ -543,7 +543,7 @@
           "max": 3584,
           "over_end_code": "C051",
           "source": "live",
-          "note": "他機種の7168と異なるFX5固有上限（監査F-4）"
+          "note": "FX5-specific limit that differs from the 7168-point limit on other models."
         },
         "direct_bit_write": {
           "max": 3584,
@@ -580,13 +580,13 @@
         "ext_bit": "0081"
       },
       "verified_models": [
-        "L16HCPU相当LCPU（型名読出し不可のため終了コードで同定）"
+        "LCPU equivalent to L16HCPU; identified by end-code behavior because type-name read is unavailable."
       ],
       "features": {
         "type_name": {
           "state": "blocked",
           "source": "live",
-          "evidence": "0101/0000 が C059"
+          "evidence": "0101/0000 returned C059."
         },
         "direct": {
           "state": "supported",
@@ -599,37 +599,37 @@
         "block": {
           "state": "blocked",
           "source": "live",
-          "evidence": "raw送信でも C059"
+          "evidence": "Raw send also returned C059."
         },
         "monitor": {
           "state": "supported",
           "source": "live",
-          "note": "D10/R10/ZR10 で成功"
+          "note": "Succeeded with D10/R10/ZR10."
         },
         "ext_module_access": {
           "state": "blocked",
           "source": "live",
-          "evidence": "U0\\G10 / U2\\G1000 が C070"
+          "evidence": "U0\\G10 / U2\\G1000 returned C070."
         },
         "ext_link_direct": {
           "state": "unverified",
           "source": "policy",
-          "note": "未実測。strict時はガード"
+          "note": "Not live-verified. Guard in strict mode."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
           "source": "policy",
-          "note": "iQ-R専用経路。LCPUには定義しない"
+          "note": "iQ-R-only route; not defined for LCPU."
         },
         "long_device_path": {
           "state": "delegated",
           "source": "live",
-          "note": "LT/LST/LCファミリ不存在（代表read C05B）。判定は範囲取得関数に委ねる"
+          "note": "LT/LST/LC families do not exist; representative reads returned C05B. Delegate the decision to range lookup."
         },
         "lz_32bit_path": {
           "state": "delegated",
           "source": "live",
-          "note": "LZファミリ不存在（C05B）。判定は範囲取得関数に委ねる"
+          "note": "The LZ family does not exist; reads returned C05B. Delegate the decision to range lookup."
         }
       },
       "limits": {
@@ -672,7 +672,7 @@
         "monitor_register_word": {
           "max": 192,
           "source": "inferred",
-          "note": "未実測。同一サブコマンド組のqnudv実測192から推定"
+          "note": "Not live-verified. Inferred from the QnUDV live value 192 with the same subcommand group."
         }
       },
       "write_policy": {}
@@ -687,13 +687,13 @@
         "ext_bit": "0081"
       },
       "verified_models": [
-        "QnUDV内蔵Ethernet（型名読出し不可のため終了コードで同定）"
+        "QnUDV built-in Ethernet; identified by end-code behavior because type-name read is unavailable."
       ],
       "features": {
         "type_name": {
           "state": "blocked",
           "source": "live",
-          "evidence": "0101/0000 が C059"
+          "evidence": "0101/0000 returned C059."
         },
         "direct": {
           "state": "supported",
@@ -706,37 +706,37 @@
         "block": {
           "state": "blocked",
           "source": "live",
-          "evidence": "raw送信でも C059。高レベルAPIは送信前ガード対象"
+          "evidence": "Raw send also returned C059. High-level APIs should guard before transport."
         },
         "monitor": {
           "state": "supported",
           "source": "live",
-          "evidence": "D9000/R10/ZR10 単独・同時、192 word 登録成功"
+          "evidence": "D9000/R10/ZR10 registration succeeded both individually and together, including 192-word registration."
         },
         "ext_module_access": {
           "state": "blocked",
           "source": "live",
-          "evidence": "U0\\G10 / U2\\G1000 が C070"
+          "evidence": "U0\\G10 / U2\\G1000 returned C070."
         },
         "ext_link_direct": {
           "state": "unverified",
           "source": "policy",
-          "note": "未実測。strict時はガード"
+          "note": "Not live-verified. Guard in strict mode."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
           "source": "policy",
-          "note": "iQ-R専用経路。QnUDVには定義しない"
+          "note": "iQ-R-only route; not defined for QnUDV."
         },
         "long_device_path": {
           "state": "delegated",
           "source": "live",
-          "note": "LT/LST/LCファミリ不存在（代表read C05B）。判定は範囲取得関数に委ねる"
+          "note": "LT/LST/LC families do not exist; representative reads returned C05B. Delegate the decision to range lookup."
         },
         "lz_32bit_path": {
           "state": "delegated",
           "source": "policy",
-          "note": "LZファミリ不存在想定（未実測）。判定は範囲取得関数に委ねる"
+          "note": "The LZ family is assumed absent; not live-verified. Delegate the decision to range lookup."
         }
       },
       "limits": {

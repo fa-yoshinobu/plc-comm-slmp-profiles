@@ -1,15 +1,15 @@
 {
   "schema_version": 1,
   "date": "2026-07-03",
-  "description": "SLMPデバイス範囲取得（SDブロック読出し）の正準規則。プロファイルごとに SD レジスタブロックの開始/点数と、デバイスファミリごとの解決規則（fixed/word-register/dword-register/…-clipped/unsupported/undefined）を定義する。元は plc-comm-slmp-python slmp/device_ranges.py（2026-07-03時点）からの機械抽出。以後はこの JSON を唯一の正とし、各言語実装はここから取り込む。",
+  "description": "Canonical rules for SLMP device range discovery from SD block reads. For each profile, this defines the SD register block start/count and per-device-family resolution rules (fixed, word-register, dword-register, clipped variants, unsupported, undefined). Initially machine-extracted from plc-comm-slmp-python slmp/device_ranges.py as of 2026-07-03. This JSON is now the source of truth imported by each language implementation.",
   "value_kinds": {
-    "fixed": "SDを読まず fixed_value を点数とする",
-    "word-register": "SDn の16bit値を点数とする",
-    "dword-register": "SDn..SDn+1 の32bit値を点数とする",
-    "word-register-clipped": "16bit値を clip_value で上限クリップ",
-    "dword-register-clipped": "32bit値を clip_value で上限クリップ",
-    "unsupported": "このプロファイルにファミリが存在しない",
-    "undefined": "有限上限レジスタが定義されない（実行時プローブ等で扱う）"
+    "fixed": "Use fixed_value as the point count without reading SD.",
+    "word-register": "Use the 16-bit value at SDn as the point count.",
+    "dword-register": "Use the 32-bit value at SDn..SDn+1 as the point count.",
+    "word-register-clipped": "Clip the 16-bit value to clip_value.",
+    "dword-register-clipped": "Clip the 32-bit value to clip_value.",
+    "unsupported": "This family does not exist in this profile.",
+    "undefined": "No finite upper-bound register is defined; handle through runtime probes or equivalent logic."
   },
   "ordered_items": [
     "X",
@@ -345,7 +345,7 @@
     }
   },
   "runtime_probes": {
-    "reason": "Q系の一部デバイスはPLC側でSDにデバイス範囲が書き込まれない問題があるため、SD読出しだけでは確定できず、読出し可否の散策（プローブ）で境界を求める",
+    "reason": "Some Q-series devices do not have their ranges written into SD registers by the PLC, so SD reads alone cannot determine the range. Find boundaries by probing whether reads succeed.",
     "applies_to": [
       "melsec:lcpu",
       "melsec:qcpu",
@@ -353,7 +353,7 @@
       "melsec:qnudv"
     ],
     "max_probe_count": 1048576,
-    "probe_read": "対象アドレスをワード1点読出しし、SLMPエラーなら読出し不可とみなす",
+    "probe_read": "Read one word at the target address; treat any SLMP error as unreadable.",
     "steps": [
       {
         "order": 1,
@@ -362,7 +362,7 @@
         ],
         "family": "Z",
         "method": "single-address-check",
-        "spec": "Z15 が読めれば点数16、読めなければ点数10"
+        "spec": "If Z15 is readable, the point count is 16; otherwise it is 10."
       },
       {
         "order": 2,
@@ -374,7 +374,7 @@
         ],
         "family": "ZR",
         "method": "doubling-then-binary-search",
-        "spec": "ZR0 が読めなければ点数0。読めたら high を 1 から (high*2)+1 で倍化し読めなくなるまで進め（上限 max_probe_count-1）、最後に low..high を二分探索して最大読出し可能アドレス+1 を点数とする。上限アドレスまで読めたら max_probe_count"
+        "spec": "If ZR0 is not readable, the point count is 0. If it is readable, start high at 1 and advance with (high*2)+1 until reads fail, capped at max_probe_count-1. Then binary-search low..high and use the maximum readable address plus 1 as the point count. If the capped address is readable, use max_probe_count."
       },
       {
         "order": 3,
@@ -386,10 +386,10 @@
         ],
         "family": "R",
         "method": "derived",
-        "spec": "min(ZRの散策点数, 32768) を R の点数とする"
+        "spec": "Use min(probed ZR point count, 32768) as the R point count."
       }
     ],
-    "source_note": "散策結果は source='Runtime access check' としてカタログに記録する"
+    "source_note": "Record probe results in the catalog with source='Runtime access check'."
   },
   "profiles": {
     "melsec:iq-r": {

@@ -1,86 +1,86 @@
-# QnUDV内蔵CPU SLMP仕様判断資料
+# QnUDV Built-In CPU SLMP Specification Decision Record
 
-## 採用するプロファイル
+## Adopted Profile
 
-| 項目 | 採用内容 |
+| Item | Decision |
 |------|----------|
 | PLC profile | `melsec:qnudv` |
-| 実機型名 | `0101/0000` は `C059` のため型名読出しを positive path にしない |
+| Live model | Do not treat `0101/0000` as a positive path because it returns `C059` |
 | Frame | 3E |
-| Compatibility | Q/L互換 |
+| Compatibility | Q/L-compatible |
 | Standard subcommand | word=`0000`, bit=`0001` |
 | Extended subcommand | word=`0080`, bit=`0081` |
-| X/Y表記 | Q/L互換表記 |
+| X/Y notation | Q/L-compatible notation |
 
-QnUDV内蔵Ethernetは R120P の 4E / iQ-R path とは別ターゲットとして扱う。R120P の block / long / `U\G` positive path を QnUDV へ持ち込まない。
+Treat QnUDV built-in Ethernet as a different target from the R120P 4E / iQ-R path. Do not carry R120P block, long-device, or `U\G` positive paths into QnUDV.
 
-## 採用する機能
+## Adopted Features
 
-| 機能 | 採用判断 |
-|------|----------|
-| Direct read/write `0401/1401` | 使用可 |
-| Random read/write `0403/1402` | 使用可 |
-| Monitor `0801/0802` | 使用可 |
-| Named通常デバイス | 使用可 |
-| `Z` | `Z0..Z19` を使用可 |
-| `R` | `R0..R32767` を使用可 |
-| `ZR` | `ZR0..ZR393215` を使用可 |
+| Feature | Decision |
+|---------|----------|
+| Direct read/write `0401/1401` | Supported |
+| Random read/write `0403/1402` | Supported |
+| Monitor `0801/0802` | Supported |
+| Named normal devices | Supported |
+| `Z` | `Z0..Z19` supported |
+| `R` | `R0..R32767` supported |
+| `ZR` | `ZR0..ZR393215` supported |
 
-`D9000` direct/random word、`Y1FFF` direct/random bit は write/read/restore 成功。`D9000:U` / `Y1FFF:BIT` は named read 成功。`Z10`, `R10`, `ZR10` は direct/random/named `:U` で write/read/restore 成功。monitor は `D9000`, `R10`, `ZR10` で登録・実行成功。
+`D9000` direct/random word and `Y1FFF` direct/random bit write/read/restore succeeded. `D9000:U` / `Y1FFF:BIT` named read succeeded. `Z10`, `R10`, and `ZR10` direct/random/named `:U` write/read/restore succeeded. Monitor registration and execution succeeded with `D9000`, `R10`, and `ZR10`.
 
-## 採用しない機能
+## Features Not Adopted
 
-| 機能 | 判断 | 根拠 |
-|------|------|------|
-| Type Name `0101/0000` | positive pathにしない | `C059` |
-| Block read/write `0406/1406` | positive pathにしない | raw送信でも `C059`。high-level APIは送信前ガード対象 |
-| `U\G` extended access | positive pathにしない | `U0\G10`, `U2\G1000` が `C070` |
-| Long timer / retentive long timer | positive pathにしない | `LTN/LSTN` 代表readが `C05B` |
-| Long counter | positive pathにしない | `LCN/LCC` 代表readが `C05B` |
-| HGのCPU-buffer経路 | positive pathにしない | iQ-R専用。QnUDVには定義しない |
+| Feature | Decision | Evidence |
+|---------|----------|----------|
+| Type Name `0101/0000` | Not a positive path | `C059` |
+| Block read/write `0406/1406` | Not a positive path | Raw send also returns `C059`; high-level APIs should guard before transport |
+| `U\G` extended access | Not a positive path | `U0\G10`, `U2\G1000` return `C070` |
+| Long timer / long retentive timer | Not a positive path | Representative `LTN/LSTN` reads return `C05B` |
+| Long counter | Not a positive path | Representative `LCN/LCC` reads return `C05B` |
+| HG CPU-buffer route | Not a positive path | iQ-R only; not defined for QnUDV |
 
-## 今回扱わない機能
+## Out Of Scope For This Record
 
-| 機能 | 判断 | 理由 |
-|------|------|------|
-| UDP経路 | この資料では判定しない | TCP `1025` の仕様判断資料 |
-| UDF | この資料では判定しない | ユーザー指定により今回の確認範囲から除外 |
+| Feature | Decision | Reason |
+|---------|----------|--------|
+| UDP route | Not decided here | This record covers TCP `1025` |
+| UDF | Not tested here | Excluded by user request |
 
-## デバイス範囲
+## Device Ranges
 
-今回の QnUDV では、以下の範囲を採用する。
+For this QnUDV target, adopt the following ranges.
 
-| デバイス | 採用範囲 | 範囲外応答 | 備考 |
-|----------|----------|------------|------|
-| `Z` | `Z0..Z19` | `Z20` = `4031` | 使用可 |
-| `R` | `R0..R32767` | `R32768` = `4031` | 使用可 |
-| `ZR` | `ZR0..ZR393215` | `ZR393216` = `4031` | 今回のQnUDV内蔵CPUで採用 |
+| Device | Adopted range | Out-of-range response | Notes |
+|--------|---------------|-----------------------|-------|
+| `Z` | `Z0..Z19` | `Z20` = `4031` | Supported |
+| `R` | `R0..R32767` | `R32768` = `4031` | Supported |
+| `ZR` | `ZR0..ZR393215` | `ZR393216` = `4031` | Adopted for this QnUDV built-in CPU |
 
-## 点数上限
+## Point Limits
 
-| コマンド | 採用上限 | 上限超過 |
-|----------|----------|----------|
-| direct word read `0401/0000` | 960点 | 961点 = `C051` |
-| direct word write `1401/0000` | 960点 | 961点 = `C051` |
-| direct bit read `0401/0001` | 7168点 | 7169点 = `C052` |
-| direct bit write `1401/0001` | 7168点 | 7169点 = `C052` |
-| random read `0403/0000` | 192 word | 193 word = `C054` |
-| random word write `1402/0000` | 160 word / weighted 1920 | 161 word / weighted 1932 = `C054` |
-| random bit write `1402/0001` | 188 bit | 189 bit = `C053` |
-| monitor register `0801/0000` | 192 word | 193 word = `C054` |
+| Command | Adopted limit | Over-limit response |
+|---------|---------------|---------------------|
+| direct word read `0401/0000` | 960 points | 961 points = `C051` |
+| direct word write `1401/0000` | 960 points | 961 points = `C051` |
+| direct bit read `0401/0001` | 7168 points | 7169 points = `C052` |
+| direct bit write `1401/0001` | 7168 points | 7169 points = `C052` |
+| random read `0403/0000` | 192 words | 193 words = `C054` |
+| random word write `1402/0000` | 160 words / weighted 1920 | 161 words / weighted 1932 = `C054` |
+| random bit write `1402/0001` | 188 bits | 189 bits = `C053` |
+| monitor register `0801/0000` | 192 words | 193 words = `C054` |
 
-## ロング系の扱い
+## Long-Device Handling
 
-この QnUDV ではロングタイマ、ロング積算タイマ、ロングカウンタは成立しない。R120P で使えた専用ロング系経路を QnUDV へ持ち込まない。
+On this QnUDV target, long timers, long retentive timers, and long counters do not work. Do not carry over the dedicated long-device routes that work on R120P.
 
-| 対象 | 判断 |
-|------|------|
-| `LTN10` / `LTN0` | 4-word read が `C05B` |
-| `LSTN10` / `LSTN0` | 4-word read が `C05B` |
-| `LTS/LTC/LSTS/LSTC` | named state read は元の `LTN/LSTN` read が `C05B` |
-| `LCN10` / `LCN0` | dword read が `C05B` |
-| `LCC10` / `LCC0` | bit read が `C05B` |
+| Target | Decision |
+|--------|----------|
+| `LTN10` / `LTN0` | 4-word read returns `C05B` |
+| `LSTN10` / `LSTN0` | 4-word read returns `C05B` |
+| `LTS/LTC/LSTS/LSTC` | named state read depends on the underlying `LTN/LSTN` read, which returns `C05B` |
+| `LCN10` / `LCN0` | dword read returns `C05B` |
+| `LCC10` / `LCC0` | bit read returns `C05B` |
 
-## 仕様結論
+## Specification Conclusion
 
-`melsec:qnudv` は 3E / Q/L互換プロファイルとして扱う。通常 direct/random/monitor/named、`Z0..Z19`、`R0..R32767`、`ZR0..ZR393215` は positive path。Type Name、block、`U\G` extended access、ロング系、iQ-R専用のHG CPU-buffer経路は positive path にしない。block は QnUDV実機で `C059` を確認済みのため、高レベルAPIでは送信前ガード対象にする。
+Treat `melsec:qnudv` as a 3E / Q/L-compatible profile. Normal direct/random/monitor/named routes, `Z0..Z19`, `R0..R32767`, and `ZR0..ZR393215` are positive paths. Type Name, block, `U\G` extended access, long-device families, and the iQ-R-only HG CPU-buffer route are not positive paths. Because QnUDV live hardware returned `C059` for block, high-level APIs should guard block before transport.

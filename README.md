@@ -1,35 +1,35 @@
 # plc-comm-slmp-profiles
 
-SLMP通信ライブラリ群（dotnet / python / rust / node-red / cpp-minimal）が共通で参照する**機種プロファイルの正準データ**を一元管理するリポジトリ。ここにある JSON が唯一の正であり、各実装リポジトリはタグを固定して取り込む。
+This repository is the canonical source for PLC model profile data shared by the SLMP communication libraries (dotnet / python / rust / node-red / cpp-minimal). The JSON files in this repository are the source of truth; implementation repositories import them by fixed tags.
 
-## 構成
+## Layout
 
-| パス | 内容 |
-|------|------|
-| `capability/slmp_builtin_ethernet_profiles.json` | 機種別の機能可否プロファイル（7プロファイル）。**内蔵Ethernetポート**で使える機能のみを基準としたポリシー定義。フレーム種別/サブコマンド組・コマンド可否（5値state）・点数上限・書込ポリシー・経路振り分け |
-| `device-ranges/slmp_device_range_rules.json` | デバイス範囲取得の正準規則（9プロファイル）。SDレジスタブロックの読出し位置とファミリ別解決規則（fixed / word / dword / clipped / unsupported / undefined）、および**実行時散策（runtime_probes）**の仕様 |
-| `instructions/slmp_profile_restriction_instructions_20260703.md` | 機能可否プロファイルを5ライブラリへ横展開する実装指示書（ガード仕様・strict_profile・適合テスト） |
-| `evidence/` | 2026-07-03 実機検証記録（R120P / iQ-L / iQ-F / LCPU / QnUDV） |
+| Path | Contents |
+|------|----------|
+| `capability/slmp_builtin_ethernet_profiles.json` | Per-profile capability definitions for seven profiles. These policies are scoped to built-in Ethernet ports only and include frame/subcommand groups, feature states, point limits, write policy, and route selection. |
+| `device-ranges/slmp_device_range_rules.json` | Canonical device-range rules for nine profiles. Defines the SD register block location, family resolution rules (`fixed`, `word-register`, `dword-register`, clipped variants, `unsupported`, `undefined`), and runtime probe behavior. |
+| `instructions/slmp_profile_restriction_instructions_20260703.md` | Implementation instructions for rolling out the capability profiles to the libraries, including guard behavior, `strict_profile`, and conformance tests. |
+| `evidence/` | Live-device verification records from 2026-07-03 for R120P / iQ-L / iQ-F / LCPU / QnUDV. |
 
-## 2つのJSONの役割分担
+## Role Of The Two JSON Files
 
-- **capability** は「その機種の内蔵Ethernetで何を送ってよいか」（実行時に問い合わせようがないポリシー）。デバイスの存在有無・範囲は持たない。
-- **device-ranges** は「デバイスの存在有無・範囲をどうやって実機から取得するか」の規則。SDに範囲が書き込まれないPLC側問題（Q系の一部デバイス）に対する散策アルゴリズム仕様を含む。
+- **capability** answers "which features may be sent to the built-in Ethernet port for this profile." It is policy data that cannot be reliably discovered at runtime. It does not describe device existence or ranges.
+- **device-ranges** answers "how to discover whether device families exist and what their ranges are." It includes runtime probe algorithms for PLCs where some Q-series device ranges are not written into SD registers.
 
-## プロファイルID
+## Profile IDs
 
-正準IDは各実装の `SlmpPlcProfile` 相当と一致させる:
+Canonical IDs match each implementation's `SlmpPlcProfile` equivalent:
 `melsec:iq-r` / `melsec:iq-l` / `melsec:mx-r` / `melsec:mx-f` / `melsec:iq-f` / `melsec:qcpu` / `melsec:lcpu` / `melsec:qnu` / `melsec:qnudv`
 
-（capability は実機検証またはユーザー判断があった7種のみ。qcpu / qnu は device-ranges のみに存在し、capability は未定義＝プロファイル指定不可）
+The capability table includes only the seven profiles backed by live verification or explicit user policy decisions. `qcpu` and `qnu` exist only in device-ranges; they intentionally have no capability profile.
 
-## 編集ルール
+## Editing Rules
 
-1. **根拠のないエントリを追加しない。** 変更には必ず `source`（live / manual / spec / policy / inferred）と evidence または note を付け、実測なら `evidence/` に記録を追加する。
-2. 実測との食い違いを見つけたら、正準JSONを黙って直さず、まず evidence に記録してから変更する。
-3. 変更はコミット＋**タグ発行**で公開する。各実装リポジトリは参照タグを明記して追従し、適合テストで一致を担保する。
-4. スキーマを変える場合は `schema_version` を上げ、全実装の追従が完了するまで旧タグを維持する。
+1. **Do not add unsupported entries.** Every change must carry a `source` value (`live` / `manual` / `spec` / `policy` / `inferred`) and either evidence or a note. Add live verification records under `evidence/` when the source is live testing.
+2. If live behavior differs from the current canonical data, record the result in evidence first and then update the JSON.
+3. Publish changes with a commit and a tag. Implementation repositories must state the imported tag and verify conformance with fixture tests.
+4. If the schema changes, increment `schema_version` and keep the old tag available until every implementation has migrated.
 
-## 経緯
+## Background
 
-2026-07-03 の5機種の実機検証を起点に作成。検証は内蔵Ethernetポート・TCP 1025 で実施。拡張Ethernetユニット構成は対象外（ポリシー、詳細は instructions を参照）。
+The initial data set was created from live verification of five PLC families on 2026-07-03. Tests used built-in Ethernet ports over TCP 1025. Extension Ethernet unit configurations are out of scope; see `instructions/` for the policy details.

@@ -1,127 +1,127 @@
-# R120P / RCPU SLMP仕様判断資料
+# R120P / RCPU SLMP Specification Decision Record
 
-## 採用するプロファイル
+## Adopted Profile
 
-| 項目 | 採用内容 |
+| Item | Decision |
 |------|----------|
 | PLC profile | `melsec:iq-r` |
-| 実機型名 | `R120PCPU` |
+| Live model | `R120PCPU` |
 | Frame | 4E |
 | Compatibility | iQ-R |
 | Standard subcommand | word=`0002`, bit=`0003` |
 | Extended subcommand | word=`0082`, bit=`0083` |
-| X/Y表記 | 16進表記 |
+| X/Y notation | hexadecimal |
 
-R120P / RCPU の機能可否は 4E / iQ-R profile を標準条件として判定する。3E / Q-L互換フレームは比較用であり、R120P の不可判定根拠にはしない。
+R120P / RCPU capability decisions use 4E / iQ-R profile as the standard condition. 3E / Q-L compatible frames are comparison paths only and are not used as negative evidence for R120P.
 
-## 採用する機能
+## Adopted Features
 
-| 機能 | 採用判断 |
-|------|----------|
-| Type Name `0101/0000` | 使用可 |
-| Direct read/write `0401/1401` | 使用可 |
-| Random read/write `0403/1402` | 使用可 |
-| Block read/write `0406/1406` | 使用可 |
-| Monitor `0801/0802` | 使用可 |
-| Named通常デバイス | 使用可 |
-| Long timer / retentive long timer | 専用ロング系経路で使用可 |
-| Long counter | 専用ロング系経路で使用可 |
-| `LZ` | `LZ0/LZ1` を32-bit経路で使用可 |
-| `U3E0\G...` | この構成では使用可 |
-| `U3E0\HG...` | iQ-R専用HG CPU-buffer経路として使用可 |
-| `U2\G100` | この構成では使用可 |
+| Feature | Decision |
+|---------|----------|
+| Type Name `0101/0000` | Supported |
+| Direct read/write `0401/1401` | Supported |
+| Random read/write `0403/1402` | Supported |
+| Block read/write `0406/1406` | Supported |
+| Monitor `0801/0802` | Supported |
+| Named normal devices | Supported |
+| Long timer / long retentive timer | Supported through dedicated long-device routes |
+| Long counter | Supported through dedicated long-device routes |
+| `LZ` | `LZ0/LZ1` supported through 32-bit routes |
+| `U3E0\G...` | Supported in this configuration |
+| `U3E0\HG...` | Supported as the iQ-R-only HG CPU-buffer route |
+| `U2\G100` | Supported in this configuration |
 
-## 採用しない機能
+## Features Not Adopted
 
-| 機能 | 判断 | 根拠 |
-|------|------|------|
-| `S` write | positive pathにしない | read は可、write は `4030` |
-| `LTS/LTC/LSTS/LSTC` direct/block bit | positive pathにしない | read/write が `4030`。専用ロング系経路を使う |
-| `LCN` 16-bit scalar/direct/block | positive pathにしない | `LCN` はダブルワード現在値として扱う |
-| `LCS` write | positive pathにしない | 接点なので書込み対象にしない |
-| `LZ` 16-bit direct/block | positive pathにしない | `LZ` はロング固定デバイス。32-bit経路を使う |
-| `Z20` 以降 | positive pathにしない | `Z20` / `Z30` が `4031` |
-| standalone `G/HG` | positive pathにしない | `U` 修飾付き extended access を使う |
+| Feature | Decision | Evidence |
+|---------|----------|----------|
+| `S` write | Not a positive path | Read succeeds; write returns `4030` |
+| `LTS/LTC/LSTS/LSTC` direct/block bit | Not a positive path | Read/write returns `4030`; use dedicated long-device routes |
+| `LCN` 16-bit scalar/direct/block | Not a positive path | `LCN` is treated as a double-word current value |
+| `LCS` write | Not a positive path | Contact devices are not write targets |
+| `LZ` 16-bit direct/block | Not a positive path | `LZ` is a long-only device; use 32-bit routes |
+| `Z20` and later | Not a positive path | `Z20` / `Z30` return `4031` |
+| standalone `G/HG` | Not a positive path | Use U-qualified extended access |
 
-## 今回扱わない機能
+## Out Of Scope For This Record
 
-| 機能 | 判断 | 理由 |
-|------|------|------|
-| UDP経路 | この資料では判定しない | TCP `1025` の仕様判断資料 |
-| UDF | この資料では判定しない | ユーザー指定により今回の確認範囲から除外 |
+| Feature | Decision | Reason |
+|---------|----------|--------|
+| UDP route | Not decided here | This record covers TCP `1025` |
+| UDF | Not tested here | Excluded by user request |
 
-## デバイス範囲
+## Device Ranges
 
-今回の R120P / RCPU では、以下の扱いを採用する。
+For this R120P / RCPU target, adopt the following behavior.
 
-| デバイス | 採用範囲 / 扱い | 範囲外応答 | 備考 |
-|----------|------------------|------------|------|
-| `Z` | `Z0..Z19` | `Z20` / `Z30` = `4031` | 使用可 |
-| `LZ` | `LZ0..LZ1` | `LZ2` / `LZ3` は存在しない | 32-bit経路のみ positive path |
-| `S` | read-only | write = `4030` | write対象にしない |
-| `U3E0\G...` | 構成依存で使用可 | - | direct/random/monitorで確認 |
-| `U3E0\HG...` | iQ-R専用HG CPU-bufferとして使用可 | - | direct/random/monitorで確認 |
-| `U2\G100` | 構成依存で使用可 | - | direct/random/monitorで確認 |
+| Device | Adopted range / handling | Out-of-range response | Notes |
+|--------|--------------------------|-----------------------|-------|
+| `Z` | `Z0..Z19` | `Z20` / `Z30` = `4031` | Supported |
+| `LZ` | `LZ0..LZ1` | `LZ2` / `LZ3` do not exist | Positive path only through 32-bit routes |
+| `S` | read-only | write = `4030` | Do not use as a write target |
+| `U3E0\G...` | Configuration-dependent supported route | - | Verified with direct/random/monitor |
+| `U3E0\HG...` | iQ-R-only HG CPU-buffer route | - | Verified with direct/random/monitor |
+| `U2\G100` | Configuration-dependent supported route | - | Verified with direct/random/monitor |
 
-`Un\Gn` は「U付きなら何でも可」ではなくPLC構成依存である。対象PLCごとに毎回実在確認する。
+`Un\Gn` is not automatically supported just because it is U-qualified. It depends on the PLC configuration and must be confirmed for each target.
 
-## 点数上限
+## Point Limits
 
-| コマンド | 採用上限 | 上限超過 |
-|----------|----------|----------|
-| direct word read `0401/0002` | 960点 | 961点 = `C051` |
-| direct word write `1401/0002` | 960点 | 961点 = `C051` |
-| direct bit read `0401/0003` | 7168点 | 7169点 = `C052` |
-| direct bit write `1401/0003` | 7168点 | 7169点 = `C052` |
-| random read `0403/0002` | 96 word | 97 word = `C054` |
-| random word write `1402/0002` | 80 word / weighted 960 | 81 word / weighted 972 = `C054` |
-| random bit write `1402/0003` | 94 bit | 95 bit = `C053` |
-| monitor register `0801/0002` | 96 word | 97 word = `C054` |
+| Command | Adopted limit | Over-limit response |
+|---------|---------------|---------------------|
+| direct word read `0401/0002` | 960 points | 961 points = `C051` |
+| direct word write `1401/0002` | 960 points | 961 points = `C051` |
+| direct bit read `0401/0003` | 7168 points | 7169 points = `C052` |
+| direct bit write `1401/0003` | 7168 points | 7169 points = `C052` |
+| random read `0403/0002` | 96 words | 97 words = `C054` |
+| random word write `1402/0002` | 80 words / weighted 960 | 81 words / weighted 972 = `C054` |
+| random bit write `1402/0003` | 94 bits | 95 bits = `C053` |
+| monitor register `0801/0002` | 96 words | 97 words = `C054` |
 
-## Block `0406/1406` の扱い
+## Block `0406/1406`
 
-R120P 4E / iQ-R では block read/write を positive path とする。mixed block は `D + M` で word/bit 混在書込み・読戻し・復元成功。
+R120P 4E / iQ-R treats block read/write as a positive path. Mixed block access with `D + M` succeeded for mixed word/bit write, readback, and restore.
 
-| 種別 | positive path | positive pathにしないもの |
-|------|---------------|---------------------------|
-| Word block | `D`, `SD`, `W`, `TN`, `STN`, `CN`, `SW`, `Z`, `R`, `RD`, `ZR`, `LTN`, `LSTN` | `LCN` は専用ロング系経路、`LZ` は32-bit経路 |
-| Bit block | `X`, `Y`, `M`, `L`, `SM`, `F`, `V`, `B`, `TS`, `TC`, `STS`, `STC`, `CS`, `CC`, `SB`, `DX`, `DY` | `S` write、`LTS/LTC/LSTS/LSTC`、`LCS/LCC` block |
+| Kind | Positive path | Not a positive path |
+|------|---------------|---------------------|
+| Word block | `D`, `SD`, `W`, `TN`, `STN`, `CN`, `SW`, `Z`, `R`, `RD`, `ZR`, `LTN`, `LSTN` | `LCN` uses dedicated long-device routes; `LZ` uses 32-bit routes |
+| Bit block | `X`, `Y`, `M`, `L`, `SM`, `F`, `V`, `B`, `TS`, `TC`, `STS`, `STC`, `CS`, `CC`, `SB`, `DX`, `DY` | `S` write, `LTS/LTC/LSTS/LSTC`, `LCS/LCC` block |
 
-## ロング系の扱い
+## Long-Device Handling
 
-ロングタイマ、ロング積算タイマ、ロングカウンタは、ユーザー向けには専用ロング系経路に集約する。利用者が direct/random/block の仕様差を意識しなくても、ロング系デバイス指定からライブラリ側が正しい経路へ振り分ける。
+Long timers, long retentive timers, and long counters are exposed to users through dedicated long-device routes. The library selects the correct route from the long-device address so users do not need to know the direct/random/block differences.
 
-| 対象 | 採用判断 |
-|------|----------|
-| `LTN10` | `read_long_timer` で状態・現在値読出し可。`LTN10:D` write/read/restore可 |
-| `LSTN10` | `read_long_retentive_timer` で状態・現在値読出し可。`LSTN10:D` write/read/restore可 |
-| `LTS/LTC/LSTS/LSTC` | 状態は `LTN/LSTN` 4-wordからdecode。`LTC10:BIT`, `LSTC10:BIT` は write/read/restore可 |
-| `LCN10` | `LCN10:D` / `LCN10:L` write/read/restore可 |
-| `LCS10:BIT` / `LCC10:BIT` | 状態読出し可。`LCC10:BIT` は write/read/restore可 |
-| `LCS` | 接点なので書込み対象にしない |
+| Target | Decision |
+|--------|----------|
+| `LTN10` | `read_long_timer` can read state and current value. `LTN10:D` write/read/restore succeeds |
+| `LSTN10` | `read_long_retentive_timer` can read state and current value. `LSTN10:D` write/read/restore succeeds |
+| `LTS/LTC/LSTS/LSTC` | State is decoded from the `LTN/LSTN` 4-word area. `LTC10:BIT`, `LSTC10:BIT` write/read/restore succeeds |
+| `LCN10` | `LCN10:D` / `LCN10:L` write/read/restore succeeds |
+| `LCS10:BIT` / `LCC10:BIT` | State read succeeds. `LCC10:BIT` write/read/restore succeeds |
+| `LCS` | Contact device; do not write |
 
-## `LZ` の扱い
+## `LZ` Handling
 
-`LZ` は `LZ0/LZ1` だけのロング固定デバイスとして扱う。16-bit direct/block を positive path にせず、32-bit の named/random dword 経路を使う。
+`LZ` is treated as a long-only device with only `LZ0/LZ1`. Do not use 16-bit direct/block routes; use named/random dword routes.
 
-| 対象 | 判断 |
-|------|------|
-| `LZ0` | random dword、named `:D`、named `:L` で write/read/restore可 |
-| `LZ1` | random dword、named `:D`、named `:L` で write/read/restore可 |
-| 16-bit direct/block | positive pathにしない |
+| Target | Decision |
+|--------|----------|
+| `LZ0` | random dword, named `:D`, and named `:L` write/read/restore succeed |
+| `LZ1` | random dword, named `:D`, and named `:L` write/read/restore succeed |
+| 16-bit direct/block | Not a positive path |
 
-## `U\G/HG` の扱い
+## `U\G/HG` Handling
 
-R120P / RCPU では `U` 修飾付き extended access を採用する。`G` はユニットバッファ、`HG` は iQ-R専用HG CPU-buffer経路として扱う。standalone `G/HG` は使用しない。
+R120P / RCPU adopts U-qualified extended access. `G` is unit buffer memory. `HG` is the iQ-R-only HG CPU-buffer route. Standalone `G/HG` is not used.
 
-| 対象 | 採用判断 |
-|------|----------|
-| `U3E0\G10` | direct/random/monitorで使用可 |
-| `U3E0\HG20` | iQ-R専用HG CPU-buffer経路として direct/random/monitorで使用可 |
-| `U2\G100` | direct/random/monitorで使用可 |
+| Target | Decision |
+|--------|----------|
+| `U3E0\G10` | Supported by direct/random/monitor |
+| `U3E0\HG20` | Supported by direct/random/monitor as the iQ-R-only HG CPU-buffer route |
+| `U2\G100` | Supported by direct/random/monitor |
 
-この結果は今回のR120P構成での positive path 判断に使うが、すべての `Un\Gn` に一般化しない。
+These results are used for the positive-path decision for this R120P configuration. Do not generalize them to every `Un\Gn`.
 
-## 仕様結論
+## Specification Conclusion
 
-`melsec:iq-r` は 4E / iQ-Rプロファイルとして扱う。通常 direct/random/block/monitor/named、専用ロング系、`LZ0/LZ1` の32-bit経路、実在確認済みの `U3E0\G...`、iQ-R専用 `U3E0\HG...`、`U2\G100` は positive path。`S` write、ロング系の不適切な direct/block、`LZ` の16-bit direct/block、`Z20` 以降、standalone `G/HG` は positive path にしない。
+Treat `melsec:iq-r` as the 4E / iQ-R profile. Normal direct/random/block/monitor/named routes, dedicated long-device routes, the `LZ0/LZ1` 32-bit route, verified `U3E0\G...`, iQ-R-only `U3E0\HG...`, and `U2\G100` are positive paths. `S` write, invalid long-device direct/block routes, `LZ` 16-bit direct/block routes, `Z20` and later, and standalone `G/HG` are not positive paths.

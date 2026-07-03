@@ -1,86 +1,86 @@
-# MELSEC-L / LCPU SLMP仕様判断資料
+# MELSEC-L / LCPU SLMP Specification Decision Record
 
-## 採用するプロファイル
+## Adopted Profile
 
-| 項目 | 採用内容 |
+| Item | Decision |
 |------|----------|
 | PLC profile | `melsec:lcpu` |
-| 実機型名 | `0101/0000` は `C059` のため型名読出しを positive path にしない |
+| Live model | Do not treat `0101/0000` as a positive path because it returns `C059` |
 | Frame | 3E |
-| Compatibility | Q/L互換 |
+| Compatibility | Q/L-compatible |
 | Standard subcommand | word=`0000`, bit=`0001` |
 | Extended subcommand | word=`0080`, bit=`0081` |
-| X/Y表記 | Q/L互換表記 |
+| X/Y notation | Q/L-compatible notation |
 
-LCPU は `melsec:iq-l` とは別プロファイルとして扱う。R120P の 4E / iQ-R 前提、QnUDV の `ZR` 範囲、R120P のロング系 positive path を LCPU へ持ち込まない。
+Treat LCPU separately from `melsec:iq-l`. Do not carry R120P 4E / iQ-R assumptions, QnUDV `ZR` ranges, or R120P long-device positive paths into LCPU.
 
-## 採用する機能
+## Adopted Features
 
-| 機能 | 採用判断 |
-|------|----------|
-| Direct read/write `0401/1401` | 使用可 |
-| Random read/write `0403/1402` | 使用可 |
-| Monitor `0801/0802` | 使用可 |
-| Named通常デバイス | 使用可 |
-| `Z` | `Z0..Z19` を使用可 |
-| `R` | `R0..R32767` を使用可 |
-| `ZR` | `ZR0..ZR131071` を使用可 |
+| Feature | Decision |
+|---------|----------|
+| Direct read/write `0401/1401` | Supported |
+| Random read/write `0403/1402` | Supported |
+| Monitor `0801/0802` | Supported |
+| Named normal devices | Supported |
+| `Z` | `Z0..Z19` supported |
+| `R` | `R0..R32767` supported |
+| `ZR` | `ZR0..ZR131071` supported |
 
-`D10` / `M10` は direct と random で write/read/restore 成功。`D10`, `R10`, `ZR10` は monitor 成功。`Z10`, `R10`, `ZR10` は direct/random/named `:U` で write/read/restore 成功。
+`D10` / `M10` succeeded with direct and random write/read/restore. `D10`, `R10`, and `ZR10` succeeded with monitor. `Z10`, `R10`, and `ZR10` succeeded with direct/random/named `:U` write/read/restore.
 
-## 採用しない機能
+## Features Not Adopted
 
-| 機能 | 判断 | 根拠 |
-|------|------|------|
-| Type Name `0101/0000` | positive pathにしない | `C059` |
-| Block read/write `0406/1406` | positive pathにしない | raw送信でも `C059` |
-| `U\G` extended access | positive pathにしない | `U0\G10`, `U2\G1000` が `C070` |
-| Long timer / retentive long timer | positive pathにしない | `LTN/LSTN` 代表readが `C05B` |
-| Long counter | positive pathにしない | `LCN/LCC` 代表readが `C05B` |
-| `LZ` | positive pathにしない | `LZ0` raw/named read が `C05B` |
-| HGのCPU-buffer経路 | positive pathにしない | iQ-R専用。LCPUには定義しない |
+| Feature | Decision | Evidence |
+|---------|----------|----------|
+| Type Name `0101/0000` | Not a positive path | `C059` |
+| Block read/write `0406/1406` | Not a positive path | Raw send also returns `C059` |
+| `U\G` extended access | Not a positive path | `U0\G10`, `U2\G1000` return `C070` |
+| Long timer / long retentive timer | Not a positive path | Representative `LTN/LSTN` reads return `C05B` |
+| Long counter | Not a positive path | Representative `LCN/LCC` reads return `C05B` |
+| `LZ` | Not a positive path | `LZ0` raw/named read returns `C05B` |
+| HG CPU-buffer route | Not a positive path | iQ-R only; not defined for LCPU |
 
-## 今回扱わない機能
+## Out Of Scope For This Record
 
-| 機能 | 判断 | 理由 |
-|------|------|------|
-| UDP経路 | この資料では判定しない | TCP `1025` の仕様判断資料 |
-| UDF | この資料では判定しない | ユーザー指定により今回の確認範囲から除外 |
+| Feature | Decision | Reason |
+|---------|----------|--------|
+| UDP route | Not decided here | This record covers TCP `1025` |
+| UDF | Not tested here | Excluded by user request |
 
-## デバイス範囲
+## Device Ranges
 
-今回の LCPU では、以下の範囲を採用する。
+For this LCPU target, adopt the following ranges.
 
-| デバイス | 採用範囲 | 範囲外応答 | 備考 |
-|----------|----------|------------|------|
-| `Z` | `Z0..Z19` | `Z20` = `4031` | 使用可 |
-| `R` | `R0..R32767` | `R32768` = `4031` | 使用可 |
-| `ZR` | `ZR0..ZR131071` | `ZR131072` = `4031` | QnUDV の `ZR0..ZR393215` を持ち込まない |
-| `D9000` | 範囲外 | `4031` | 点数上限確認の基点にしない |
+| Device | Adopted range | Out-of-range response | Notes |
+|--------|---------------|-----------------------|-------|
+| `Z` | `Z0..Z19` | `Z20` = `4031` | Supported |
+| `R` | `R0..R32767` | `R32768` = `4031` | Supported |
+| `ZR` | `ZR0..ZR131071` | `ZR131072` = `4031` | Do not carry over QnUDV `ZR0..ZR393215` |
+| `D9000` | Out of range | `4031` | Do not use it as a base point for limit tests |
 
-## 点数上限
+## Point Limits
 
-| コマンド | 採用上限 | 上限超過 |
-|----------|----------|----------|
-| direct word read `0401/0000` | 960点 | 961点 = `C051` |
-| direct word write `1401/0000` | 960点 | 961点 = `C051` |
-| direct bit read `0401/0001` | 7168点 | 7169点 = `C052` |
-| direct bit write `1401/0001` | 7168点 | 7169点 = `C052` |
-| random read `0403/0000` | 192 word | 193 word = `C054` |
-| random word write `1402/0000` | 160 word / weighted 1920 | 161 word / weighted 1932 = `C054` |
-| random bit write `1402/0001` | 188 bit | 189 bit = `C053` |
+| Command | Adopted limit | Over-limit response |
+|---------|---------------|---------------------|
+| direct word read `0401/0000` | 960 points | 961 points = `C051` |
+| direct word write `1401/0000` | 960 points | 961 points = `C051` |
+| direct bit read `0401/0001` | 7168 points | 7169 points = `C052` |
+| direct bit write `1401/0001` | 7168 points | 7169 points = `C052` |
+| random read `0403/0000` | 192 words | 193 words = `C054` |
+| random word write `1402/0000` | 160 words / weighted 1920 | 161 words / weighted 1932 = `C054` |
+| random bit write `1402/0001` | 188 bits | 189 bits = `C053` |
 
-## ロング系と `LZ` の扱い
+## Long Devices And `LZ`
 
-この LCPU ではロング系および `LZ` は成立しない。R120P の専用ロング系 positive path と `LZ0/LZ1` positive path を LCPU へ持ち込まない。
+On this LCPU, long-device families and `LZ` do not work. Do not carry over R120P dedicated long-device positive paths or `LZ0/LZ1` positive paths into LCPU.
 
-| 対象 | 判断 |
-|------|------|
-| `LTN0` / `LSTN0` | 4-word read が `C05B` |
-| `LCN0` | raw direct word read と named `LCN0:D` が `C05B` |
-| `LCC0` | bit read と named `LCC0:BIT` が `C05B` |
-| `LZ0` | raw direct word read、named `LZ0:D` / `LZ0:L` が `C05B` |
+| Target | Decision |
+|--------|----------|
+| `LTN0` / `LSTN0` | 4-word read returns `C05B` |
+| `LCN0` | raw direct word read and named `LCN0:D` return `C05B` |
+| `LCC0` | bit read and named `LCC0:BIT` return `C05B` |
+| `LZ0` | raw direct word read and named `LZ0:D` / `LZ0:L` return `C05B` |
 
-## 仕様結論
+## Specification Conclusion
 
-`melsec:lcpu` は 3E / Q-L互換プロファイルとして扱う。通常 direct/random/monitor/named、`Z0..Z19`、`R0..R32767`、`ZR0..ZR131071` は positive path。Type Name、block、`U\G` extended access、ロング系、`LZ`、iQ-R専用のHG CPU-buffer経路は positive path にしない。
+Treat `melsec:lcpu` as a 3E / Q-L-compatible profile. Normal direct/random/monitor/named routes, `Z0..Z19`, `R0..R32767`, and `ZR0..ZR131071` are positive paths. Type Name, block, `U\G` extended access, long-device families, `LZ`, and the iQ-R-only HG CPU-buffer route are not positive paths.
