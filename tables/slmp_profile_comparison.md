@@ -45,7 +45,6 @@ The JSON files remain the canonical source of truth; this file is only a mainten
 | policy | Adopted by explicit project/user policy; not necessarily live-verified for that exact profile. |
 | spec | Derived from the specification or from a structural hardware constraint. |
 | inferred | Inferred from another verified profile or an equivalent command group; not directly live-verified. |
-| manual | Taken from manual documentation. |
 
 ### Common Combined Values
 
@@ -76,7 +75,6 @@ These tables group profiles that have the same value. Rows where every profile h
 | Bit subcommand | `0003`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0001`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
 | Extended word subcommand | `0082`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0080`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
 | Extended bit subcommand | `0083`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0081`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-| Derived profile | `-`: melsec:iq-r, melsec:iq-l, melsec:iq-f, melsec:lcpu, melsec:qnudv<br>`melsec:iq-r`: melsec:mx-r, melsec:mx-f |
 
 ### Feature State Differences
 
@@ -155,15 +153,15 @@ Cell format inside each value group is `state/source`.
 
 ### Profile Summary
 
-| Profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Derived from | Verified models |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | - | R120PCPU(built-in Ethernet) |
-| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | - | L16HCPU(built-in Ethernet) |
-| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | melsec:iq-r | Unconfirmed |
-| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | melsec:iq-r | Unconfirmed |
-| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | - | FX5UC-32MT/D,FX5U-32MR/DS(built-in Ethernet) |
-| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | - | L26CPU-BT(built-in Ethernet) |
-| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | - | Q06UDVCPU(built-in Ethernet) |
+| Profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) |
+| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) |
+| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
+| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
+| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5UC-32MT/D,FX5U-32MR/DS(built-in Ethernet) |
+| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) |
+| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) |
 
 ### Feature State Matrix
 

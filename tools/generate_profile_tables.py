@@ -181,11 +181,23 @@ def build_port_scope_section(capability: dict[str, Any]) -> str:
     )
 
 
+def collect_used_sources(capability: dict[str, Any]) -> list[str]:
+    used: set[str] = set()
+    for profile in capability["profiles"].values():
+        for feature in profile.get("features", {}).values():
+            if "source" in feature:
+                used.add(feature["source"])
+        for limit in profile.get("limits", {}).values():
+            if "source" in limit:
+                used.add(limit["source"])
+    return [source for source in SOURCE_SEMANTICS if source in used]
+
+
 def build_cell_legend_section(capability: dict[str, Any]) -> str:
     state_semantics = capability.get("policy", {}).get("state_semantics", {})
 
     state_rows = [[state, meaning] for state, meaning in state_semantics.items()]
-    source_rows = [[source, meaning] for source, meaning in SOURCE_SEMANTICS.items()]
+    source_rows = [[source, SOURCE_SEMANTICS[source]] for source in collect_used_sources(capability)]
     combined_rows = [[cell, meaning] for cell, meaning in COMMON_CELL_MEANINGS.items()]
 
     return "\n\n".join(
@@ -219,7 +231,6 @@ def build_difference_section(
         ("Bit subcommand", lambda profile: profile.get("subcommands", {}).get("bit", "-")),
         ("Extended word subcommand", lambda profile: profile.get("subcommands", {}).get("ext_word", "-")),
         ("Extended bit subcommand", lambda profile: profile.get("subcommands", {}).get("ext_bit", "-")),
-        ("Derived profile", lambda profile: profile.get("derived_from", "-")),
     ]:
         profile_setting_items.append(
             (
@@ -340,7 +351,6 @@ def build_capability_section(capability: dict[str, Any]) -> str:
                 subcommands.get("bit", "-"),
                 subcommands.get("ext_word", "-"),
                 subcommands.get("ext_bit", "-"),
-                profile.get("derived_from", "-"),
                 "<br>".join(profile.get("verified_models", [])) or "-",
             ]
         )
@@ -393,7 +403,6 @@ def build_capability_section(capability: dict[str, Any]) -> str:
                     "Bit subcmd",
                     "Ext word",
                     "Ext bit",
-                    "Derived from",
                     "Verified models",
                 ],
                 summary_rows,

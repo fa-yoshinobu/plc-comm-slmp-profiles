@@ -255,7 +255,6 @@
       "verified_models": [
         "Unconfirmed"
       ],
-      "derived_from": "melsec:iq-r",
       "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to iQ-R, except the HG CPU-buffer route is confirmed unavailable because multi-CPU configuration is not possible.",
       "features": {
         "type_name": {
@@ -370,7 +369,6 @@
       "verified_models": [
         "Unconfirmed"
       ],
-      "derived_from": "melsec:iq-r",
       "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to iQ-R, except the HG CPU-buffer route is confirmed unavailable because multi-CPU configuration is not possible.",
       "features": {
         "type_name": {
