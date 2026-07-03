@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-07-03",
   "scope": "builtin-ethernet-port",
-  "description": "Canonical PLC model profile definitions for the SLMP library family. The scope is features available through CPU built-in Ethernet ports only. Extension Ethernet modules may support additional commands; this built-in Ethernet profile is the stricter baseline and is conservative when used against an extension Ethernet module. This JSON is the source of truth for language implementations and conformance tests. Every edit must include evidence.",
+  "description": "Canonical PLC model profile definitions for the SLMP library family. Generated from evidence/profile-definitions.",
   "policy": {
     "default_strict": true,
     "state_semantics": {
@@ -11,22 +11,18 @@
       "config-dependent": "Depends on the PLC configuration, such as whether the target unit exists. Do not guard; send and let the PLC respond.",
       "unverified": "Unverified. In strict mode, guard as blocked; with strict disabled, allow sending.",
       "delegated": "Delegated to existing runtime mechanisms, such as SD-derived device range lookup and global rules. The profile does not decide or guard this feature."
-    },
-    "notes": [
-      "The profile does not own device-family existence or ranges; existing SD-read range lookup decides them.",
-      "Limits are protocol limits backed by live evidence and are always enforced, even when strict mode is disabled.",
-      "Standalone G/HG rejection is an existing global rule shared by all profiles and is not modeled here.",
-      "These profiles target CPU built-in Ethernet ports, which are generally more constrained than extension Ethernet modules.",
-      "Applying a built-in Ethernet profile to an extension Ethernet module is conservative: it should not enable commands beyond the stricter built-in Ethernet baseline, although it may leave module-specific capabilities unused."
-    ]
+    }
   },
   "evidence_files": {
-    "melsec:iq-r": "evidence/iq-r_slmp_live_verify_20260703.md",
-    "melsec:iq-f": "evidence/iqf_slmp_live_verify_20260703.md",
-    "melsec:iq-l": "evidence/iql_slmp_live_verify_20260703.md",
-    "melsec:lcpu": "evidence/lcpu_slmp_live_verify_20260703.md",
-    "melsec:qnu": "evidence/qnu_slmp_live_verify_20260703.md",
-    "melsec:qnudv": "evidence/qnudv_slmp_live_verify_20260703.md"
+    "melsec:iq-r": "evidence/profile-definitions/iq-r_slmp_profile_definition_20260703.md",
+    "melsec:iq-l": "evidence/profile-definitions/iql_slmp_profile_definition_20260703.md",
+    "melsec:mx-r": "evidence/profile-definitions/mx-r_slmp_profile_definition_20260703.md",
+    "melsec:mx-f": "evidence/profile-definitions/mx-f_slmp_profile_definition_20260703.md",
+    "melsec:iq-f": "evidence/profile-definitions/iqf_slmp_profile_definition_20260703.md",
+    "melsec:qcpu": "evidence/profile-definitions/qcpu_slmp_profile_definition_20260703.md",
+    "melsec:lcpu": "evidence/profile-definitions/lcpu_slmp_profile_definition_20260703.md",
+    "melsec:qnu": "evidence/profile-definitions/qnu_slmp_profile_definition_20260703.md",
+    "melsec:qnudv": "evidence/profile-definitions/qnudv_slmp_profile_definition_20260703.md"
   },
   "profiles": {
     "melsec:iq-r": {
@@ -56,8 +52,7 @@
         },
         "block": {
           "state": "supported",
-          "source": "live",
-          "note": "Mixed word+bit succeeded in one request."
+          "source": "live"
         },
         "monitor": {
           "state": "supported",
@@ -65,71 +60,66 @@
         },
         "ext_module_access": {
           "state": "config-dependent",
-          "source": "live",
-          "note": "U3E0\\G10 / U2\\G100 succeeded in this configuration. Unit existence is PLC-configuration-dependent, so do not guard."
+          "source": "live"
         },
         "ext_link_direct": {
           "state": "config-dependent",
-          "source": "policy",
-          "note": "Not live-verified. Treat as network-unit-configuration-dependent and do not guard; this inference follows the 2026-07-03 iQ-L decision and requires user approval."
+          "source": "live"
         },
         "hg_cpu_buffer": {
           "state": "supported",
-          "source": "live",
-          "note": "iQ-R-only route. U3E0\\HG20 direct/random/monitor succeeded."
+          "source": "live"
         },
         "long_device_path": {
           "state": "supported",
-          "source": "live",
-          "note": "LT/LST/LC use dedicated long-device routes only. Direct/block bit routes for LTS/LTC/LSTS/LSTC are forbidden by route rules; writes returned 4030 in live testing."
+          "source": "live"
         },
         "lz_32bit_path": {
           "state": "supported",
-          "source": "live",
-          "note": "LZ uses 32-bit routes only. 16-bit direct/block routes are forbidden by route rules."
+          "source": "live"
         }
       },
       "limits": {
         "direct_word_read": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
+          "over_end_code": "C051"
         },
         "direct_word_write": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
+          "over_end_code": "C051"
         },
         "direct_bit_read": {
+          "source": "live",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "direct_bit_write": {
+          "source": "live",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "random_read_word": {
+          "source": "live",
           "max": 96,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         },
         "random_write_word": {
+          "source": "live",
           "max": 80,
           "weighted_max": 960,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         },
         "random_write_bit": {
+          "source": "live",
           "max": 94,
-          "over_end_code": "C053",
-          "source": "live"
+          "over_end_code": "C053"
         },
         "monitor_register_word": {
+          "source": "live",
           "max": 96,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         }
       },
       "write_policy": {
@@ -171,71 +161,65 @@
         },
         "ext_module_access": {
           "state": "config-dependent",
-          "source": "live",
-          "note": "U1\\G10 succeeded in this configuration. Unit existence is PLC-configuration-dependent, so do not guard."
+          "source": "live"
         },
         "ext_link_direct": {
           "state": "config-dependent",
-          "source": "policy",
-          "note": "Not live-verified because the required hardware was unavailable, but likely usable. Allowed by the 2026-07-03 user decision; do not guard."
+          "source": "live"
         },
         "hg_cpu_buffer": {
           "state": "blocked",
-          "source": "policy",
-          "note": "iQ-R-only route; not defined for iQ-L."
+          "source": "spec"
         },
         "long_device_path": {
           "state": "supported",
-          "source": "live",
-          "note": "LTN/LSTN/LCN/LCC write-read-restore was live-verified. Use dedicated long-device routes only."
+          "source": "live"
         },
         "lz_32bit_path": {
           "state": "supported",
-          "source": "live",
-          "note": "LZ uses 32-bit routes only; LZ1:D was live-verified."
+          "source": "live"
         }
       },
       "limits": {
         "direct_word_read": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
+          "over_end_code": "C051"
         },
         "direct_word_write": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
+          "over_end_code": "C051"
         },
         "direct_bit_read": {
+          "source": "live",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "direct_bit_write": {
+          "source": "live",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "random_read_word": {
+          "source": "live",
           "max": 96,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         },
         "random_write_word": {
-          "max": 80,
-          "over_end_code": "C054",
           "source": "live",
-          "note": "Weighted limit is not live-verified; iQ-R uses 960."
+          "max": 80,
+          "over_end_code": "C054"
         },
         "random_write_bit": {
+          "source": "live",
           "max": 94,
-          "over_end_code": "C053",
-          "source": "live"
+          "over_end_code": "C053"
         },
         "monitor_register_word": {
+          "source": "live",
           "max": 96,
-          "source": "inferred",
-          "note": "Not live-verified. Inferred from the iQ-R live value 96 with the same subcommand group."
+          "over_end_code": "C054"
         }
       },
       "write_policy": {
@@ -254,101 +238,89 @@
       "verified_models": [
         "Unconfirmed"
       ],
-      "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to iQ-R, except the HG CPU-buffer route is confirmed unavailable because multi-CPU configuration is not possible.",
       "features": {
         "type_name": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "direct": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "random": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "block": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "monitor": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "ext_module_access": {
           "state": "config-dependent",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R. Unit existence is PLC-configuration-dependent, so do not guard."
+          "source": "policy"
         },
         "ext_link_direct": {
           "state": "config-dependent",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R. Network-unit configuration dependent, so do not guard."
+          "source": "policy"
         },
         "hg_cpu_buffer": {
           "state": "blocked",
-          "source": "spec",
-          "note": "Confirmed unavailable because multi-CPU configuration is not possible; 2026-07-03 user decision."
+          "source": "spec"
         },
         "long_device_path": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R. Use dedicated long-device routes only."
+          "source": "policy"
         },
         "lz_32bit_path": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R. LZ uses 32-bit routes only."
+          "source": "policy"
         }
       },
       "limits": {
         "direct_word_read": {
-          "max": 960,
-          "over_end_code": "C051",
           "source": "inferred",
-          "note": "Uses the iQ-R live-verified value."
+          "max": 960,
+          "over_end_code": "C051"
         },
         "direct_word_write": {
+          "source": "inferred",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "inferred"
+          "over_end_code": "C051"
         },
         "direct_bit_read": {
+          "source": "inferred",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "inferred"
+          "over_end_code": "C052"
         },
         "direct_bit_write": {
+          "source": "inferred",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "inferred"
+          "over_end_code": "C052"
         },
         "random_read_word": {
+          "source": "inferred",
           "max": 96,
-          "over_end_code": "C054",
-          "source": "inferred"
+          "over_end_code": "C054"
         },
         "random_write_word": {
+          "source": "inferred",
           "max": 80,
           "weighted_max": 960,
-          "over_end_code": "C054",
-          "source": "inferred"
+          "over_end_code": "C054"
         },
         "random_write_bit": {
+          "source": "inferred",
           "max": 94,
-          "over_end_code": "C053",
-          "source": "inferred"
+          "over_end_code": "C053"
         },
         "monitor_register_word": {
+          "source": "inferred",
           "max": 96,
-          "over_end_code": "C054",
-          "source": "inferred"
+          "over_end_code": "C054"
         }
       },
       "write_policy": {
@@ -367,101 +339,89 @@
       "verified_models": [
         "Unconfirmed"
       ],
-      "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to iQ-R, except the HG CPU-buffer route is confirmed unavailable because multi-CPU configuration is not possible.",
       "features": {
         "type_name": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "direct": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "random": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "block": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "monitor": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R; not live-verified."
+          "source": "policy"
         },
         "ext_module_access": {
           "state": "config-dependent",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R. Unit existence is PLC-configuration-dependent, so do not guard."
+          "source": "policy"
         },
         "ext_link_direct": {
           "state": "config-dependent",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R. Network-unit configuration dependent, so do not guard."
+          "source": "policy"
         },
         "hg_cpu_buffer": {
           "state": "blocked",
-          "source": "spec",
-          "note": "Confirmed unavailable because multi-CPU configuration is not possible; 2026-07-03 user decision."
+          "source": "spec"
         },
         "long_device_path": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R. Use dedicated long-device routes only."
+          "source": "policy"
         },
         "lz_32bit_path": {
           "state": "supported",
-          "source": "policy",
-          "note": "Treated as equivalent to iQ-R. LZ uses 32-bit routes only."
+          "source": "policy"
         }
       },
       "limits": {
         "direct_word_read": {
-          "max": 960,
-          "over_end_code": "C051",
           "source": "inferred",
-          "note": "Uses the iQ-R live-verified value."
+          "max": 960,
+          "over_end_code": "C051"
         },
         "direct_word_write": {
+          "source": "inferred",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "inferred"
+          "over_end_code": "C051"
         },
         "direct_bit_read": {
+          "source": "inferred",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "inferred"
+          "over_end_code": "C052"
         },
         "direct_bit_write": {
+          "source": "inferred",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "inferred"
+          "over_end_code": "C052"
         },
         "random_read_word": {
+          "source": "inferred",
           "max": 96,
-          "over_end_code": "C054",
-          "source": "inferred"
+          "over_end_code": "C054"
         },
         "random_write_word": {
+          "source": "inferred",
           "max": 80,
           "weighted_max": 960,
-          "over_end_code": "C054",
-          "source": "inferred"
+          "over_end_code": "C054"
         },
         "random_write_bit": {
+          "source": "inferred",
           "max": 94,
-          "over_end_code": "C053",
-          "source": "inferred"
+          "over_end_code": "C053"
         },
         "monitor_register_word": {
+          "source": "inferred",
           "max": 96,
-          "over_end_code": "C054",
-          "source": "inferred"
+          "over_end_code": "C054"
         }
       },
       "write_policy": {
@@ -478,7 +438,7 @@
         "ext_bit": "0081"
       },
       "verified_models": [
-        "FX5UC-32MT/D,FX5U-32MR/DS(built-in Ethernet)"
+        "FX5U-32MR/DS(built-in Ethernet)"
       ],
       "features": {
         "type_name": {
@@ -499,75 +459,68 @@
         },
         "monitor": {
           "state": "blocked",
-          "source": "live",
-          "evidence": "C059 even for single D10 registration on both FX5UC and FX5U."
+          "source": "live"
         },
         "ext_module_access": {
           "state": "config-dependent",
-          "source": "live",
-          "note": "U1\\G0/G1/G10 succeeded with a special-unit configuration; without the unit, the PLC returned C060. Treat this as a configuration difference and do not guard."
+          "source": "live"
         },
         "ext_link_direct": {
           "state": "blocked",
-          "source": "live",
-          "evidence": "J1\\W100 read/write returned C070."
+          "source": "live"
         },
         "hg_cpu_buffer": {
           "state": "blocked",
-          "source": "policy",
-          "note": "iQ-R-only route; not defined for iQ-F."
+          "source": "spec"
         },
         "long_device_path": {
           "state": "supported",
-          "source": "live",
-          "note": "Only LC long counters are available; LC0..LC63 was live-verified. LT/LST families do not exist on FX5 and are handled by range lookup."
+          "source": "live"
         },
         "lz_32bit_path": {
           "state": "supported",
-          "source": "live",
-          "note": "LZ uses 32-bit routes only."
+          "source": "live"
         }
       },
       "limits": {
         "direct_word_read": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "direct_word_write": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "direct_bit_read": {
-          "max": 3584,
-          "over_end_code": "C051",
           "source": "live",
-          "note": "FX5-specific limit that differs from the 7168-point limit on other models."
+          "max": 3584,
+          "over_end_code": "C051"
         },
         "direct_bit_write": {
+          "source": "live",
           "max": 3584,
-          "over_end_code": "C051",
-          "source": "live"
+          "over_end_code": "C051"
         },
         "random_read_word": {
+          "source": "live",
           "max": 192,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         },
         "random_write_word": {
+          "source": "live",
           "max": 160,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         },
         "random_write_bit": {
+          "source": "live",
           "max": 188,
-          "over_end_code": "C053",
-          "source": "live"
+          "over_end_code": "C053"
         }
       },
       "write_policy": {
-        "S": "read-only"
+        "S": "read-write"
       }
     },
     "melsec:qcpu": {
@@ -582,7 +535,6 @@
       "verified_models": [
         "Unconfirmed"
       ],
-      "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to QnUDV for built-in Ethernet capability guards and point limits until live evidence supersedes this policy.",
       "features": {
         "type_name": {
           "state": "blocked",
@@ -609,13 +561,12 @@
           "source": "policy"
         },
         "ext_link_direct": {
-          "state": "unverified",
-          "source": "policy",
-          "note": "Not live-verified. Guard in strict mode."
+          "state": "blocked",
+          "source": "policy"
         },
         "hg_cpu_buffer": {
           "state": "blocked",
-          "source": "policy"
+          "source": "spec"
         },
         "long_device_path": {
           "state": "delegated",
@@ -628,45 +579,45 @@
       },
       "limits": {
         "direct_word_read": {
+          "source": "inferred",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "policy"
+          "over_end_code": "C051"
         },
         "direct_word_write": {
+          "source": "inferred",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "policy"
+          "over_end_code": "C051"
         },
         "direct_bit_read": {
+          "source": "inferred",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "policy"
+          "over_end_code": "C052"
         },
         "direct_bit_write": {
+          "source": "inferred",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "policy"
+          "over_end_code": "C052"
         },
         "random_read_word": {
+          "source": "inferred",
           "max": 192,
-          "over_end_code": "C054",
-          "source": "policy"
+          "over_end_code": "C054"
         },
         "random_write_word": {
+          "source": "inferred",
           "max": 160,
           "weighted_max": 1920,
-          "over_end_code": "C054",
-          "source": "policy"
+          "over_end_code": "C054"
         },
         "random_write_bit": {
+          "source": "inferred",
           "max": 188,
-          "over_end_code": "C053",
-          "source": "policy"
+          "over_end_code": "C053"
         },
         "monitor_register_word": {
+          "source": "inferred",
           "max": 192,
-          "over_end_code": "C054",
-          "source": "policy"
+          "over_end_code": "C054"
         }
       },
       "write_policy": {
@@ -685,116 +636,6 @@
       "verified_models": [
         "L26CPU-BT(built-in Ethernet)"
       ],
-      "features": {
-        "type_name": {
-          "state": "blocked",
-          "source": "live",
-          "evidence": "0101/0000 returned C059."
-        },
-        "direct": {
-          "state": "supported",
-          "source": "live"
-        },
-        "random": {
-          "state": "supported",
-          "source": "live"
-        },
-        "block": {
-          "state": "blocked",
-          "source": "live",
-          "evidence": "Raw send also returned C059."
-        },
-        "monitor": {
-          "state": "supported",
-          "source": "live",
-          "note": "Succeeded with D10/R10/ZR10."
-        },
-        "ext_module_access": {
-          "state": "blocked",
-          "source": "live",
-          "evidence": "U0\\G10 / U2\\G1000 returned C070."
-        },
-        "ext_link_direct": {
-          "state": "blocked",
-          "source": "live",
-          "evidence": "J1\\W100 read/write returned C070."
-        },
-        "hg_cpu_buffer": {
-          "state": "blocked",
-          "source": "policy",
-          "note": "iQ-R-only route; not defined for LCPU."
-        },
-        "long_device_path": {
-          "state": "delegated",
-          "source": "live",
-          "note": "LT/LST/LC families do not exist; representative reads returned C05B. Delegate the decision to range lookup."
-        },
-        "lz_32bit_path": {
-          "state": "delegated",
-          "source": "live",
-          "note": "The LZ family does not exist; reads returned C05B. Delegate the decision to range lookup."
-        }
-      },
-      "limits": {
-        "direct_word_read": {
-          "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
-        },
-        "direct_word_write": {
-          "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
-        },
-        "direct_bit_read": {
-          "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
-        },
-        "direct_bit_write": {
-          "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
-        },
-        "random_read_word": {
-          "max": 192,
-          "over_end_code": "C054",
-          "source": "live"
-        },
-        "random_write_word": {
-          "max": 160,
-          "weighted_max": 1920,
-          "over_end_code": "C054",
-          "source": "live"
-        },
-        "random_write_bit": {
-          "max": 188,
-          "over_end_code": "C053",
-          "source": "live"
-        },
-        "monitor_register_word": {
-          "max": 192,
-          "over_end_code": "C054",
-          "source": "live"
-        }
-      },
-      "write_policy": {
-        "S": "read-only"
-      }
-    },
-    "melsec:qnu": {
-      "frame": "3E",
-      "compat": "Q/L",
-      "subcommands": {
-        "word": "0000",
-        "bit": "0001",
-        "ext_word": "0080",
-        "ext_bit": "0081"
-      },
-      "verified_models": [
-        "Q26UDEHCPU(built-in Ethernet)"
-      ],
-      "profile_note": "Live verified on Q26UDEHCPU built-in Ethernet on 2026-07-03.",
       "features": {
         "type_name": {
           "state": "blocked",
@@ -839,45 +680,146 @@
       },
       "limits": {
         "direct_word_read": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
+          "over_end_code": "C051"
         },
         "direct_word_write": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
+          "over_end_code": "C051"
         },
         "direct_bit_read": {
+          "source": "live",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "direct_bit_write": {
+          "source": "live",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "random_read_word": {
+          "source": "live",
           "max": 192,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         },
         "random_write_word": {
+          "source": "live",
           "max": 160,
           "weighted_max": 1920,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         },
         "random_write_bit": {
+          "source": "live",
           "max": 188,
-          "over_end_code": "C053",
-          "source": "live"
+          "over_end_code": "C053"
         },
         "monitor_register_word": {
+          "source": "live",
           "max": 192,
-          "over_end_code": "C054",
+          "over_end_code": "C054"
+        }
+      },
+      "write_policy": {
+        "S": "read-only"
+      }
+    },
+    "melsec:qnu": {
+      "frame": "3E",
+      "compat": "Q/L",
+      "subcommands": {
+        "word": "0000",
+        "bit": "0001",
+        "ext_word": "0080",
+        "ext_bit": "0081"
+      },
+      "verified_models": [
+        "Q26UDEHCPU(built-in Ethernet)"
+      ],
+      "features": {
+        "type_name": {
+          "state": "blocked",
           "source": "live"
+        },
+        "direct": {
+          "state": "supported",
+          "source": "live"
+        },
+        "random": {
+          "state": "supported",
+          "source": "live"
+        },
+        "block": {
+          "state": "blocked",
+          "source": "live"
+        },
+        "monitor": {
+          "state": "supported",
+          "source": "live"
+        },
+        "ext_module_access": {
+          "state": "blocked",
+          "source": "live"
+        },
+        "ext_link_direct": {
+          "state": "blocked",
+          "source": "live"
+        },
+        "hg_cpu_buffer": {
+          "state": "blocked",
+          "source": "spec"
+        },
+        "long_device_path": {
+          "state": "delegated",
+          "source": "live"
+        },
+        "lz_32bit_path": {
+          "state": "delegated",
+          "source": "live"
+        }
+      },
+      "limits": {
+        "direct_word_read": {
+          "source": "live",
+          "max": 960,
+          "over_end_code": "C051"
+        },
+        "direct_word_write": {
+          "source": "live",
+          "max": 960,
+          "over_end_code": "C051"
+        },
+        "direct_bit_read": {
+          "source": "live",
+          "max": 7168,
+          "over_end_code": "C052"
+        },
+        "direct_bit_write": {
+          "source": "live",
+          "max": 7168,
+          "over_end_code": "C052"
+        },
+        "random_read_word": {
+          "source": "live",
+          "max": 192,
+          "over_end_code": "C054"
+        },
+        "random_write_word": {
+          "source": "live",
+          "max": 160,
+          "weighted_max": 1920,
+          "over_end_code": "C054"
+        },
+        "random_write_bit": {
+          "source": "live",
+          "max": 188,
+          "over_end_code": "C053"
+        },
+        "monitor_register_word": {
+          "source": "live",
+          "max": 192,
+          "over_end_code": "C054"
         }
       },
       "write_policy": {
@@ -899,8 +841,7 @@
       "features": {
         "type_name": {
           "state": "blocked",
-          "source": "live",
-          "evidence": "0101/0000 returned C059."
+          "source": "live"
         },
         "direct": {
           "state": "supported",
@@ -912,81 +853,74 @@
         },
         "block": {
           "state": "blocked",
-          "source": "live",
-          "evidence": "Raw send also returned C059. High-level APIs should guard before transport."
+          "source": "live"
         },
         "monitor": {
           "state": "supported",
-          "source": "live",
-          "evidence": "D9000/R10/ZR10 registration succeeded both individually and together, including 192-word registration."
+          "source": "live"
         },
         "ext_module_access": {
           "state": "blocked",
-          "source": "live",
-          "evidence": "U0\\G10 / U2\\G1000 returned C070."
+          "source": "live"
         },
         "ext_link_direct": {
           "state": "blocked",
-          "source": "live",
-          "evidence": "J1\\W100 read/write returned C070."
+          "source": "live"
         },
         "hg_cpu_buffer": {
           "state": "blocked",
-          "source": "policy",
-          "note": "iQ-R-only route; not defined for QnUDV."
+          "source": "spec"
         },
         "long_device_path": {
           "state": "delegated",
-          "source": "live",
-          "note": "LT/LST/LC families do not exist; representative reads returned C05B. Delegate the decision to range lookup."
+          "source": "live"
         },
         "lz_32bit_path": {
           "state": "delegated",
-          "source": "live",
-          "note": "The LZ family does not exist; LZ0 random dword read returned C05B. Delegate the decision to range lookup."
+          "source": "live"
         }
       },
       "limits": {
         "direct_word_read": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
+          "over_end_code": "C051"
         },
         "direct_word_write": {
+          "source": "live",
           "max": 960,
-          "over_end_code": "C051",
-          "source": "live"
+          "over_end_code": "C051"
         },
         "direct_bit_read": {
+          "source": "live",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "direct_bit_write": {
+          "source": "live",
           "max": 7168,
-          "over_end_code": "C052",
-          "source": "live"
+          "over_end_code": "C052"
         },
         "random_read_word": {
+          "source": "live",
           "max": 192,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         },
         "random_write_word": {
+          "source": "live",
           "max": 160,
           "weighted_max": 1920,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         },
         "random_write_bit": {
+          "source": "live",
           "max": 188,
-          "over_end_code": "C053",
-          "source": "live"
+          "over_end_code": "C053"
         },
         "monitor_register_word": {
+          "source": "live",
           "max": 192,
-          "over_end_code": "C054",
-          "source": "live"
+          "over_end_code": "C054"
         }
       },
       "write_policy": {

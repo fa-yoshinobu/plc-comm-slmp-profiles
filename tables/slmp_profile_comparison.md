@@ -4,7 +4,7 @@
 
 Generated from `capability/slmp_builtin_ethernet_profiles.json` and `device-ranges/slmp_device_range_rules.json`.
 
-The JSON files remain the canonical source of truth; this file is only a maintenance view.
+This file is a maintenance view of the generated JSON and device range rules.
 
 ## Port Scope
 
@@ -13,21 +13,11 @@ The JSON files remain the canonical source of truth; this file is only a mainten
 | Capability schema version | 1 |
 | Capability date | 2026-07-03 |
 | Scope | builtin-ethernet-port |
-| Description | Canonical PLC model profile definitions for the SLMP library family. The scope is features available through CPU built-in Ethernet ports only. Extension Ethernet modules may support additional commands; this built-in Ethernet profile is the stricter baseline and is conservative when used against an extension Ethernet module. This JSON is the source of truth for language implementations and conformance tests. Every edit must include evidence. |
+| Description | Canonical PLC model profile definitions for the SLMP library family. Generated from evidence/profile-definitions. |
 | Default strict mode | True |
 | Device range schema version | 1 |
 | Device range date | 2026-07-03 |
 | Device range description | Canonical rules for SLMP device range discovery from SD block reads. For each profile, this defines the SD register block start/count and per-device-family resolution rules (fixed, word-register, dword-register, clipped variants, unsupported, undefined). Initially machine-extracted from plc-comm-slmp-python slmp/device_ranges.py as of 2026-07-03. This JSON is now the source of truth imported by each language implementation. |
-
-### Policy Notes
-
-| Note |
-| --- |
-| The profile does not own device-family existence or ranges; existing SD-read range lookup decides them. |
-| Limits are protocol limits backed by live evidence and are always enforced, even when strict mode is disabled. |
-| Standalone G/HG rejection is an existing global rule shared by all profiles and is not modeled here. |
-| These profiles target CPU built-in Ethernet ports, which are generally more constrained than extension Ethernet modules. |
-| Applying a built-in Ethernet profile to an extension Ethernet module is conservative: it should not enable commands beyond the stricter built-in Ethernet baseline, although it may leave module-specific capabilities unused. |
 
 ## How To Read Cells
 
@@ -73,45 +63,45 @@ The JSON files remain the canonical source of truth; this file is only a mainten
 
 | Profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models | Evidence file |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) | evidence/iq-r_slmp_live_verify_20260703.md |
-| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) | evidence/iql_slmp_live_verify_20260703.md |
-| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed | - |
-| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed | - |
-| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5UC-32MT/D,FX5U-32MR/DS(built-in Ethernet) | evidence/iqf_slmp_live_verify_20260703.md |
-| melsec:qcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Unconfirmed | - |
-| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) | evidence/lcpu_slmp_live_verify_20260703.md |
-| melsec:qnu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU(built-in Ethernet) | evidence/qnu_slmp_live_verify_20260703.md |
-| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) | evidence/qnudv_slmp_live_verify_20260703.md |
+| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) | evidence/profile-definitions/iq-r_slmp_profile_definition_20260703.md |
+| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) | evidence/profile-definitions/iql_slmp_profile_definition_20260703.md |
+| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed | evidence/profile-definitions/mx-r_slmp_profile_definition_20260703.md |
+| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed | evidence/profile-definitions/mx-f_slmp_profile_definition_20260703.md |
+| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5U-32MR/DS(built-in Ethernet) | evidence/profile-definitions/iqf_slmp_profile_definition_20260703.md |
+| melsec:qcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Unconfirmed | evidence/profile-definitions/qcpu_slmp_profile_definition_20260703.md |
+| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) | evidence/profile-definitions/lcpu_slmp_profile_definition_20260703.md |
+| melsec:qnu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU(built-in Ethernet) | evidence/profile-definitions/qnu_slmp_profile_definition_20260703.md |
+| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) | evidence/profile-definitions/qnudv_slmp_profile_definition_20260703.md |
 
 ### Feature Matrix
 
-Cell format starts with `state/source`; `note` and `evidence` from JSON are included in the same cell when present.
+Cell format is `state/source`.
 
 | Feature | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Type name | supported/live | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/live | blocked/policy | blocked/live<br>evidence: 0101/0000 returned C059. | blocked/live | blocked/live<br>evidence: 0101/0000 returned C059. |
-| Direct read/write | supported/live | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/live | supported/policy | supported/live | supported/live | supported/live |
-| Random read/write | supported/live | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/live | supported/policy | supported/live | supported/live | supported/live |
-| Block read/write | supported/live<br>note: Mixed word+bit succeeded in one request. | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/live | blocked/policy | blocked/live<br>evidence: Raw send also returned C059. | blocked/live | blocked/live<br>evidence: Raw send also returned C059. High-level APIs should guard before transport. |
-| Monitor | supported/live | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | blocked/live<br>evidence: C059 even for single D10 registration on both FX5UC and FX5U. | supported/policy | supported/live<br>note: Succeeded with D10/R10/ZR10. | supported/live | supported/live<br>evidence: D9000/R10/ZR10 registration succeeded both individually and together, including 192-word registration. |
-| U\G module access | config-dependent/live<br>note: U3E0\G10 / U2\G100 succeeded in this configuration. Unit existence is PLC-configuration-dependent, so do not guard. | config-dependent/live<br>note: U1\G10 succeeded in this configuration. Unit existence is PLC-configuration-dependent, so do not guard. | config-dependent/policy<br>note: Treated as equivalent to iQ-R. Unit existence is PLC-configuration-dependent, so do not guard. | config-dependent/policy<br>note: Treated as equivalent to iQ-R. Unit existence is PLC-configuration-dependent, so do not guard. | config-dependent/live<br>note: U1\G0/G1/G10 succeeded with a special-unit configuration; without the unit, the PLC returned C060. Treat this as a configuration difference and do not guard. | blocked/policy | blocked/live<br>evidence: U0\G10 / U2\G1000 returned C070. | blocked/live | blocked/live<br>evidence: U0\G10 / U2\G1000 returned C070. |
-| Link direct | config-dependent/policy<br>note: Not live-verified. Treat as network-unit-configuration-dependent and do not guard; this inference follows the 2026-07-03 iQ-L decision and requires user approval. | config-dependent/policy<br>note: Not live-verified because the required hardware was unavailable, but likely usable. Allowed by the 2026-07-03 user decision; do not guard. | config-dependent/policy<br>note: Treated as equivalent to iQ-R. Network-unit configuration dependent, so do not guard. | config-dependent/policy<br>note: Treated as equivalent to iQ-R. Network-unit configuration dependent, so do not guard. | blocked/live<br>evidence: J1\W100 read/write returned C070. | unverified/policy<br>note: Not live-verified. Guard in strict mode. | blocked/live<br>evidence: J1\W100 read/write returned C070. | blocked/live | blocked/live<br>evidence: J1\W100 read/write returned C070. |
-| HG CPU buffer | supported/live<br>note: iQ-R-only route. U3E0\HG20 direct/random/monitor succeeded. | blocked/policy<br>note: iQ-R-only route; not defined for iQ-L. | blocked/spec<br>note: Confirmed unavailable because multi-CPU configuration is not possible; 2026-07-03 user decision. | blocked/spec<br>note: Confirmed unavailable because multi-CPU configuration is not possible; 2026-07-03 user decision. | blocked/policy<br>note: iQ-R-only route; not defined for iQ-F. | blocked/policy | blocked/policy<br>note: iQ-R-only route; not defined for LCPU. | blocked/spec | blocked/policy<br>note: iQ-R-only route; not defined for QnUDV. |
-| Long-device route | supported/live<br>note: LT/LST/LC use dedicated long-device routes only. Direct/block bit routes for LTS/LTC/LSTS/LSTC are forbidden by route rules; writes returned 4030 in live testing. | supported/live<br>note: LTN/LSTN/LCN/LCC write-read-restore was live-verified. Use dedicated long-device routes only. | supported/policy<br>note: Treated as equivalent to iQ-R. Use dedicated long-device routes only. | supported/policy<br>note: Treated as equivalent to iQ-R. Use dedicated long-device routes only. | supported/live<br>note: Only LC long counters are available; LC0..LC63 was live-verified. LT/LST families do not exist on FX5 and are handled by range lookup. | delegated/policy | delegated/live<br>note: LT/LST/LC families do not exist; representative reads returned C05B. Delegate the decision to range lookup. | delegated/live | delegated/live<br>note: LT/LST/LC families do not exist; representative reads returned C05B. Delegate the decision to range lookup. |
-| LZ 32-bit route | supported/live<br>note: LZ uses 32-bit routes only. 16-bit direct/block routes are forbidden by route rules. | supported/live<br>note: LZ uses 32-bit routes only; LZ1:D was live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R. LZ uses 32-bit routes only. | supported/policy<br>note: Treated as equivalent to iQ-R. LZ uses 32-bit routes only. | supported/live<br>note: LZ uses 32-bit routes only. | delegated/policy | delegated/live<br>note: The LZ family does not exist; reads returned C05B. Delegate the decision to range lookup. | delegated/live | delegated/live<br>note: The LZ family does not exist; LZ0 random dword read returned C05B. Delegate the decision to range lookup. |
+| Type name | supported/live | supported/live | supported/policy | supported/policy | supported/live | blocked/policy | blocked/live | blocked/live | blocked/live |
+| Direct read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | supported/policy | supported/live | supported/live | supported/live |
+| Random read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | supported/policy | supported/live | supported/live | supported/live |
+| Block read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | blocked/policy | blocked/live | blocked/live | blocked/live |
+| Monitor | supported/live | supported/live | supported/policy | supported/policy | blocked/live | supported/policy | supported/live | supported/live | supported/live |
+| U\G module access | config-dependent/live | config-dependent/live | config-dependent/policy | config-dependent/policy | config-dependent/live | blocked/policy | blocked/live | blocked/live | blocked/live |
+| Link direct | config-dependent/live | config-dependent/live | config-dependent/policy | config-dependent/policy | blocked/live | blocked/policy | blocked/live | blocked/live | blocked/live |
+| HG CPU buffer | supported/live | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec |
+| Long-device route | supported/live | supported/live | supported/policy | supported/policy | supported/live | delegated/policy | delegated/live | delegated/live | delegated/live |
+| LZ 32-bit route | supported/live | supported/live | supported/policy | supported/policy | supported/live | delegated/policy | delegated/live | delegated/live | delegated/live |
 
 ### Point Limit Matrix
 
 | Limit | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Direct word read | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred], note: Uses the iQ-R live-verified value. | max 960, over C051, [inferred], note: Uses the iQ-R live-verified value. | max 960, over C052, [live] | max 960, over C051, [policy] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] |
-| Direct word write | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [policy] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] |
-| Direct bit read | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live], note: FX5-specific limit that differs from the 7168-point limit on other models. | max 7168, over C052, [policy] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] |
-| Direct bit write | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [policy] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] |
-| Random word read | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [policy] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] |
-| Random word write | max 80, weighted 960, over C054, [live] | max 80, over C054, [live], note: Weighted limit is not live-verified; iQ-R uses 960. | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 160, over C054, [live] | max 160, weighted 1920, over C054, [policy] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [live] |
-| Random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [policy] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] |
-| Monitor word register | max 96, over C054, [live] | max 96, [inferred], note: Not live-verified. Inferred from the iQ-R live value 96 with the same subcommand group. | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | max 192, over C054, [policy] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] |
+| Direct word read | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [inferred] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] |
+| Direct word write | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [inferred] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] |
+| Direct bit read | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] |
+| Direct bit write | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] |
+| Random word read | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] |
+| Random word write | max 80, weighted 960, over C054, [live] | max 80, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 160, over C054, [live] | max 160, weighted 1920, over C054, [inferred] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [live] |
+| Random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] |
+| Monitor word register | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | max 192, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] |
 
 ### Write Policy
 
@@ -121,7 +111,7 @@ Cell format starts with `state/source`; `note` and `evidence` from JSON are incl
 | melsec:iq-l | S=read-only |
 | melsec:mx-r | S=read-only |
 | melsec:mx-f | S=read-only |
-| melsec:iq-f | S=read-only |
+| melsec:iq-f | S=read-write |
 | melsec:qcpu | S=read-only |
 | melsec:lcpu | S=read-only |
 | melsec:qnu | S=read-only |
