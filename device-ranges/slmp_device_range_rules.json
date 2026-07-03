@@ -1,16 +1,6 @@
 {
   "schema_version": 1,
   "date": "2026-07-03",
-  "description": "Canonical rules for SLMP device range discovery from SD block reads. For each profile, this defines the SD register block start/count and per-device-family resolution rules (fixed, word-register, dword-register, clipped variants, unsupported, undefined). Initially machine-extracted from plc-comm-slmp-python slmp/device_ranges.py as of 2026-07-03. This JSON is now the source of truth imported by each language implementation.",
-  "value_kinds": {
-    "fixed": "Use fixed_value as the point count without reading SD.",
-    "word-register": "Use the 16-bit value at SDn as the point count.",
-    "dword-register": "Use the 32-bit value at SDn..SDn+1 as the point count.",
-    "word-register-clipped": "Clip the 16-bit value to clip_value.",
-    "dword-register-clipped": "Clip the 32-bit value to clip_value.",
-    "unsupported": "This family does not exist in this profile.",
-    "undefined": "No finite upper-bound register is defined; handle through runtime probes or equivalent logic."
-  },
   "ordered_items": [
     "X",
     "Y",
@@ -40,298 +30,468 @@
   ],
   "rows": {
     "X": {
-      "category": "bit",
+      "classification": "User device",
+      "device_name": "Input",
       "devices": [
         {
           "device": "X",
+          "type": "bit",
           "is_bit": true
         }
       ],
       "notation": "base16"
     },
     "Y": {
-      "category": "bit",
+      "classification": "User device",
+      "device_name": "Output",
       "devices": [
         {
           "device": "Y",
+          "type": "bit",
           "is_bit": true
         }
       ],
       "notation": "base16"
     },
     "M": {
-      "category": "bit",
+      "classification": "User device",
+      "device_name": "Internal relay",
       "devices": [
         {
           "device": "M",
+          "type": "bit",
           "is_bit": true
         }
       ],
       "notation": "base10"
     },
     "B": {
-      "category": "bit",
+      "classification": "User device",
+      "device_name": "Link relay",
       "devices": [
         {
           "device": "B",
-          "is_bit": true
-        }
-      ],
-      "notation": "base16"
-    },
-    "SB": {
-      "category": "bit",
-      "devices": [
-        {
-          "device": "SB",
+          "type": "bit",
           "is_bit": true
         }
       ],
       "notation": "base16"
     },
     "F": {
-      "category": "bit",
+      "classification": "User device",
+      "device_name": "Annunciator",
       "devices": [
         {
           "device": "F",
+          "type": "bit",
           "is_bit": true
         }
       ],
       "notation": "base10"
     },
+    "SB": {
+      "classification": "User device",
+      "device_name": "Link special relay",
+      "devices": [
+        {
+          "device": "SB",
+          "type": "bit",
+          "is_bit": true
+        }
+      ],
+      "notation": "base16"
+    },
     "V": {
-      "category": "bit",
+      "classification": "User device",
+      "device_name": "Edge relay",
       "devices": [
         {
           "device": "V",
-          "is_bit": true
-        }
-      ],
-      "notation": "base10"
-    },
-    "L": {
-      "category": "bit",
-      "devices": [
-        {
-          "device": "L",
+          "type": "bit",
           "is_bit": true
         }
       ],
       "notation": "base10"
     },
     "S": {
-      "category": "bit",
+      "classification": "User device",
+      "device_name": "Step relay",
       "devices": [
         {
           "device": "S",
+          "type": "bit",
           "is_bit": true
-        }
-      ],
-      "notation": "base10"
-    },
-    "D": {
-      "category": "word",
-      "devices": [
-        {
-          "device": "D",
-          "is_bit": false
-        }
-      ],
-      "notation": "base10"
-    },
-    "W": {
-      "category": "word",
-      "devices": [
-        {
-          "device": "W",
-          "is_bit": false
-        }
-      ],
-      "notation": "base16"
-    },
-    "SW": {
-      "category": "word",
-      "devices": [
-        {
-          "device": "SW",
-          "is_bit": false
-        }
-      ],
-      "notation": "base16"
-    },
-    "R": {
-      "category": "word",
-      "devices": [
-        {
-          "device": "R",
-          "is_bit": false
         }
       ],
       "notation": "base10"
     },
     "T": {
-      "category": "timer-counter",
+      "classification": "User device",
+      "device_name": "Timer",
       "devices": [
         {
           "device": "TS",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "TC",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "TN",
+          "type": "word",
           "is_bit": false
         }
       ],
       "notation": "base10"
     },
     "ST": {
-      "category": "timer-counter",
+      "classification": "User device",
+      "device_name": "Retentive timer",
       "devices": [
         {
           "device": "STS",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "STC",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "STN",
-          "is_bit": false
-        }
-      ],
-      "notation": "base10"
-    },
-    "C": {
-      "category": "timer-counter",
-      "devices": [
-        {
-          "device": "CS",
-          "is_bit": true
-        },
-        {
-          "device": "CC",
-          "is_bit": true
-        },
-        {
-          "device": "CN",
+          "type": "word",
           "is_bit": false
         }
       ],
       "notation": "base10"
     },
     "LT": {
-      "category": "timer-counter",
+      "classification": "User device",
+      "device_name": "Long timer",
       "devices": [
         {
           "device": "LTS",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "LTC",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "LTN",
+          "type": "dword",
           "is_bit": false
         }
       ],
       "notation": "base10"
     },
     "LST": {
-      "category": "timer-counter",
+      "classification": "User device",
+      "device_name": "Long retentive timer",
       "devices": [
         {
           "device": "LSTS",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "LSTC",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "LSTN",
+          "type": "dword",
+          "is_bit": false
+        }
+      ],
+      "notation": "base10"
+    },
+    "C": {
+      "classification": "User device",
+      "device_name": "Counter",
+      "devices": [
+        {
+          "device": "CS",
+          "type": "bit",
+          "is_bit": true
+        },
+        {
+          "device": "CC",
+          "type": "bit",
+          "is_bit": true
+        },
+        {
+          "device": "CN",
+          "type": "word",
           "is_bit": false
         }
       ],
       "notation": "base10"
     },
     "LC": {
-      "category": "timer-counter",
+      "classification": "User device",
+      "device_name": "Long counter",
       "devices": [
         {
           "device": "LCS",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "LCC",
+          "type": "bit",
           "is_bit": true
         },
         {
           "device": "LCN",
+          "type": "dword",
           "is_bit": false
         }
       ],
       "notation": "base10"
     },
-    "Z": {
-      "category": "index",
+    "D": {
+      "classification": "User device",
+      "device_name": "Data register",
       "devices": [
         {
-          "device": "Z",
+          "device": "D",
+          "type": "word",
           "is_bit": false
         }
       ],
       "notation": "base10"
     },
-    "LZ": {
-      "category": "index",
+    "W": {
+      "classification": "User device",
+      "device_name": "Link register",
       "devices": [
         {
-          "device": "LZ",
+          "device": "W",
+          "type": "word",
           "is_bit": false
         }
       ],
-      "notation": "base10"
+      "notation": "base16"
     },
-    "ZR": {
-      "category": "file-refresh",
+    "SW": {
+      "classification": "User device",
+      "device_name": "Link special register",
       "devices": [
         {
-          "device": "ZR",
+          "device": "SW",
+          "type": "word",
           "is_bit": false
         }
       ],
-      "notation": "base10"
+      "notation": "base16"
     },
-    "RD": {
-      "category": "file-refresh",
+    "L": {
+      "classification": "User device",
+      "device_name": "Latch relay",
       "devices": [
         {
-          "device": "RD",
-          "is_bit": false
+          "device": "L",
+          "type": "bit",
+          "is_bit": true
         }
       ],
       "notation": "base10"
     },
     "SM": {
-      "category": "bit",
+      "classification": "System Device",
+      "device_name": "Special relay",
       "devices": [
         {
           "device": "SM",
+          "type": "bit",
           "is_bit": true
         }
       ],
       "notation": "base10"
     },
     "SD": {
-      "category": "word",
+      "classification": "System Device",
+      "device_name": "Special register",
       "devices": [
         {
           "device": "SD",
+          "type": "word",
+          "is_bit": false
+        }
+      ],
+      "notation": "base10"
+    },
+    "Jn\\X": {
+      "classification": "Link Direct Device",
+      "device_name": "Link input",
+      "devices": [
+        {
+          "device": "Jn\\X",
+          "type": "bit",
+          "is_bit": true
+        }
+      ],
+      "notation": "base16"
+    },
+    "Jn\\Y": {
+      "classification": "Link Direct Device",
+      "device_name": "Link output",
+      "devices": [
+        {
+          "device": "Jn\\Y",
+          "type": "bit",
+          "is_bit": true
+        }
+      ],
+      "notation": "base16"
+    },
+    "Jn\\B": {
+      "classification": "Link Direct Device",
+      "device_name": "Link relay",
+      "devices": [
+        {
+          "device": "Jn\\B",
+          "type": "bit",
+          "is_bit": true
+        }
+      ],
+      "notation": "base16"
+    },
+    "Jn\\SB": {
+      "classification": "Link Direct Device",
+      "device_name": "Link special relay",
+      "devices": [
+        {
+          "device": "Jn\\SB",
+          "type": "bit",
+          "is_bit": true
+        }
+      ],
+      "notation": "base16"
+    },
+    "Jn\\W": {
+      "classification": "Link Direct Device",
+      "device_name": "Link register",
+      "devices": [
+        {
+          "device": "Jn\\W",
+          "type": "word",
+          "is_bit": false
+        }
+      ],
+      "notation": "base16"
+    },
+    "Jn\\SW": {
+      "classification": "Link Direct Device",
+      "device_name": "Link special register",
+      "devices": [
+        {
+          "device": "Jn\\SW",
+          "type": "word",
+          "is_bit": false
+        }
+      ],
+      "notation": "base16"
+    },
+    "Un\\G": {
+      "classification": "Module access device",
+      "device_name": "Module access device",
+      "devices": [
+        {
+          "device": "Un\\G",
+          "type": "word",
+          "is_bit": false
+        }
+      ],
+      "notation": "base10"
+    },
+    "U3En\\G": {
+      "classification": "CPU buffer memory access device",
+      "device_name": "CPU buffer memory access device",
+      "devices": [
+        {
+          "device": "U3En\\G",
+          "type": "word",
+          "is_bit": false
+        }
+      ],
+      "notation": "base10"
+    },
+    "U3En\\HG": {
+      "classification": "CPU buffer memory access device",
+      "device_name": "CPU buffer memory access device",
+      "devices": [
+        {
+          "device": "U3En\\HG",
+          "type": "word",
+          "is_bit": false
+        }
+      ],
+      "notation": "base10"
+    },
+    "Z": {
+      "classification": "Index register",
+      "device_name": "Index register",
+      "devices": [
+        {
+          "device": "Z",
+          "type": "word",
+          "is_bit": false
+        }
+      ],
+      "notation": "base10"
+    },
+    "LZ": {
+      "classification": "Index register",
+      "device_name": "Long index register",
+      "devices": [
+        {
+          "device": "LZ",
+          "type": "dword",
+          "is_bit": false
+        }
+      ],
+      "notation": "base10"
+    },
+    "R": {
+      "classification": "File register",
+      "device_name": "File register",
+      "devices": [
+        {
+          "device": "R",
+          "type": "word",
+          "is_bit": false
+        }
+      ],
+      "notation": "base10"
+    },
+    "ZR": {
+      "classification": "File register",
+      "device_name": "File register",
+      "devices": [
+        {
+          "device": "ZR",
+          "type": "word",
+          "is_bit": false
+        }
+      ],
+      "notation": "base10"
+    },
+    "RD": {
+      "classification": "Refresh data register",
+      "device_name": "Refresh data register",
+      "devices": [
+        {
+          "device": "RD",
+          "type": "word",
           "is_bit": false
         }
       ],
@@ -345,7 +505,6 @@
     }
   },
   "runtime_probes": {
-    "reason": "Some Q-series devices do not have their ranges written into SD registers by the PLC, so SD reads alone cannot determine the range. Find boundaries by probing whether reads succeed.",
     "applies_to": [
       "melsec:lcpu",
       "melsec:qcpu",
@@ -353,7 +512,6 @@
       "melsec:qnudv"
     ],
     "max_probe_count": 1048576,
-    "probe_read": "Read one word at the target address; treat any SLMP error as unreadable.",
     "steps": [
       {
         "order": 1,
@@ -362,7 +520,11 @@
         ],
         "family": "Z",
         "method": "single-address-check",
-        "spec": "If Z15 is readable, the point count is 16; otherwise it is 10."
+        "parameters": {
+          "check_address": 15,
+          "readable_count": 16,
+          "unreadable_count": 10
+        }
       },
       {
         "order": 2,
@@ -373,8 +535,7 @@
           "melsec:qnudv"
         ],
         "family": "ZR",
-        "method": "doubling-then-binary-search",
-        "spec": "If ZR0 is not readable, the point count is 0. If it is readable, start high at 1 and advance with (high*2)+1 until reads fail, capped at max_probe_count-1. Then binary-search low..high and use the maximum readable address plus 1 as the point count. If the capped address is readable, use max_probe_count."
+        "method": "doubling-then-binary-search"
       },
       {
         "order": 3,
@@ -386,10 +547,12 @@
         ],
         "family": "R",
         "method": "derived",
-        "spec": "Use min(probed ZR point count, 32768) as the R point count."
+        "parameters": {
+          "source_family": "ZR",
+          "max_value": 32768
+        }
       }
-    ],
-    "source_note": "Record probe results in the catalog with source='Runtime access check'."
+    ]
   },
   "profiles": {
     "melsec:iq-r": {
@@ -398,129 +561,103 @@
       "rules": {
         "X": {
           "kind": "dword-register",
-          "source": "SD260-SD261 (32-bit)",
           "register": 260
         },
         "Y": {
           "kind": "dword-register",
-          "source": "SD262-SD263 (32-bit)",
           "register": 262
         },
         "M": {
           "kind": "dword-register",
-          "source": "SD264-SD265 (32-bit)",
           "register": 264
         },
         "B": {
           "kind": "dword-register",
-          "source": "SD266-SD267 (32-bit)",
           "register": 266
         },
         "SB": {
           "kind": "dword-register",
-          "source": "SD268-SD269 (32-bit)",
           "register": 268
         },
         "F": {
           "kind": "dword-register",
-          "source": "SD270-SD271 (32-bit)",
           "register": 270
         },
         "V": {
           "kind": "dword-register",
-          "source": "SD272-SD273 (32-bit)",
           "register": 272
         },
         "L": {
           "kind": "dword-register",
-          "source": "SD274-SD275 (32-bit)",
           "register": 274
         },
         "S": {
           "kind": "dword-register",
-          "source": "SD276-SD277 (32-bit)",
           "register": 276
         },
         "D": {
           "kind": "dword-register",
-          "source": "SD280-SD281 (32-bit)",
           "register": 280
         },
         "W": {
           "kind": "dword-register",
-          "source": "SD282-SD283 (32-bit)",
           "register": 282
         },
         "SW": {
           "kind": "dword-register",
-          "source": "SD284-SD285 (32-bit)",
           "register": 284
         },
         "R": {
           "kind": "dword-register-clipped",
-          "source": "SD306-SD307 (32-bit)",
-          "register": 306,
           "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768."
+          "register": 306
         },
         "T": {
           "kind": "dword-register",
-          "source": "SD288-SD289 (32-bit)",
           "register": 288
         },
         "ST": {
           "kind": "dword-register",
-          "source": "SD290-SD291 (32-bit)",
           "register": 290
         },
         "C": {
           "kind": "dword-register",
-          "source": "SD292-SD293 (32-bit)",
           "register": 292
         },
         "LT": {
           "kind": "dword-register",
-          "source": "SD294-SD295 (32-bit)",
           "register": 294
         },
         "LST": {
           "kind": "dword-register",
-          "source": "SD296-SD297 (32-bit)",
           "register": 296
         },
         "LC": {
           "kind": "dword-register",
-          "source": "SD298-SD299 (32-bit)",
           "register": 298
         },
         "Z": {
           "kind": "word-register",
-          "source": "SD300",
           "register": 300
         },
         "LZ": {
           "kind": "word-register",
-          "source": "SD302",
           "register": 302
         },
         "ZR": {
           "kind": "dword-register",
-          "source": "SD306-SD307 (32-bit)",
           "register": 306
         },
         "RD": {
           "kind": "dword-register",
-          "source": "SD308-SD309 (32-bit)",
           "register": 308
         },
         "SM": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 4096
         },
         "SD": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 4096
         }
       }
@@ -531,129 +668,103 @@
       "rules": {
         "X": {
           "kind": "dword-register",
-          "source": "SD260-SD261 (32-bit)",
           "register": 260
         },
         "Y": {
           "kind": "dword-register",
-          "source": "SD262-SD263 (32-bit)",
           "register": 262
         },
         "M": {
           "kind": "dword-register",
-          "source": "SD264-SD265 (32-bit)",
           "register": 264
         },
         "B": {
           "kind": "dword-register",
-          "source": "SD266-SD267 (32-bit)",
           "register": 266
         },
         "SB": {
           "kind": "dword-register",
-          "source": "SD268-SD269 (32-bit)",
           "register": 268
         },
         "F": {
           "kind": "dword-register",
-          "source": "SD270-SD271 (32-bit)",
           "register": 270
         },
         "V": {
           "kind": "dword-register",
-          "source": "SD272-SD273 (32-bit)",
           "register": 272
         },
         "L": {
           "kind": "dword-register",
-          "source": "SD274-SD275 (32-bit)",
           "register": 274
         },
         "S": {
           "kind": "dword-register",
-          "source": "SD276-SD277 (32-bit)",
           "register": 276
         },
         "D": {
           "kind": "dword-register",
-          "source": "SD280-SD281 (32-bit)",
           "register": 280
         },
         "W": {
           "kind": "dword-register",
-          "source": "SD282-SD283 (32-bit)",
           "register": 282
         },
         "SW": {
           "kind": "dword-register",
-          "source": "SD284-SD285 (32-bit)",
           "register": 284
         },
         "R": {
           "kind": "dword-register-clipped",
-          "source": "SD306-SD307 (32-bit)",
-          "register": 306,
           "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768."
+          "register": 306
         },
         "T": {
           "kind": "dword-register",
-          "source": "SD288-SD289 (32-bit)",
           "register": 288
         },
         "ST": {
           "kind": "dword-register",
-          "source": "SD290-SD291 (32-bit)",
           "register": 290
         },
         "C": {
           "kind": "dword-register",
-          "source": "SD292-SD293 (32-bit)",
           "register": 292
         },
         "LT": {
           "kind": "dword-register",
-          "source": "SD294-SD295 (32-bit)",
           "register": 294
         },
         "LST": {
           "kind": "dword-register",
-          "source": "SD296-SD297 (32-bit)",
           "register": 296
         },
         "LC": {
           "kind": "dword-register",
-          "source": "SD298-SD299 (32-bit)",
           "register": 298
         },
         "Z": {
           "kind": "word-register",
-          "source": "SD300",
           "register": 300
         },
         "LZ": {
           "kind": "word-register",
-          "source": "SD302",
           "register": 302
         },
         "ZR": {
           "kind": "dword-register",
-          "source": "SD306-SD307 (32-bit)",
           "register": 306
         },
         "RD": {
           "kind": "dword-register",
-          "source": "SD308-SD309 (32-bit)",
           "register": 308
         },
         "SM": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 4096
         },
         "SD": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 4096
         }
       }
@@ -664,129 +775,103 @@
       "rules": {
         "X": {
           "kind": "dword-register",
-          "source": "SD260-SD261 (32-bit)",
           "register": 260
         },
         "Y": {
           "kind": "dword-register",
-          "source": "SD262-SD263 (32-bit)",
           "register": 262
         },
         "M": {
           "kind": "dword-register",
-          "source": "SD264-SD265 (32-bit)",
           "register": 264
         },
         "B": {
           "kind": "dword-register",
-          "source": "SD266-SD267 (32-bit)",
           "register": 266
         },
         "SB": {
           "kind": "dword-register",
-          "source": "SD268-SD269 (32-bit)",
           "register": 268
         },
         "F": {
           "kind": "dword-register",
-          "source": "SD270-SD271 (32-bit)",
           "register": 270
         },
         "V": {
           "kind": "dword-register",
-          "source": "SD272-SD273 (32-bit)",
           "register": 272
         },
         "L": {
           "kind": "dword-register",
-          "source": "SD274-SD275 (32-bit)",
           "register": 274
         },
         "S": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on MX-F."
+          "kind": "dword-register",
+          "register": 276
         },
         "D": {
           "kind": "dword-register",
-          "source": "SD280-SD281 (32-bit)",
           "register": 280
         },
         "W": {
           "kind": "dword-register",
-          "source": "SD282-SD283 (32-bit)",
           "register": 282
         },
         "SW": {
           "kind": "dword-register",
-          "source": "SD284-SD285 (32-bit)",
           "register": 284
         },
         "R": {
           "kind": "dword-register-clipped",
-          "source": "SD306-SD307 (32-bit)",
-          "register": 306,
           "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768."
+          "register": 306
         },
         "T": {
           "kind": "dword-register",
-          "source": "SD288-SD289 (32-bit)",
           "register": 288
         },
         "ST": {
           "kind": "dword-register",
-          "source": "SD290-SD291 (32-bit)",
           "register": 290
         },
         "C": {
           "kind": "dword-register",
-          "source": "SD292-SD293 (32-bit)",
           "register": 292
         },
         "LT": {
           "kind": "dword-register",
-          "source": "SD294-SD295 (32-bit)",
           "register": 294
         },
         "LST": {
           "kind": "dword-register",
-          "source": "SD296-SD297 (32-bit)",
           "register": 296
         },
         "LC": {
           "kind": "dword-register",
-          "source": "SD298-SD299 (32-bit)",
           "register": 298
         },
         "Z": {
           "kind": "word-register",
-          "source": "SD300",
           "register": 300
         },
         "LZ": {
           "kind": "word-register",
-          "source": "SD302",
           "register": 302
         },
         "ZR": {
           "kind": "dword-register",
-          "source": "SD306-SD307 (32-bit)",
           "register": 306
         },
         "RD": {
           "kind": "dword-register",
-          "source": "SD308-SD309 (32-bit)",
           "register": 308
         },
         "SM": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 10000
         },
         "SD": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 10000
         }
       }
@@ -797,129 +882,103 @@
       "rules": {
         "X": {
           "kind": "dword-register",
-          "source": "SD260-SD261 (32-bit)",
           "register": 260
         },
         "Y": {
           "kind": "dword-register",
-          "source": "SD262-SD263 (32-bit)",
           "register": 262
         },
         "M": {
           "kind": "dword-register",
-          "source": "SD264-SD265 (32-bit)",
           "register": 264
         },
         "B": {
           "kind": "dword-register",
-          "source": "SD266-SD267 (32-bit)",
           "register": 266
         },
         "SB": {
           "kind": "dword-register",
-          "source": "SD268-SD269 (32-bit)",
           "register": 268
         },
         "F": {
           "kind": "dword-register",
-          "source": "SD270-SD271 (32-bit)",
           "register": 270
         },
         "V": {
           "kind": "dword-register",
-          "source": "SD272-SD273 (32-bit)",
           "register": 272
         },
         "L": {
           "kind": "dword-register",
-          "source": "SD274-SD275 (32-bit)",
           "register": 274
         },
         "S": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on MX-R."
+          "kind": "dword-register",
+          "register": 276
         },
         "D": {
           "kind": "dword-register",
-          "source": "SD280-SD281 (32-bit)",
           "register": 280
         },
         "W": {
           "kind": "dword-register",
-          "source": "SD282-SD283 (32-bit)",
           "register": 282
         },
         "SW": {
           "kind": "dword-register",
-          "source": "SD284-SD285 (32-bit)",
           "register": 284
         },
         "R": {
           "kind": "dword-register-clipped",
-          "source": "SD306-SD307 (32-bit)",
-          "register": 306,
           "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768."
+          "register": 306
         },
         "T": {
           "kind": "dword-register",
-          "source": "SD288-SD289 (32-bit)",
           "register": 288
         },
         "ST": {
           "kind": "dword-register",
-          "source": "SD290-SD291 (32-bit)",
           "register": 290
         },
         "C": {
           "kind": "dword-register",
-          "source": "SD292-SD293 (32-bit)",
           "register": 292
         },
         "LT": {
           "kind": "dword-register",
-          "source": "SD294-SD295 (32-bit)",
           "register": 294
         },
         "LST": {
           "kind": "dword-register",
-          "source": "SD296-SD297 (32-bit)",
           "register": 296
         },
         "LC": {
           "kind": "dword-register",
-          "source": "SD298-SD299 (32-bit)",
           "register": 298
         },
         "Z": {
           "kind": "word-register",
-          "source": "SD300",
           "register": 300
         },
         "LZ": {
           "kind": "word-register",
-          "source": "SD302",
           "register": 302
         },
         "ZR": {
           "kind": "dword-register",
-          "source": "SD306-SD307 (32-bit)",
           "register": 306
         },
         "RD": {
           "kind": "dword-register",
-          "source": "SD308-SD309 (32-bit)",
           "register": 308
         },
         "SM": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 4496
         },
         "SD": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 4496
         }
       }
@@ -930,129 +989,97 @@
       "rules": {
         "X": {
           "kind": "dword-register",
-          "source": "SD260-SD261 (32-bit)",
-          "register": 260,
-          "notes": "Manual addressing for iQ-F X devices is octal."
+          "register": 260
         },
         "Y": {
           "kind": "dword-register",
-          "source": "SD262-SD263 (32-bit)",
-          "register": 262,
-          "notes": "Manual addressing for iQ-F Y devices is octal."
+          "register": 262
         },
         "M": {
           "kind": "dword-register",
-          "source": "SD264-SD265 (32-bit)",
           "register": 264
         },
         "B": {
           "kind": "dword-register",
-          "source": "SD266-SD267 (32-bit)",
           "register": 266
         },
         "SB": {
           "kind": "dword-register",
-          "source": "SD268-SD269 (32-bit)",
           "register": 268
         },
         "F": {
           "kind": "dword-register",
-          "source": "SD270-SD271 (32-bit)",
           "register": 270
         },
         "V": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on iQ-F."
+          "kind": "unsupported"
         },
         "L": {
           "kind": "dword-register",
-          "source": "SD274-SD275 (32-bit)",
           "register": 274
         },
         "S": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on iQ-F."
+          "kind": "dword-register",
+          "register": 276
         },
         "D": {
           "kind": "dword-register",
-          "source": "SD280-SD281 (32-bit)",
           "register": 280
         },
         "W": {
           "kind": "dword-register",
-          "source": "SD282-SD283 (32-bit)",
           "register": 282
         },
         "SW": {
           "kind": "dword-register",
-          "source": "SD284-SD285 (32-bit)",
           "register": 284
         },
         "R": {
           "kind": "dword-register",
-          "source": "SD304-SD305 (32-bit)",
           "register": 304
         },
         "T": {
           "kind": "dword-register",
-          "source": "SD288-SD289 (32-bit)",
           "register": 288
         },
         "ST": {
           "kind": "dword-register",
-          "source": "SD290-SD291 (32-bit)",
           "register": 290
         },
         "C": {
           "kind": "dword-register",
-          "source": "SD292-SD293 (32-bit)",
           "register": 292
         },
         "LT": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on iQ-F."
+          "kind": "unsupported"
         },
         "LST": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on iQ-F."
+          "kind": "unsupported"
         },
         "LC": {
           "kind": "dword-register",
-          "source": "SD298-SD299 (32-bit)",
           "register": 298
         },
         "Z": {
           "kind": "word-register",
-          "source": "SD300",
           "register": 300
         },
         "LZ": {
           "kind": "word-register",
-          "source": "SD302",
           "register": 302
         },
         "ZR": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on iQ-F."
+          "kind": "unsupported"
         },
         "RD": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on iQ-F."
+          "kind": "unsupported"
         },
         "SM": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 10000
         },
         "SD": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 12000
         }
       }
@@ -1063,135 +1090,103 @@
       "rules": {
         "X": {
           "kind": "word-register",
-          "source": "SD290",
           "register": 290
         },
         "Y": {
           "kind": "word-register",
-          "source": "SD291",
           "register": 291
         },
         "M": {
           "kind": "word-register-clipped",
-          "source": "SD292",
-          "register": 292,
           "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768."
+          "register": 292
         },
         "B": {
           "kind": "word-register-clipped",
-          "source": "SD294",
-          "register": 294,
           "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768."
+          "register": 294
         },
         "SB": {
           "kind": "word-register",
-          "source": "SD296",
           "register": 296
         },
         "F": {
           "kind": "word-register",
-          "source": "SD295",
           "register": 295
         },
         "V": {
           "kind": "word-register",
-          "source": "SD297",
           "register": 297
         },
         "L": {
           "kind": "word-register",
-          "source": "SD293",
           "register": 293
         },
         "S": {
           "kind": "word-register",
-          "source": "SD298",
           "register": 298
         },
         "D": {
           "kind": "word-register-clipped",
-          "source": "SD302",
-          "register": 302,
           "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768 and excludes extended area."
+          "register": 302
         },
         "W": {
           "kind": "word-register-clipped",
-          "source": "SD303",
-          "register": 303,
           "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768 and excludes extended area."
+          "register": 303
         },
         "SW": {
           "kind": "word-register",
-          "source": "SD304",
           "register": 304
         },
         "R": {
           "kind": "fixed",
-          "source": "Fixed family limit",
-          "fixed_value": 32768
+          "fixed_value": 32768,
+          "probe": true
         },
         "T": {
           "kind": "word-register",
-          "source": "SD299",
           "register": 299
         },
         "ST": {
           "kind": "word-register",
-          "source": "SD300",
           "register": 300
         },
         "C": {
           "kind": "word-register",
-          "source": "SD301",
           "register": 301
         },
         "LT": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QCPU."
+          "kind": "unsupported"
         },
         "LST": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QCPU."
+          "kind": "unsupported"
         },
         "LC": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QCPU."
+          "kind": "unsupported"
         },
         "Z": {
           "kind": "fixed",
-          "source": "Fixed family limit",
-          "fixed_value": 10
+          "fixed_value": 10,
+          "probe": true
         },
         "LZ": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QCPU."
+          "kind": "unsupported"
         },
         "ZR": {
           "kind": "undefined",
-          "source": "Undefined",
-          "notes": "No finite upper-bound register is defined for QCPU ZR."
+          "probe": true
         },
         "RD": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QCPU."
+          "kind": "unsupported"
         },
         "SM": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 1024
         },
         "SD": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 1024
         }
       }
@@ -1202,129 +1197,99 @@
       "rules": {
         "X": {
           "kind": "word-register",
-          "source": "SD290",
           "register": 290
         },
         "Y": {
           "kind": "word-register",
-          "source": "SD291",
           "register": 291
         },
         "M": {
           "kind": "dword-register",
-          "source": "SD286-SD287 (32-bit)",
           "register": 286
         },
         "B": {
           "kind": "dword-register",
-          "source": "SD288-SD289 (32-bit)",
           "register": 288
         },
         "SB": {
           "kind": "word-register",
-          "source": "SD296",
           "register": 296
         },
         "F": {
           "kind": "word-register",
-          "source": "SD295",
           "register": 295
         },
         "V": {
           "kind": "word-register",
-          "source": "SD297",
           "register": 297
         },
         "L": {
           "kind": "word-register",
-          "source": "SD293",
           "register": 293
         },
         "S": {
           "kind": "word-register",
-          "source": "SD298",
           "register": 298
         },
         "D": {
           "kind": "dword-register",
-          "source": "SD308-SD309 (32-bit)",
           "register": 308
         },
         "W": {
           "kind": "dword-register",
-          "source": "SD310-SD311 (32-bit)",
           "register": 310
         },
         "SW": {
           "kind": "word-register",
-          "source": "SD304",
           "register": 304
         },
         "R": {
-          "kind": "dword-register-clipped",
-          "source": "SD306-SD307 (32-bit)",
-          "register": 306,
-          "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768."
+          "kind": "dword-register",
+          "probe": true,
+          "register": 306
         },
         "T": {
           "kind": "word-register",
-          "source": "SD299",
           "register": 299
         },
         "ST": {
           "kind": "word-register",
-          "source": "SD300",
           "register": 300
         },
         "C": {
           "kind": "word-register",
-          "source": "SD301",
           "register": 301
         },
         "LT": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on LCPU."
+          "kind": "unsupported"
         },
         "LST": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on LCPU."
+          "kind": "unsupported"
         },
         "LC": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on LCPU."
+          "kind": "unsupported"
         },
         "Z": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 20
         },
         "LZ": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on LCPU."
+          "kind": "unsupported"
         },
         "ZR": {
           "kind": "dword-register",
-          "source": "SD306-SD307 (32-bit)",
+          "probe": true,
           "register": 306
         },
         "RD": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on LCPU."
+          "kind": "unsupported"
         },
         "SM": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 2048
         },
         "SD": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 2048
         }
       }
@@ -1335,129 +1300,99 @@
       "rules": {
         "X": {
           "kind": "word-register",
-          "source": "SD290",
           "register": 290
         },
         "Y": {
           "kind": "word-register",
-          "source": "SD291",
           "register": 291
         },
         "M": {
           "kind": "dword-register",
-          "source": "SD286-SD287 (32-bit)",
           "register": 286
         },
         "B": {
           "kind": "dword-register",
-          "source": "SD288-SD289 (32-bit)",
           "register": 288
         },
         "SB": {
           "kind": "word-register",
-          "source": "SD296",
           "register": 296
         },
         "F": {
           "kind": "word-register",
-          "source": "SD295",
           "register": 295
         },
         "V": {
           "kind": "word-register",
-          "source": "SD297",
           "register": 297
         },
         "L": {
           "kind": "word-register",
-          "source": "SD293",
           "register": 293
         },
         "S": {
           "kind": "word-register",
-          "source": "SD298",
           "register": 298
         },
         "D": {
           "kind": "dword-register",
-          "source": "SD308-SD309 (32-bit)",
           "register": 308
         },
         "W": {
           "kind": "dword-register",
-          "source": "SD310-SD311 (32-bit)",
           "register": 310
         },
         "SW": {
           "kind": "word-register",
-          "source": "SD304",
           "register": 304
         },
         "R": {
-          "kind": "dword-register-clipped",
-          "source": "SD306-SD307 (32-bit)",
-          "register": 306,
-          "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768."
+          "kind": "dword-register",
+          "probe": true,
+          "register": 306
         },
         "T": {
           "kind": "word-register",
-          "source": "SD299",
           "register": 299
         },
         "ST": {
           "kind": "word-register",
-          "source": "SD300",
           "register": 300
         },
         "C": {
           "kind": "word-register",
-          "source": "SD301",
           "register": 301
         },
         "LT": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnU."
+          "kind": "unsupported"
         },
         "LST": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnU."
+          "kind": "unsupported"
         },
         "LC": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnU."
+          "kind": "unsupported"
         },
         "Z": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 20
         },
         "LZ": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnU."
+          "kind": "unsupported"
         },
         "ZR": {
           "kind": "dword-register",
-          "source": "SD306-SD307 (32-bit)",
+          "probe": true,
           "register": 306
         },
         "RD": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnU."
+          "kind": "unsupported"
         },
         "SM": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 2048
         },
         "SD": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 2048
         }
       }
@@ -1468,129 +1403,99 @@
       "rules": {
         "X": {
           "kind": "word-register",
-          "source": "SD290",
           "register": 290
         },
         "Y": {
           "kind": "word-register",
-          "source": "SD291",
           "register": 291
         },
         "M": {
           "kind": "dword-register",
-          "source": "SD286-SD287 (32-bit)",
           "register": 286
         },
         "B": {
           "kind": "dword-register",
-          "source": "SD288-SD289 (32-bit)",
           "register": 288
         },
         "SB": {
           "kind": "word-register",
-          "source": "SD296",
           "register": 296
         },
         "F": {
           "kind": "word-register",
-          "source": "SD295",
           "register": 295
         },
         "V": {
           "kind": "word-register",
-          "source": "SD297",
           "register": 297
         },
         "L": {
           "kind": "word-register",
-          "source": "SD293",
           "register": 293
         },
         "S": {
           "kind": "word-register",
-          "source": "SD298",
           "register": 298
         },
         "D": {
           "kind": "dword-register",
-          "source": "SD308-SD309 (32-bit)",
           "register": 308
         },
         "W": {
           "kind": "dword-register",
-          "source": "SD310-SD311 (32-bit)",
           "register": 310
         },
         "SW": {
           "kind": "word-register",
-          "source": "SD304",
           "register": 304
         },
         "R": {
-          "kind": "dword-register-clipped",
-          "source": "SD306-SD307 (32-bit)",
-          "register": 306,
-          "clip_value": 32768,
-          "notes": "Upper bound is clipped to 32768."
+          "kind": "dword-register",
+          "probe": true,
+          "register": 306
         },
         "T": {
           "kind": "word-register",
-          "source": "SD299",
           "register": 299
         },
         "ST": {
           "kind": "word-register",
-          "source": "SD300",
           "register": 300
         },
         "C": {
           "kind": "word-register",
-          "source": "SD301",
           "register": 301
         },
         "LT": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnUDV."
+          "kind": "unsupported"
         },
         "LST": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnUDV."
+          "kind": "unsupported"
         },
         "LC": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnUDV."
+          "kind": "unsupported"
         },
         "Z": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 20
         },
         "LZ": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnUDV."
+          "kind": "unsupported"
         },
         "ZR": {
           "kind": "dword-register",
-          "source": "SD306-SD307 (32-bit)",
+          "probe": true,
           "register": 306
         },
         "RD": {
-          "kind": "unsupported",
-          "source": "Unsupported",
-          "notes": "Not supported on QnUDV."
+          "kind": "unsupported"
         },
         "SM": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 2048
         },
         "SD": {
           "kind": "fixed",
-          "source": "Fixed family limit",
           "fixed_value": 2048
         }
       }

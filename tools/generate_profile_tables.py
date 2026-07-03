@@ -134,18 +134,30 @@ def range_rule_cell(rule: dict[str, Any] | None) -> str:
     if not rule:
         return "-"
 
+    def with_probe(text: str) -> str:
+        return f"{text} probe" if rule.get("probe") else text
+
     kind = rule.get("kind", "-")
+    display_kind = {
+        "word-register": "word",
+        "dword-register": "dword",
+        "word-register-clipped": "word-clipped",
+        "dword-register-clipped": "dword-clipped",
+    }.get(kind, kind)
     if kind == "fixed":
-        return f"fixed {rule.get('fixed_value', '-')}"
+        return with_probe(f"fixed {rule.get('fixed_value', '-')}")
     if kind == "unsupported":
         return "unsupported"
     if kind == "undefined":
-        return "undefined"
+        return with_probe("undefined")
 
-    source = rule.get("source", "")
-    parts = [f"{kind}: {source}"] if source else [kind]
+    register = rule.get("register")
+    location = f"SD{register}" if register is not None else ""
+    parts = [f"{display_kind}: {location}"] if location else [display_kind]
     if "clip_value" in rule:
         parts.append(f"clip {rule['clip_value']}")
+    if rule.get("probe"):
+        parts.append("probe")
     return " ".join(parts)
 
 
@@ -155,14 +167,30 @@ def device_row_cell(row: dict[str, Any] | None) -> str:
     devices = []
     for device in row.get("devices", []):
         name = device.get("device", "-")
-        bit_type = "bit" if device.get("is_bit") else "word"
-        devices.append(f"{name}:{bit_type}")
+        device_type = device.get("type")
+        if not device_type:
+            device_type = "bit" if device.get("is_bit") else "word"
+        devices.append(f"{name}:{device_type}")
     parts = [
-        f"category={row.get('category', '-')}",
+        f"classification={row.get('classification', '-')}",
+        f"name={row.get('device_name', '-')}",
         f"notation={row.get('notation', '-')}",
         "devices=" + ", ".join(devices) if devices else "devices=-",
     ]
     return "<br>".join(parts)
+
+
+def device_definition_type(row: dict[str, Any]) -> str:
+    devices = []
+    for device in row.get("devices", []):
+        name = device.get("device", "-")
+        device_type = device.get("type")
+        if not device_type:
+            device_type = "bit" if device.get("is_bit") else "word"
+        devices.append(f"{name}:{device_type}")
+    if len(devices) == 1:
+        return devices[0].split(":", 1)[1]
+    return ", ".join(devices)
 
 
 def ordered_profiles(profiles: dict[str, Any]) -> dict[str, Any]:
@@ -174,22 +202,22 @@ def ordered_profiles(profiles: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_port_scope_section(capability: dict[str, Any], device_ranges: dict[str, Any]) -> str:
+    rows = [
+        ["Capability schema version", capability.get("schema_version", "-")],
+        ["Capability date", capability.get("date", "-")],
+        ["Scope", capability.get("scope", "-")],
+        ["Description", capability.get("description", "-")],
+        ["Default strict mode", capability.get("policy", {}).get("default_strict", "-")],
+        ["Device range schema version", device_ranges.get("schema_version", "-")],
+        ["Device range date", device_ranges.get("date", "-")],
+    ]
+    if "description" in device_ranges:
+        rows.append(["Device range description", device_ranges["description"]])
+
     return "\n\n".join(
         [
         "## Port Scope",
-        md_table(
-            ["Item", "Value"],
-            [
-                ["Capability schema version", capability.get("schema_version", "-")],
-                ["Capability date", capability.get("date", "-")],
-                ["Scope", capability.get("scope", "-")],
-                ["Description", capability.get("description", "-")],
-                ["Default strict mode", capability.get("policy", {}).get("default_strict", "-")],
-                ["Device range schema version", device_ranges.get("schema_version", "-")],
-                ["Device range date", device_ranges.get("date", "-")],
-                ["Device range description", device_ranges.get("description", "-")],
-            ],
-        ),
+        md_table(["Item", "Value"], rows),
         ]
     )
 
@@ -245,6 +273,17 @@ def build_device_range_section(device_ranges: dict[str, Any]) -> str:
         for profile_id in range_profile_ids
     ]
 
+    definition_rows = [
+        [
+            row.get("classification", "-"),
+            symbol,
+            row.get("device_name", "-"),
+            device_definition_type(row),
+            row.get("notation", "-"),
+        ]
+        for symbol, row in device_ranges.get("rows", {}).items()
+    ]
+
     range_rule_rows = []
     for item in device_ranges["ordered_items"]:
         range_rule_rows.append(
@@ -258,18 +297,23 @@ def build_device_range_section(device_ranges: dict[str, Any]) -> str:
             ]
         )
 
-    return "\n\n".join(
+    sections = [
+        "## Device Range Rules",
+        "These tables are generated from the device range JSON. They show the range metadata and every per-profile rule without omitting common values.",
+    ]
+    if value_kind_rows:
+        sections.extend(["### Device Value Kinds", md_table(["Kind", "Meaning"], value_kind_rows)])
+    sections.extend(
         [
-            "## Device Range Rules",
-            "These tables are generated from the device range JSON. They show the range metadata and every per-profile rule without omitting common values.",
-            "### Device Value Kinds",
-            md_table(["Kind", "Meaning"], value_kind_rows),
+            "### Device Definitions",
+            md_table(["Classification", "Symbol", "Device name", "Type", "Notation"], definition_rows),
             "### Device Range Blocks",
             md_table(["Profile", "SD register start", "SD register count"], range_block_rows),
             "### Device Family Rule Comparison",
             md_table(["Device family", "Metadata"] + range_profile_ids, range_rule_rows),
         ]
     )
+    return "\n\n".join(sections)
 
 
 def build_capability_section(capability: dict[str, Any]) -> str:

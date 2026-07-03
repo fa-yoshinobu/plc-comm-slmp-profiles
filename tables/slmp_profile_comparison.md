@@ -17,7 +17,6 @@ This file is a maintenance view of the generated JSON and device range rules.
 | Default strict mode | True |
 | Device range schema version | 1 |
 | Device range date | 2026-07-03 |
-| Device range description | Canonical rules for SLMP device range discovery from SD block reads. For each profile, this defines the SD register block start/count and per-device-family resolution rules (fixed, word-register, dword-register, clipped variants, unsupported, undefined). Initially machine-extracted from plc-comm-slmp-python slmp/device_ranges.py as of 2026-07-03. This JSON is now the source of truth imported by each language implementation. |
 
 ## How To Read Cells
 
@@ -121,17 +120,44 @@ Cell format is `state/source`.
 
 These tables are generated from the device range JSON. They show the range metadata and every per-profile rule without omitting common values.
 
-### Device Value Kinds
+### Device Definitions
 
-| Kind | Meaning |
-| --- | --- |
-| fixed | Use fixed_value as the point count without reading SD. |
-| word-register | Use the 16-bit value at SDn as the point count. |
-| dword-register | Use the 32-bit value at SDn..SDn+1 as the point count. |
-| word-register-clipped | Clip the 16-bit value to clip_value. |
-| dword-register-clipped | Clip the 32-bit value to clip_value. |
-| unsupported | This family does not exist in this profile. |
-| undefined | No finite upper-bound register is defined; handle through runtime probes or equivalent logic. |
+| Classification | Symbol | Device name | Type | Notation |
+| --- | --- | --- | --- | --- |
+| User device | X | Input | bit | base16 |
+| User device | Y | Output | bit | base16 |
+| User device | M | Internal relay | bit | base10 |
+| User device | B | Link relay | bit | base16 |
+| User device | F | Annunciator | bit | base10 |
+| User device | SB | Link special relay | bit | base16 |
+| User device | V | Edge relay | bit | base10 |
+| User device | S | Step relay | bit | base10 |
+| User device | T | Timer | TS:bit, TC:bit, TN:word | base10 |
+| User device | ST | Retentive timer | STS:bit, STC:bit, STN:word | base10 |
+| User device | LT | Long timer | LTS:bit, LTC:bit, LTN:dword | base10 |
+| User device | LST | Long retentive timer | LSTS:bit, LSTC:bit, LSTN:dword | base10 |
+| User device | C | Counter | CS:bit, CC:bit, CN:word | base10 |
+| User device | LC | Long counter | LCS:bit, LCC:bit, LCN:dword | base10 |
+| User device | D | Data register | word | base10 |
+| User device | W | Link register | word | base16 |
+| User device | SW | Link special register | word | base16 |
+| User device | L | Latch relay | bit | base10 |
+| System Device | SM | Special relay | bit | base10 |
+| System Device | SD | Special register | word | base10 |
+| Link Direct Device | Jn\X | Link input | bit | base16 |
+| Link Direct Device | Jn\Y | Link output | bit | base16 |
+| Link Direct Device | Jn\B | Link relay | bit | base16 |
+| Link Direct Device | Jn\SB | Link special relay | bit | base16 |
+| Link Direct Device | Jn\W | Link register | word | base16 |
+| Link Direct Device | Jn\SW | Link special register | word | base16 |
+| Module access device | Un\G | Module access device | word | base10 |
+| CPU buffer memory access device | U3En\G | CPU buffer memory access device | word | base10 |
+| CPU buffer memory access device | U3En\HG | CPU buffer memory access device | word | base10 |
+| Index register | Z | Index register | word | base10 |
+| Index register | LZ | Long index register | dword | base10 |
+| File register | R | File register | word | base10 |
+| File register | ZR | File register | word | base10 |
+| Refresh data register | RD | Refresh data register | word | base10 |
 
 ### Device Range Blocks
 
@@ -151,29 +177,29 @@ These tables are generated from the device range JSON. They show the range metad
 
 | Device family | Metadata | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| X | category=bit<br>notation=base16<br>devices=X:bit | dword-register: SD260-SD261 (32-bit) | dword-register: SD260-SD261 (32-bit) | dword-register: SD260-SD261 (32-bit) | dword-register: SD260-SD261 (32-bit) | dword-register: SD260-SD261 (32-bit) | word-register: SD290 | word-register: SD290 | word-register: SD290 | word-register: SD290 |
-| Y | category=bit<br>notation=base16<br>devices=Y:bit | dword-register: SD262-SD263 (32-bit) | dword-register: SD262-SD263 (32-bit) | dword-register: SD262-SD263 (32-bit) | dword-register: SD262-SD263 (32-bit) | dword-register: SD262-SD263 (32-bit) | word-register: SD291 | word-register: SD291 | word-register: SD291 | word-register: SD291 |
-| M | category=bit<br>notation=base10<br>devices=M:bit | dword-register: SD264-SD265 (32-bit) | dword-register: SD264-SD265 (32-bit) | dword-register: SD264-SD265 (32-bit) | dword-register: SD264-SD265 (32-bit) | dword-register: SD264-SD265 (32-bit) | word-register-clipped: SD292 clip 32768 | dword-register: SD286-SD287 (32-bit) | dword-register: SD286-SD287 (32-bit) | dword-register: SD286-SD287 (32-bit) |
-| B | category=bit<br>notation=base16<br>devices=B:bit | dword-register: SD266-SD267 (32-bit) | dword-register: SD266-SD267 (32-bit) | dword-register: SD266-SD267 (32-bit) | dword-register: SD266-SD267 (32-bit) | dword-register: SD266-SD267 (32-bit) | word-register-clipped: SD294 clip 32768 | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) |
-| SB | category=bit<br>notation=base16<br>devices=SB:bit | dword-register: SD268-SD269 (32-bit) | dword-register: SD268-SD269 (32-bit) | dword-register: SD268-SD269 (32-bit) | dword-register: SD268-SD269 (32-bit) | dword-register: SD268-SD269 (32-bit) | word-register: SD296 | word-register: SD296 | word-register: SD296 | word-register: SD296 |
-| F | category=bit<br>notation=base10<br>devices=F:bit | dword-register: SD270-SD271 (32-bit) | dword-register: SD270-SD271 (32-bit) | dword-register: SD270-SD271 (32-bit) | dword-register: SD270-SD271 (32-bit) | dword-register: SD270-SD271 (32-bit) | word-register: SD295 | word-register: SD295 | word-register: SD295 | word-register: SD295 |
-| V | category=bit<br>notation=base10<br>devices=V:bit | dword-register: SD272-SD273 (32-bit) | dword-register: SD272-SD273 (32-bit) | dword-register: SD272-SD273 (32-bit) | dword-register: SD272-SD273 (32-bit) | unsupported | word-register: SD297 | word-register: SD297 | word-register: SD297 | word-register: SD297 |
-| L | category=bit<br>notation=base10<br>devices=L:bit | dword-register: SD274-SD275 (32-bit) | dword-register: SD274-SD275 (32-bit) | dword-register: SD274-SD275 (32-bit) | dword-register: SD274-SD275 (32-bit) | dword-register: SD274-SD275 (32-bit) | word-register: SD293 | word-register: SD293 | word-register: SD293 | word-register: SD293 |
-| S | category=bit<br>notation=base10<br>devices=S:bit | dword-register: SD276-SD277 (32-bit) | dword-register: SD276-SD277 (32-bit) | unsupported | unsupported | unsupported | word-register: SD298 | word-register: SD298 | word-register: SD298 | word-register: SD298 |
-| D | category=word<br>notation=base10<br>devices=D:word | dword-register: SD280-SD281 (32-bit) | dword-register: SD280-SD281 (32-bit) | dword-register: SD280-SD281 (32-bit) | dword-register: SD280-SD281 (32-bit) | dword-register: SD280-SD281 (32-bit) | word-register-clipped: SD302 clip 32768 | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) |
-| W | category=word<br>notation=base16<br>devices=W:word | dword-register: SD282-SD283 (32-bit) | dword-register: SD282-SD283 (32-bit) | dword-register: SD282-SD283 (32-bit) | dword-register: SD282-SD283 (32-bit) | dword-register: SD282-SD283 (32-bit) | word-register-clipped: SD303 clip 32768 | dword-register: SD310-SD311 (32-bit) | dword-register: SD310-SD311 (32-bit) | dword-register: SD310-SD311 (32-bit) |
-| SW | category=word<br>notation=base16<br>devices=SW:word | dword-register: SD284-SD285 (32-bit) | dword-register: SD284-SD285 (32-bit) | dword-register: SD284-SD285 (32-bit) | dword-register: SD284-SD285 (32-bit) | dword-register: SD284-SD285 (32-bit) | word-register: SD304 | word-register: SD304 | word-register: SD304 | word-register: SD304 |
-| R | category=word<br>notation=base10<br>devices=R:word | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register: SD304-SD305 (32-bit) | fixed 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 |
-| T | category=timer-counter<br>notation=base10<br>devices=TS:bit, TC:bit, TN:word | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | word-register: SD299 | word-register: SD299 | word-register: SD299 | word-register: SD299 |
-| ST | category=timer-counter<br>notation=base10<br>devices=STS:bit, STC:bit, STN:word | dword-register: SD290-SD291 (32-bit) | dword-register: SD290-SD291 (32-bit) | dword-register: SD290-SD291 (32-bit) | dword-register: SD290-SD291 (32-bit) | dword-register: SD290-SD291 (32-bit) | word-register: SD300 | word-register: SD300 | word-register: SD300 | word-register: SD300 |
-| C | category=timer-counter<br>notation=base10<br>devices=CS:bit, CC:bit, CN:word | dword-register: SD292-SD293 (32-bit) | dword-register: SD292-SD293 (32-bit) | dword-register: SD292-SD293 (32-bit) | dword-register: SD292-SD293 (32-bit) | dword-register: SD292-SD293 (32-bit) | word-register: SD301 | word-register: SD301 | word-register: SD301 | word-register: SD301 |
-| LT | category=timer-counter<br>notation=base10<br>devices=LTS:bit, LTC:bit, LTN:word | dword-register: SD294-SD295 (32-bit) | dword-register: SD294-SD295 (32-bit) | dword-register: SD294-SD295 (32-bit) | dword-register: SD294-SD295 (32-bit) | unsupported | unsupported | unsupported | unsupported | unsupported |
-| LST | category=timer-counter<br>notation=base10<br>devices=LSTS:bit, LSTC:bit, LSTN:word | dword-register: SD296-SD297 (32-bit) | dword-register: SD296-SD297 (32-bit) | dword-register: SD296-SD297 (32-bit) | dword-register: SD296-SD297 (32-bit) | unsupported | unsupported | unsupported | unsupported | unsupported |
-| LC | category=timer-counter<br>notation=base10<br>devices=LCS:bit, LCC:bit, LCN:word | dword-register: SD298-SD299 (32-bit) | dword-register: SD298-SD299 (32-bit) | dword-register: SD298-SD299 (32-bit) | dword-register: SD298-SD299 (32-bit) | dword-register: SD298-SD299 (32-bit) | unsupported | unsupported | unsupported | unsupported |
-| Z | category=index<br>notation=base10<br>devices=Z:word | word-register: SD300 | word-register: SD300 | word-register: SD300 | word-register: SD300 | word-register: SD300 | fixed 10 | fixed 20 | fixed 20 | fixed 20 |
-| LZ | category=index<br>notation=base10<br>devices=LZ:word | word-register: SD302 | word-register: SD302 | word-register: SD302 | word-register: SD302 | word-register: SD302 | unsupported | unsupported | unsupported | unsupported |
-| ZR | category=file-refresh<br>notation=base10<br>devices=ZR:word | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) | unsupported | undefined | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) |
-| RD | category=file-refresh<br>notation=base10<br>devices=RD:word | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) | unsupported | unsupported | unsupported | unsupported | unsupported |
-| SM | category=bit<br>notation=base10<br>devices=SM:bit | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 10000 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 |
-| SD | category=word<br>notation=base10<br>devices=SD:word | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 12000 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 |
+| X | classification=User device<br>name=Input<br>notation=base16<br>devices=X:bit | dword: SD260 | dword: SD260 | dword: SD260 | dword: SD260 | dword: SD260 | word: SD290 | word: SD290 | word: SD290 | word: SD290 |
+| Y | classification=User device<br>name=Output<br>notation=base16<br>devices=Y:bit | dword: SD262 | dword: SD262 | dword: SD262 | dword: SD262 | dword: SD262 | word: SD291 | word: SD291 | word: SD291 | word: SD291 |
+| M | classification=User device<br>name=Internal relay<br>notation=base10<br>devices=M:bit | dword: SD264 | dword: SD264 | dword: SD264 | dword: SD264 | dword: SD264 | word-clipped: SD292 clip 32768 | dword: SD286 | dword: SD286 | dword: SD286 |
+| B | classification=User device<br>name=Link relay<br>notation=base16<br>devices=B:bit | dword: SD266 | dword: SD266 | dword: SD266 | dword: SD266 | dword: SD266 | word-clipped: SD294 clip 32768 | dword: SD288 | dword: SD288 | dword: SD288 |
+| SB | classification=User device<br>name=Link special relay<br>notation=base16<br>devices=SB:bit | dword: SD268 | dword: SD268 | dword: SD268 | dword: SD268 | dword: SD268 | word: SD296 | word: SD296 | word: SD296 | word: SD296 |
+| F | classification=User device<br>name=Annunciator<br>notation=base10<br>devices=F:bit | dword: SD270 | dword: SD270 | dword: SD270 | dword: SD270 | dword: SD270 | word: SD295 | word: SD295 | word: SD295 | word: SD295 |
+| V | classification=User device<br>name=Edge relay<br>notation=base10<br>devices=V:bit | dword: SD272 | dword: SD272 | dword: SD272 | dword: SD272 | unsupported | word: SD297 | word: SD297 | word: SD297 | word: SD297 |
+| L | classification=User device<br>name=Latch relay<br>notation=base10<br>devices=L:bit | dword: SD274 | dword: SD274 | dword: SD274 | dword: SD274 | dword: SD274 | word: SD293 | word: SD293 | word: SD293 | word: SD293 |
+| S | classification=User device<br>name=Step relay<br>notation=base10<br>devices=S:bit | dword: SD276 | dword: SD276 | dword: SD276 | dword: SD276 | dword: SD276 | word: SD298 | word: SD298 | word: SD298 | word: SD298 |
+| D | classification=User device<br>name=Data register<br>notation=base10<br>devices=D:word | dword: SD280 | dword: SD280 | dword: SD280 | dword: SD280 | dword: SD280 | word-clipped: SD302 clip 32768 | dword: SD308 | dword: SD308 | dword: SD308 |
+| W | classification=User device<br>name=Link register<br>notation=base16<br>devices=W:word | dword: SD282 | dword: SD282 | dword: SD282 | dword: SD282 | dword: SD282 | word-clipped: SD303 clip 32768 | dword: SD310 | dword: SD310 | dword: SD310 |
+| SW | classification=User device<br>name=Link special register<br>notation=base16<br>devices=SW:word | dword: SD284 | dword: SD284 | dword: SD284 | dword: SD284 | dword: SD284 | word: SD304 | word: SD304 | word: SD304 | word: SD304 |
+| R | classification=File register<br>name=File register<br>notation=base10<br>devices=R:word | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword: SD304 | fixed 32768 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe |
+| T | classification=User device<br>name=Timer<br>notation=base10<br>devices=TS:bit, TC:bit, TN:word | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | word: SD299 | word: SD299 | word: SD299 | word: SD299 |
+| ST | classification=User device<br>name=Retentive timer<br>notation=base10<br>devices=STS:bit, STC:bit, STN:word | dword: SD290 | dword: SD290 | dword: SD290 | dword: SD290 | dword: SD290 | word: SD300 | word: SD300 | word: SD300 | word: SD300 |
+| C | classification=User device<br>name=Counter<br>notation=base10<br>devices=CS:bit, CC:bit, CN:word | dword: SD292 | dword: SD292 | dword: SD292 | dword: SD292 | dword: SD292 | word: SD301 | word: SD301 | word: SD301 | word: SD301 |
+| LT | classification=User device<br>name=Long timer<br>notation=base10<br>devices=LTS:bit, LTC:bit, LTN:dword | dword: SD294 | dword: SD294 | dword: SD294 | dword: SD294 | unsupported | unsupported | unsupported | unsupported | unsupported |
+| LST | classification=User device<br>name=Long retentive timer<br>notation=base10<br>devices=LSTS:bit, LSTC:bit, LSTN:dword | dword: SD296 | dword: SD296 | dword: SD296 | dword: SD296 | unsupported | unsupported | unsupported | unsupported | unsupported |
+| LC | classification=User device<br>name=Long counter<br>notation=base10<br>devices=LCS:bit, LCC:bit, LCN:dword | dword: SD298 | dword: SD298 | dword: SD298 | dword: SD298 | dword: SD298 | unsupported | unsupported | unsupported | unsupported |
+| Z | classification=Index register<br>name=Index register<br>notation=base10<br>devices=Z:word | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | fixed 10 probe | fixed 20 | fixed 20 | fixed 20 |
+| LZ | classification=Index register<br>name=Long index register<br>notation=base10<br>devices=LZ:dword | word: SD302 | word: SD302 | word: SD302 | word: SD302 | word: SD302 | unsupported | unsupported | unsupported | unsupported |
+| ZR | classification=File register<br>name=File register<br>notation=base10<br>devices=ZR:word | dword: SD306 | dword: SD306 | dword: SD306 | dword: SD306 | unsupported | undefined probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe |
+| RD | classification=Refresh data register<br>name=Refresh data register<br>notation=base10<br>devices=RD:word | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | unsupported | unsupported | unsupported | unsupported | unsupported |
+| SM | classification=System Device<br>name=Special relay<br>notation=base10<br>devices=SM:bit | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 10000 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 |
+| SD | classification=System Device<br>name=Special register<br>notation=base10<br>devices=SD:word | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 12000 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 |
 
