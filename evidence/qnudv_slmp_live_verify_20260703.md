@@ -1,86 +1,117 @@
-# QnUDV Built-In CPU SLMP Specification Decision Record
+# QnUDV / melsec:qnudv SLMP Live Verification
 
-## Adopted Profile
+Use this record to decide whether the canonical JSON is correct for this connected PLC/profile.
+This is a decision record, not a communication log.
 
-| Item | Decision |
-|------|----------|
+Untested items are never failure results. Status values are `pass`, `fail`, `config`, `address`, `family`, `route`, `limit`, `policy`, `spec`, or `unverified`.
+
+Common rules:
+
+- `G` and `HG` are not standalone device routes. Use routed forms only.
+- `S` write behavior is profile-specific. On QnUDV, raw SLMP write succeeds, but library policy keeps `S` write-prohibited to match the official tool.
+- Device writes are allowed for verification unless explicitly disabled.
+- Numeric write probes use random test values. Do not require restoring the old numeric value.
+- Bit write probes must reset the tested bits to OFF after the write check unless the user explicitly requests leaving them ON.
+
+## Session
+
+| Item | Value |
+|------|-------|
+| Date | 2026-07-03 |
+| PLC model | Q06UDVCPU |
 | PLC profile | `melsec:qnudv` |
-| Live model | Do not treat `0101/0000` as a positive path because it returns `C059` |
-| Frame | 3E |
-| Compatibility | Q/L-compatible |
-| Standard subcommand | word=`0000`, bit=`0001` |
-| Extended subcommand | word=`0080`, bit=`0081` |
-| X/Y notation | Q/L-compatible notation |
+| Endpoint | `192.168.250.100:1025` TCP |
+| Source JSON | `capability/slmp_builtin_ethernet_profiles.json` |
+| Device range JSON | `device-ranges/slmp_device_range_rules.json` |
+| Notes | Built-in Ethernet profile verification |
 
-Treat QnUDV built-in Ethernet as a different target from the R120P 4E / iQ-R path. Do not carry R120P block, long-device, or `U\G` positive paths into QnUDV.
+## Feature Checklist
 
-## Adopted Features
+Use the profile JSON settings as-is. Do not duplicate frame, compatibility, or subcommand details here.
 
-| Feature | Decision |
-|---------|----------|
-| Direct read/write `0401/1401` | Supported |
-| Random read/write `0403/1402` | Supported |
-| Monitor `0801/0802` | Supported |
-| Named normal devices | Supported |
-| `Z` | `Z0..Z19` supported |
-| `R` | `R0..R32767` supported |
-| `ZR` | `ZR0..ZR393215` supported |
+| Feature | JSON expectation | Target used | Status | Decision note |
+|---------|------------------|-------------|--------|---------------|
+| Type name | blocked / live | `0101/0000` | spec | Returned `C059`; do not adopt as a positive path |
+| Direct read/write | supported / live | `D9000` / `M9000` | pass | Random word write verified; bit write verified and reset OFF |
+| Random read/write | supported / live | `D9001` / `M9001` | pass | Random word write verified; bit write verified and reset OFF |
+| Block read/write | blocked / live | `D9000` / `M9000`, `D9100` / `M9100` | spec | Raw read/write block returned `C059`; do not adopt as a positive path |
+| Monitor | supported / live | `D9000`, `R10`, `ZR10` | pass | Register and monitor cycle verified |
+| Long timer/counter route | delegated / live | `LT`, `LST`, `LC` representatives | family | `LT/LST/LC` families returned `C05B`; range lookup decides absence |
+| LZ 32-bit route | delegated / live | `LZ0` random dword | family | `LZ0` returned `C05B`; range lookup decides absence |
 
-`D9000` direct/random word and `Y1FFF` direct/random bit write/read/restore succeeded. `D9000:U` / `Y1FFF:BIT` named read succeeded. `Z10`, `R10`, and `ZR10` direct/random/named `:U` write/read/restore succeeded. Monitor registration and execution succeeded with `D9000`, `R10`, and `ZR10`.
+## Qualified Access Checklist
 
-## Features Not Adopted
+Use this table for access routes and qualifiers, not ordinary device-family existence.
 
-| Feature | Decision | Evidence |
-|---------|----------|----------|
-| Type Name `0101/0000` | Not a positive path | `C059` |
-| Block read/write `0406/1406` | Not a positive path | Raw send also returns `C059`; high-level APIs should guard before transport |
-| `U\G` extended access | Not a positive path | `U0\G10`, `U2\G1000` return `C070` |
-| Long timer / long retentive timer | Not a positive path | Representative `LTN/LSTN` reads return `C05B` |
-| Long counter | Not a positive path | Representative `LCN/LCC` reads return `C05B` |
-| HG CPU-buffer route | Not a positive path | iQ-R only; not defined for QnUDV |
+| Route | JSON feature / rule | Target used | Status | Decision note |
+|-------|---------------------|-------------|--------|---------------|
+| `J...\...` link direct | `ext_link_direct` | `J1\W100` | route | Read/write returned `C070`; do not adopt link direct as a QnUDV positive path |
+| `U...\G...` module buffer | `ext_module_access` | `U0\G10`, `U2\G1000` | route | Returned `C070`; do not adopt `U\G` as a QnUDV built-in Ethernet positive path |
+| `U3E0\HG...` CPU buffer | `hg_cpu_buffer` | - | spec | iQ-R-only route; not defined for QnUDV |
+| Standalone `G` | common rule | - | spec | Not a standalone device route |
+| Standalone `HG` | common rule | - | spec | Not a standalone device route |
 
-## Out Of Scope For This Record
+## Limit Checklist
 
-| Feature | Decision | Reason |
-|---------|----------|--------|
-| UDP route | Not decided here | This record covers TCP `1025` |
-| UDF | Not tested here | Excluded by user request |
+Only run these when limit testing is intended. A point-limit failure is `limit`, not a feature failure.
 
-## Device Ranges
+| Limit item | JSON value | Status | Decision note |
+|------------|------------|--------|---------------|
+| Direct word read | max 960, over `C051` | limit | 960 pass; 961 returned `C051` |
+| Direct word write | max 960, over `C051` | limit | 960 pass; 961 returned `C051` |
+| Direct bit read | max 7168, over `C052` | limit | 7168 pass; 7169 returned `C052` |
+| Direct bit write | max 7168, over `C052` | limit | 7168 pass and reset OFF; 7169 returned `C052` |
+| Random word read | max 192, over `C054` | limit | 192 pass; 193 returned `C054` |
+| Random word write | max 160, weighted max 1920, over `C054` | limit | 160 pass; 161 returned `C054` |
+| Random bit write | max 188, over `C053` | limit | 188 pass and reset OFF; 189 returned `C053` |
+| Monitor word register | max 192, over `C054` | limit | 192 pass; 193 returned `C054` |
 
-For this QnUDV target, adopt the following ranges.
+## Write Policy Checklist
 
-| Device | Adopted range | Out-of-range response | Notes |
-|--------|---------------|-----------------------|-------|
-| `Z` | `Z0..Z19` | `Z20` = `4031` | Supported |
-| `R` | `R0..R32767` | `R32768` = `4031` | Supported |
-| `ZR` | `ZR0..ZR393215` | `ZR393216` = `4031` | Adopted for this QnUDV built-in CPU |
+For QnUDV, `S` write is prohibited by library policy to match the official tool.
 
-## Point Limits
+| Device family | Adopted policy | Status | Decision note |
+|---------------|----------------|--------|---------------|
+| `S` | read-only | policy | Raw SLMP write succeeds, but do not expose `S` write as a library positive path because the official tool does not allow it |
 
-| Command | Adopted limit | Over-limit response |
-|---------|---------------|---------------------|
-| direct word read `0401/0000` | 960 points | 961 points = `C051` |
-| direct word write `1401/0000` | 960 points | 961 points = `C051` |
-| direct bit read `0401/0001` | 7168 points | 7169 points = `C052` |
-| direct bit write `1401/0001` | 7168 points | 7169 points = `C052` |
-| random read `0403/0000` | 192 words | 193 words = `C054` |
-| random word write `1402/0000` | 160 words / weighted 1920 | 161 words / weighted 1932 = `C054` |
-| random bit write `1402/0001` | 188 bits | 189 bits = `C053` |
-| monitor register `0801/0000` | 192 words | 193 words = `C054` |
+## Device Family Access Checklist
 
-## Long-Device Handling
+Use the device-range JSON. This table is for whether each device family exists and is reachable on the PLC, not for command feature support.
 
-On this QnUDV target, long timers, long retentive timers, and long counters do not work. Do not carry over the dedicated long-device routes that work on R120P.
+| Family | Devices | JSON rule | Status | Decision note |
+|--------|---------|-----------|--------|---------------|
+| X | X | word-register | pass | `X0` reachable |
+| Y | Y | word-register | pass | `Y0` reachable |
+| M | M | dword-register | pass | `M0` reachable |
+| B | B | dword-register | pass | `B0` reachable |
+| SB | SB | word-register | pass | `SB0` reachable |
+| F | F | word-register | pass | `F0` reachable |
+| V | V | word-register | pass | `V0` reachable |
+| L | L | word-register | pass | `L0` reachable |
+| S | S | word-register | pass | `S0` reachable; write policy is separate |
+| D | D | dword-register | pass | `D0` reachable |
+| W | W | dword-register | pass | `W0` reachable |
+| SW | SW | word-register | pass | `SW0` reachable |
+| R | R | dword-register-clipped | pass | `R0` reachable |
+| T | TS / TC / TN | word-register | pass | `TS0`, `TC0`, `TN0` reachable |
+| ST | STS / STC / STN | word-register | pass | `STS0`, `STC0`, `STN0` reachable |
+| C | CS / CC / CN | word-register | pass | `CS0`, `CC0`, `CN0` reachable |
+| LT | LTS / LTC / LTN | unsupported | family | `LTS0`, `LTC0`, `LTN0` returned `C05B` |
+| LST | LSTS / LSTC / LSTN | unsupported | family | `LSTS0`, `LSTC0`, `LSTN0` returned `C05B` |
+| LC | LCS / LCC / LCN | unsupported | family | `LCS0`, `LCC0`, `LCN0` returned `C05B` |
+| Z | Z | fixed | pass | `Z0` reachable |
+| LZ | LZ | unsupported | family | `LZ0` returned `C05B` through random dword route |
+| ZR | ZR | dword-register | pass | `ZR0` reachable |
+| RD | RD | unsupported | family | `RD0` returned `C05B` |
+| SM | SM | fixed | pass | `SM0` reachable |
+| SD | SD | fixed | pass | `SD0` reachable |
 
-| Target | Decision |
-|--------|----------|
-| `LTN10` / `LTN0` | 4-word read returns `C05B` |
-| `LSTN10` / `LSTN0` | 4-word read returns `C05B` |
-| `LTS/LTC/LSTS/LSTC` | named state read depends on the underlying `LTN/LSTN` read, which returns `C05B` |
-| `LCN10` / `LCN0` | dword read returns `C05B` |
-| `LCC10` / `LCC0` | bit read returns `C05B` |
+## Final Decision
 
-## Specification Conclusion
-
-Treat `melsec:qnudv` as a 3E / Q/L-compatible profile. Normal direct/random/monitor/named routes, `Z0..Z19`, `R0..R32767`, and `ZR0..ZR393215` are positive paths. Type Name, block, `U\G` extended access, long-device families, and the iQ-R-only HG CPU-buffer route are not positive paths. Because QnUDV live hardware returned `C059` for block, high-level APIs should guard block before transport.
+| Area | Decision | Remaining unverified items |
+|------|----------|----------------------------|
+| Features | Adopt direct, random, and monitor. Do not adopt type name or block for QnUDV built-in Ethernet | None |
+| Qualified access | Do not adopt `J` link direct, `U\G`, or `HG` for QnUDV built-in Ethernet | None |
+| Limits | Adopt JSON limits for `melsec:qnudv` | None |
+| Write policy | Adopt `S=read-only` on QnUDV by library policy | None |
+| Device families | Adopt observed QnUDV family results | None |

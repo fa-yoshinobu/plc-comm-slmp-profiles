@@ -1,125 +1,117 @@
-# MELSEC iQ-F / FX5 SLMP Specification Decision Record
+# iQ-F / melsec:iq-f SLMP Live Verification
 
-## Adopted Profile
+Use this record to decide whether the canonical JSON is correct for this connected PLC/profile.
+This is a decision record, not a communication log.
 
-| Item | Decision |
-|------|----------|
+Untested items are never failure results. Status values are `pass`, `fail`, `config`, `address`, `family`, `route`, `limit`, `policy`, `spec`, or `unverified`.
+
+Common rules:
+
+- `G` and `HG` are not standalone device routes. Use routed forms only.
+- On this iQ-F profile, `S` is read/write-capable; other PLC profiles keep their own evidence.
+- Device writes are allowed for verification unless explicitly disabled.
+- Numeric write probes use random test values. Do not require restoring the old numeric value.
+- Bit write probes must reset the tested bits to OFF after the write check unless the user explicitly requests leaving them ON.
+
+## Session
+
+| Item | Value |
+|------|-------|
+| Date | 2026-07-03 |
+| PLC model | FX5U-32MR/DS |
 | PLC profile | `melsec:iq-f` |
-| Frame | 3E |
-| Compatibility | Q/L-compatible |
-| Standard subcommand | word=`0000`, bit=`0001` |
-| Extended subcommand | word=`0080`, bit=`0081` |
-| X/Y notation | octal |
+| Endpoint | `192.168.250.100:1025` TCP |
+| Source JSON | `capability/slmp_builtin_ethernet_profiles.json` |
+| Device range JSON | `device-ranges/slmp_device_range_rules.json` |
+| Notes | Built-in Ethernet profile verification |
 
-Do not carry over R120P 4E / iQ-R assumptions, QnUDV / LCPU device ranges, or the R120P `U\G` positive path to iQ-F.
+## Feature Checklist
 
-## Adopted Features
+Use the profile JSON settings as-is. Do not duplicate frame, compatibility, or subcommand details here.
 
-For iQ-F / FX5, adopt the following positive paths.
+| Feature | JSON expectation | Target used | Status | Decision note |
+|---------|------------------|-------------|--------|---------------|
+| Type name | supported / live | - | pass | `FX5U-32MR/DS` |
+| Direct read/write | supported / live | `D1000` / `M1000` | pass | Random word write verified; bit write verified and reset OFF |
+| Random read/write | supported / live | `D1001`, `D1002`, `M1001`, `M1002` | pass | Random word write verified; bits reset OFF |
+| Block read/write | supported / live | `D1100` / `M1100` | pass | Mixed block write verified; bits reset OFF |
+| Monitor | blocked / live | `D10` | spec | Registration rejected with `C059`; not adopted for iQ-F |
+| Long timer/counter route | supported / live | `LC` all members | pass | `LCN/LCS/LCC` verified through intended long routes; bits reset OFF. `LT/LST` families do not exist on iQ-F |
+| LZ 32-bit route | supported / live | `LZ0:D` | pass | Random dword write verified through 32-bit route |
 
-| Feature | Decision |
-|---------|----------|
-| Type Name `0101/0000` | Supported |
-| Direct read/write `0401/1401` | Supported |
-| Random read/write `0403/1402` | Supported |
-| Block read/write `0406/1406` | Supported |
-| Named normal devices | Supported |
-| `LC` long counter | `LC0..LC63` supported |
-| `LZ` | `LZ0/LZ1` supported through 32-bit routes |
-| `U1\G...` | Supported when the special unit exists in the PLC configuration |
+## Qualified Access Checklist
 
-`U1\G...` is configuration-dependent. It is not always available on every iQ-F target; treat it as a positive path only when the target PLC configuration confirms the unit exists.
+Use this table for access routes and qualifiers, not ordinary device-family existence.
 
-## Features Not Adopted
+| Route | JSON feature / rule | Target used | Status | Decision note |
+|-------|---------------------|-------------|--------|---------------|
+| `J...\...` link direct | `ext_link_direct` | `J1\W100` | route | `J1\W100` read/write returned `C05B`; do not adopt link direct as an iQ-F positive path |
+| `U...\G...` module buffer | `ext_module_access` | `U1\G10` | pass | Random word write verified. Unit/address availability remains configuration-dependent |
+| `U3E0\HG...` CPU buffer | `hg_cpu_buffer` | - | spec | iQ-R-only route; not defined for iQ-F |
+| Standalone `G` | common rule | - | spec | Not a standalone device route |
+| Standalone `HG` | common rule | - | spec | Not a standalone device route |
 
-| Feature | Decision | Evidence |
-|---------|----------|----------|
-| Monitor `0801/0802` | Not a positive path | Not listed for FX5 in the target manual; `0801/0000` single `D10` registration is also rejected on hardware |
-| `U0\G0` | Not a positive path | `C060` |
-| `U2\G1000` | Not a positive path | `C060` |
-| `ZR` | Not a positive path | `C05C` |
-| `RD` | Not a positive path | `C05C` |
-| `V` | Not a positive path | `C05C` |
-| `LT` / `LST` | Not a positive path | `C05C` |
-| HG CPU-buffer route | Not a positive path | iQ-R only; not defined for iQ-F |
+## Limit Checklist
 
-## Out Of Scope For This Record
+Only run these when limit testing is intended. A point-limit failure is `limit`, not a feature failure.
 
-| Feature | Decision | Reason |
-|---------|----------|--------|
-| UDP route | Not decided here | This record covers TCP `1025`; UDP had already been checked separately and is not included here |
-| UDF | Not tested here | Excluded by user request |
+| Limit item | JSON value | Status | Decision note |
+|------------|------------|--------|---------------|
+| Direct word read | max 960, over `C052` | limit | 960 pass; 961 returned `C052` |
+| Direct word write | max 960, over `C052` | limit | 960 pass; 961 returned `C052` |
+| Direct bit read | max 3584, over `C051` | limit | 3584 pass; 3585 returned `C051` |
+| Direct bit write | max 3584, over `C051` | limit | 3584 pass and reset OFF; 3585 returned `C051` |
+| Random word read | max 192, over `C054` | limit | 192 pass; 193 returned `C054` |
+| Random word write | max 160, over `C054` | limit | 160 pass; 161 returned `C054` |
+| Random bit write | max 188, over `C053` | limit | 188 pass and reset OFF; 189 returned `C053` |
+| Monitor word register | not adopted | spec | Monitor feature is not adopted for iQ-F |
 
-## Device Ranges
+## Write Policy Checklist
 
-Treat the iQ-F / FX5 ranges resolved from SD registers as follows.
+For this iQ-F profile, `S` is read/write-capable.
 
-```text
-X=1024, Y=1024, M=7680, B=256, SB=512, F=128, L=7680,
-D=8000, W=512, SW=512, T=512, ST=16, C=256,
-LC=64, Z=20, LZ=2, R=32768
-```
+| Device family | JSON policy | Status | Decision note |
+|---------------|-------------|--------|---------------|
+| `S` | read/write | pass | Read/write access to `S` is adopted for this profile |
 
-| Device | Adopted range | Out-of-range response | Notes |
-|--------|---------------|-----------------------|-------|
-| `X` | `X0..X1777` | `X2000` = `C056` | Octal notation; input device, therefore read-only |
-| `Y` | `Y0..Y1777` | `Y2000` = `C056` | Octal notation; write/read/restore succeeds |
-| `Z` | `Z0..Z19` | `Z20` = `C056` | Supported |
-| `R` | `R0..R32767` | `R32768` = `C056` | Supported |
-| `LC` | `LC0..LC63` | `LC64` = `C056` | Treat as long counter |
-| `LZ` | `LZ0..LZ1` | `LZ2` = `C056` | Positive path only through 32-bit routes |
+## Device Family Access Checklist
 
-## Point Limits
+Use the device-range JSON. This table is for whether each device family exists and is reachable on the PLC, not for command feature support.
 
-| Command | Adopted limit | Over-limit response |
-|---------|---------------|---------------------|
-| direct word read `0401/0000` | 960 points | 961 points = `C052` |
-| direct word write `1401/0000` | 960 points | 961 points = `C052` |
-| direct bit read `0401/0001` | 3584 points | 3585 points = `C051` |
-| direct bit write `1401/0001` | 3584 points | 3585 points = `C051` |
-| random read `0403/0000` | 192 words | 193 words = `C054` |
-| random word write `1402/0000` | 160 words | 161 words = `C054` |
-| random bit write `1402/0001` | 188 bits | 189 bits = `C053` |
+| Family | Devices | JSON rule | Status | Decision note |
+|--------|---------|-----------|--------|---------------|
+| X | X | dword-register | pass | `X0` reachable |
+| Y | Y | dword-register | pass | `Y0` reachable |
+| M | M | dword-register | pass | `M0` reachable |
+| B | B | dword-register | pass | `B0` reachable |
+| SB | SB | dword-register | pass | `SB0` reachable |
+| F | F | dword-register | pass | `F0` reachable |
+| V | V | unsupported | family | `V0` returned `C05C` |
+| L | L | dword-register | pass | `L0` reachable |
+| S | S | supported | pass | `S` is reachable; write policy is separate |
+| D | D | dword-register | pass | `D0` reachable |
+| W | W | dword-register | pass | `W0` reachable |
+| SW | SW | dword-register | pass | `SW0` reachable |
+| R | R | dword-register | pass | `R0` reachable |
+| T | TS / TC / TN | dword-register | pass | `TS0`, `TC0`, `TN0` reachable |
+| ST | STS / STC / STN | dword-register | pass | `STS0`, `STC0`, `STN0` reachable |
+| C | CS / CC / CN | dword-register | pass | `CS0`, `CC0`, `CN0` reachable |
+| LT | LTS / LTC / LTN | unsupported | family | `LTS0`, `LTC0`, `LTN0` returned `C05C` |
+| LST | LSTS / LSTC / LSTN | unsupported | family | `LSTS0`, `LSTC0`, `LSTN0` returned `C05C` |
+| LC | LCS / LCC / LCN | dword-register | pass | Reachable by intended long routes |
+| Z | Z | word-register | pass | `Z0` reachable |
+| LZ | LZ | word-register | pass | `LZ0` reachable through 32-bit route |
+| ZR | ZR | unsupported | family | `ZR0` returned `C05C` |
+| RD | RD | unsupported | family | `RD0` returned `C05C` |
+| SM | SM | fixed | pass | `SM0` reachable |
+| SD | SD | fixed | pass | `SD0` reachable |
 
-## `U\G` Handling
+## Final Decision
 
-`Un\Gn` is configuration-dependent on iQ-F as well. The library supports the syntax and frame route, but `C060` from a target without the corresponding unit is treated as a PLC configuration result.
-
-The HG CPU-buffer route is iQ-R only and is not defined for iQ-F. On iQ-F, the verified target is G-type unit buffer access such as `U1\G...`.
-
-| Target | Decision |
-|--------|----------|
-| `U0\G0` | Not a positive path in this configuration because it returns `C060` |
-| `U1\G0` | read/write/restore succeeds with the special-unit configuration |
-| `U1\G1` | read/write/restore succeeds with the special-unit configuration |
-| `U1\G10` | read/write/restore succeeds with the special-unit configuration |
-| `U2\G1000` | Not a positive path in this configuration because it returns `C060` |
-
-Observed `U1\G...` values:
-
-| Target | Verification result |
-|--------|---------------------|
-| `U1\G0` | `0x0000 -> 0x1234 -> 0x0000`, recheck `0x0000 -> 0x1357 -> 0x0000` |
-| `U1\G1` | `0x0000 -> 0x2345 -> 0x0000`, recheck `0x0000 -> 0x2468 -> 0x0000` |
-| `U1\G10` | `0x0000 -> 0x3456 -> 0x0000`, recheck `0x0000 -> 0x3579 -> 0x0000` |
-
-Conclusion: `U1\G...` is a positive path for direct extended word `0401/0080` / `1401/0080` when the FX5U configuration includes the special unit. Do not generalize this to every `Un\Gn`.
-
-## FX5UC / FX5U Differences
-
-| Item | FX5UC-32MT/D | FX5U-32MR/DS with special unit | Specification decision |
-|------|--------------|--------------------------------|------------------------|
-| Type Name | `FX5UC-32MT/D`, model `0x4A91` | `FX5U-32MR/DS`, model `0x4A41` | Model name only |
-| Normal direct/random/named | Succeeds | Succeeds | Treat the same |
-| block `0406/1406` | Succeeds | Succeeds | Positive path |
-| monitor `0801/0802` | Not adopted | Not adopted | Not listed for FX5 in the target manual; hardware also rejects registration |
-| SD ranges | Same | Same | Treat the same |
-| `LC` / `LZ` | Succeeds | Succeeds | Positive path |
-| `ZR/RD/V/LT/LST` | `C05C` | `C05C` | Not a positive path |
-| `U1\G...` | `C060` or not checked | Succeeds | Configuration-dependent |
-
-FX5UC and FX5U use the same decisions for normal features, boundaries, and ranges. The only difference is whether `U1\G...` is available through a special-unit configuration; that is a configuration difference, not a PLC-series difference.
-
-## Specification Conclusion
-
-Treat `melsec:iq-f` as a 3E / Q-L-compatible profile. Normal direct/random/block/named routes, `LC`, and `LZ` are positive paths. Monitor, `ZR/RD/V/LT/LST`, and the iQ-R-only HG CPU-buffer route are not positive paths. `U\G` syntax and routing are supported, but it is a positive path only when the target unit exists.
+| Area | Decision | Remaining unverified items |
+|------|----------|----------------------------|
+| Features | Adopt JSON expectations for `melsec:iq-f`; monitor remains not adopted | None |
+| Qualified access | Adopt `U\G`; do not adopt `J` link direct; keep `HG` as iQ-R-only spec route | None |
+| Limits | Adopt JSON limits for `melsec:iq-f` | None |
+| Write policy | Adopt `S` as read/write-capable for `melsec:iq-f` | None |
+| Device families | Adopt observed iQ-F family results including `S` support | None |

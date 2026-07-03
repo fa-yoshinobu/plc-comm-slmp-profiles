@@ -1,4 +1,4 @@
-# LCPU / melsec:lcpu SLMP Live Verification
+# QnU / melsec:qnu SLMP Live Verification
 
 Use this record to decide whether the canonical JSON is correct for this connected PLC/profile.
 This is a decision record, not a communication log.
@@ -8,7 +8,7 @@ Untested items are never failure results. Status values are `pass`, `fail`, `con
 Common rules:
 
 - `G` and `HG` are not standalone device routes. Use routed forms only.
-- `S` write behavior is profile-specific. On LCPU, raw SLMP write succeeds, but library policy keeps `S` write-prohibited to match the official tool.
+- `S` write behavior is profile-specific. Raw SLMP write succeeds on this QnU target, but library write policy is kept separate.
 - Device writes are allowed for verification unless explicitly disabled.
 - Numeric write probes use random test values. Do not require restoring the old numeric value.
 - Bit write probes must reset the tested bits to OFF after the write check unless the user explicitly requests leaving them ON.
@@ -18,8 +18,8 @@ Common rules:
 | Item | Value |
 |------|-------|
 | Date | 2026-07-03 |
-| PLC model | L26CPU-BT |
-| PLC profile | `melsec:lcpu` |
+| PLC model | Q26UDEHCPU |
+| PLC profile | `melsec:qnu` |
 | Endpoint | `192.168.250.100:1025` TCP |
 | Source JSON | `capability/slmp_builtin_ethernet_profiles.json` |
 | Device range JSON | `device-ranges/slmp_device_range_rules.json` |
@@ -32,10 +32,10 @@ Use the profile JSON settings as-is. Do not duplicate frame, compatibility, or s
 | Feature | JSON expectation | Target used | Status | Decision note |
 |---------|------------------|-------------|--------|---------------|
 | Type name | blocked / live | `0101/0000` | spec | Returned `C059`; do not adopt as a positive path |
-| Direct read/write | supported / live | `D10` / `M10` | pass | Random word write verified; bit write verified and reset OFF |
-| Random read/write | supported / live | `D11` / `M11` | pass | Random word write verified; bit write verified and reset OFF |
-| Block read/write | blocked / live | `D10` / `M10`, `D20` / `M20` | spec | Raw read/write block returned `C059`; do not adopt as a positive path |
-| Monitor | supported / live | `D10`, `R10`, `ZR10` | pass | Register and monitor cycle verified |
+| Direct read/write | supported / live | `D9000` / `M10` | pass | Random word write verified; bit write verified and reset OFF |
+| Random read/write | supported / live | `D9001` / `M11` | pass | Random word write verified; bit write verified and reset OFF |
+| Block read/write | blocked / live | `D9000` / `M10`, `D9100` / `M10` | spec | Raw read/write block returned `C059`; do not adopt as a positive path |
+| Monitor | supported / live | `D9000`, `R10`, `ZR10` | pass | Register and monitor cycle verified |
 | Long timer/counter route | delegated / live | `LT`, `LST`, `LC` representatives | family | `LT/LST/LC` families returned `C05B`; range lookup decides absence |
 | LZ 32-bit route | delegated / live | `LZ0` random dword | family | `LZ0` returned `C05B`; range lookup decides absence |
 
@@ -45,9 +45,9 @@ Use this table for access routes and qualifiers, not ordinary device-family exis
 
 | Route | JSON feature / rule | Target used | Status | Decision note |
 |-------|---------------------|-------------|--------|---------------|
-| `J...\...` link direct | `ext_link_direct` | `J1\W100` | route | Read/write returned `C070`; do not adopt link direct as an LCPU positive path |
-| `U...\G...` module buffer | `ext_module_access` | `U0\G10`, `U2\G1000`, `U3\G0` | route | Returned `C070`; do not adopt `U\G` as an LCPU built-in Ethernet positive path |
-| `U3E0\HG...` CPU buffer | `hg_cpu_buffer` | - | spec | iQ-R-only route; not defined for LCPU |
+| `J...\...` link direct | `ext_link_direct` | `J1\W100` | route | Read/write returned `C070`; do not adopt link direct as a QnU positive path |
+| `U...\G...` module buffer | `ext_module_access` | `U0\G10`, `U2\G1000` | route | Returned `C070`; do not adopt `U\G` as a QnU built-in Ethernet positive path |
+| `U3E0\HG...` CPU buffer | `hg_cpu_buffer` | - | spec | iQ-R-only route; not defined for QnU |
 | Standalone `G` | common rule | - | spec | Not a standalone device route |
 | Standalone `HG` | common rule | - | spec | Not a standalone device route |
 
@@ -68,11 +68,11 @@ Only run these when limit testing is intended. A point-limit failure is `limit`,
 
 ## Write Policy Checklist
 
-For LCPU, `S` write is prohibited by library policy to match the official tool.
+`S` raw SLMP write succeeds on this QnU target. Library exposure remains a policy decision.
 
 | Device family | Adopted policy | Status | Decision note |
 |---------------|----------------|--------|---------------|
-| `S` | read-only | policy | Raw SLMP write succeeds, but do not expose `S` write as a library positive path because the official tool does not allow it |
+| `S` | read-only | policy | Raw SLMP write/read of `S2` returned `0000`; keep library write policy separate from raw PLC capability |
 
 ## Device Family Access Checklist
 
@@ -110,8 +110,8 @@ Use the device-range JSON. This table is for whether each device family exists a
 
 | Area | Decision | Remaining unverified items |
 |------|----------|----------------------------|
-| Features | Adopt direct, random, and monitor. Do not adopt type name or block for LCPU built-in Ethernet | None |
-| Qualified access | Do not adopt `J` link direct, `U\G`, or `HG` for LCPU built-in Ethernet | None |
-| Limits | Adopt JSON limits for `melsec:lcpu` | None |
-| Write policy | Adopt `S=read-only` on LCPU by library policy | None |
-| Device families | Adopt observed LCPU family results | None |
+| Features | Adopt direct, random, and monitor. Do not adopt type name or block for QnU built-in Ethernet | None |
+| Qualified access | Do not adopt `J` link direct, `U\G`, or `HG` for QnU built-in Ethernet | None |
+| Limits | Adopt JSON limits for `melsec:qnu` | None |
+| Write policy | Keep `S=read-only` as library policy unless explicitly changed | None |
+| Device families | Adopt observed QnU family results | None |

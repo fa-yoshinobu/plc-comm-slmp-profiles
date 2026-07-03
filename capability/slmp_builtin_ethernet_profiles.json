@@ -21,10 +21,11 @@
     ]
   },
   "evidence_files": {
-    "melsec:iq-r": "evidence/r120p_slmp_live_verify_20260703.md",
+    "melsec:iq-r": "evidence/iq-r_slmp_live_verify_20260703.md",
     "melsec:iq-f": "evidence/iqf_slmp_live_verify_20260703.md",
     "melsec:iq-l": "evidence/iql_slmp_live_verify_20260703.md",
     "melsec:lcpu": "evidence/lcpu_slmp_live_verify_20260703.md",
+    "melsec:qnu": "evidence/qnu_slmp_live_verify_20260703.md",
     "melsec:qnudv": "evidence/qnudv_slmp_live_verify_20260703.md"
   },
   "profiles": {
@@ -507,9 +508,9 @@
           "note": "U1\\G0/G1/G10 succeeded with a special-unit configuration; without the unit, the PLC returned C060. Treat this as a configuration difference and do not guard."
         },
         "ext_link_direct": {
-          "state": "unverified",
-          "source": "policy",
-          "note": "Not live-verified. Guard in strict mode."
+          "state": "blocked",
+          "source": "live",
+          "evidence": "J1\\W100 read/write returned C070."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
@@ -609,7 +610,8 @@
         },
         "ext_link_direct": {
           "state": "unverified",
-          "source": "policy"
+          "source": "policy",
+          "note": "Not live-verified. Guard in strict mode."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
@@ -713,9 +715,9 @@
           "evidence": "U0\\G10 / U2\\G1000 returned C070."
         },
         "ext_link_direct": {
-          "state": "unverified",
-          "source": "policy",
-          "note": "Not live-verified. Guard in strict mode."
+          "state": "blocked",
+          "source": "live",
+          "evidence": "J1\\W100 read/write returned C070."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
@@ -772,8 +774,8 @@
         },
         "monitor_register_word": {
           "max": 192,
-          "source": "inferred",
-          "note": "Not live-verified. Inferred from the QnUDV live value 192 with the same subcommand group."
+          "over_end_code": "C054",
+          "source": "live"
         }
       },
       "write_policy": {
@@ -790,92 +792,92 @@
         "ext_bit": "0081"
       },
       "verified_models": [
-        "Unconfirmed"
+        "Q26UDEHCPU(built-in Ethernet)"
       ],
-      "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to QnUDV for built-in Ethernet capability guards and point limits until live evidence supersedes this policy.",
+      "profile_note": "Live verified on Q26UDEHCPU built-in Ethernet on 2026-07-03.",
       "features": {
         "type_name": {
           "state": "blocked",
-          "source": "policy"
+          "source": "live"
         },
         "direct": {
           "state": "supported",
-          "source": "policy"
+          "source": "live"
         },
         "random": {
           "state": "supported",
-          "source": "policy"
+          "source": "live"
         },
         "block": {
           "state": "blocked",
-          "source": "policy"
+          "source": "live"
         },
         "monitor": {
           "state": "supported",
-          "source": "policy"
+          "source": "live"
         },
         "ext_module_access": {
           "state": "blocked",
-          "source": "policy"
+          "source": "live"
         },
         "ext_link_direct": {
-          "state": "unverified",
-          "source": "policy"
+          "state": "blocked",
+          "source": "live"
         },
         "hg_cpu_buffer": {
           "state": "blocked",
-          "source": "policy"
+          "source": "spec"
         },
         "long_device_path": {
           "state": "delegated",
-          "source": "policy"
+          "source": "live"
         },
         "lz_32bit_path": {
           "state": "delegated",
-          "source": "policy"
+          "source": "live"
         }
       },
       "limits": {
         "direct_word_read": {
           "max": 960,
           "over_end_code": "C051",
-          "source": "policy"
+          "source": "live"
         },
         "direct_word_write": {
           "max": 960,
           "over_end_code": "C051",
-          "source": "policy"
+          "source": "live"
         },
         "direct_bit_read": {
           "max": 7168,
           "over_end_code": "C052",
-          "source": "policy"
+          "source": "live"
         },
         "direct_bit_write": {
           "max": 7168,
           "over_end_code": "C052",
-          "source": "policy"
+          "source": "live"
         },
         "random_read_word": {
           "max": 192,
           "over_end_code": "C054",
-          "source": "policy"
+          "source": "live"
         },
         "random_write_word": {
           "max": 160,
           "weighted_max": 1920,
           "over_end_code": "C054",
-          "source": "policy"
+          "source": "live"
         },
         "random_write_bit": {
           "max": 188,
           "over_end_code": "C053",
-          "source": "policy"
+          "source": "live"
         },
         "monitor_register_word": {
           "max": 192,
           "over_end_code": "C054",
-          "source": "policy"
+          "source": "live"
         }
       },
       "write_policy": {
@@ -924,9 +926,9 @@
           "evidence": "U0\\G10 / U2\\G1000 returned C070."
         },
         "ext_link_direct": {
-          "state": "unverified",
-          "source": "policy",
-          "note": "Not live-verified. Guard in strict mode."
+          "state": "blocked",
+          "source": "live",
+          "evidence": "J1\\W100 read/write returned C070."
         },
         "hg_cpu_buffer": {
           "state": "blocked",
@@ -940,8 +942,8 @@
         },
         "lz_32bit_path": {
           "state": "delegated",
-          "source": "policy",
-          "note": "The LZ family is assumed absent; not live-verified. Delegate the decision to range lookup."
+          "source": "live",
+          "note": "The LZ family does not exist; LZ0 random dword read returned C05B. Delegate the decision to range lookup."
         }
       },
       "limits": {
