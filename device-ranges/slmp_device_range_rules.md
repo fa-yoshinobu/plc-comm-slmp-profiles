@@ -3,6 +3,20 @@
 This is the editable source for `slmp_device_range_rules.json`.
 Run `python tools/generate_device_range_rules.py` after editing this file.
 
+## Purpose
+
+These rules are not a send/receive address guard for communication libraries.
+
+They exist for applications that need to discover and display the valid device
+range of a selected PLC profile, such as PLC device monitor programs,
+diagnostic tools, setup screens, and application-layer validation tools.
+
+Communication libraries may use this data to identify unsupported device
+families for a selected profile. They must not use device-range upper bounds as
+transport send guards for normal read/write requests. Address-range validity can
+depend on PLC configuration and should be decided by the application or by a
+live PLC response.
+
 ## Metadata
 
 | Item | Value |
