@@ -36,7 +36,7 @@
         "ext_bit": "0083"
       },
       "verified_models": [
-        "R120PCPU"
+        "R120PCPU(built-in Ethernet)"
       ],
       "features": {
         "type_name": {
@@ -144,7 +144,7 @@
         "ext_bit": "0083"
       },
       "verified_models": [
-        "L16HCPU (model 0x48C2)"
+        "L16HCPU(built-in Ethernet)"
       ],
       "features": {
         "type_name": {
@@ -250,7 +250,9 @@
         "ext_word": "0082",
         "ext_bit": "0083"
       },
-      "verified_models": [],
+      "verified_models": [
+        "Unconfirmed"
+      ],
       "derived_from": "melsec:iq-r",
       "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to iQ-R, except the HG CPU-buffer route is confirmed unavailable because multi-CPU configuration is not possible.",
       "features": {
@@ -363,7 +365,9 @@
         "ext_word": "0082",
         "ext_bit": "0083"
       },
-      "verified_models": [],
+      "verified_models": [
+        "Unconfirmed"
+      ],
       "derived_from": "melsec:iq-r",
       "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to iQ-R, except the HG CPU-buffer route is confirmed unavailable because multi-CPU configuration is not possible.",
       "features": {
@@ -477,8 +481,7 @@
         "ext_bit": "0081"
       },
       "verified_models": [
-        "FX5UC-32MT/D (model 0x4A91)",
-        "FX5U-32MR/DS (model 0x4A41)"
+        "FX5UC-32MT/D,FX5U-32MR/DS(built-in Ethernet)"
       ],
       "features": {
         "type_name": {
@@ -580,7 +583,7 @@
         "ext_bit": "0081"
       },
       "verified_models": [
-        "LCPU equivalent to L16HCPU; identified by end-code behavior because type-name read is unavailable."
+        "L26CPU-BT(built-in Ethernet)"
       ],
       "features": {
         "type_name": {
@@ -687,7 +690,7 @@
         "ext_bit": "0081"
       },
       "verified_models": [
-        "QnUDV built-in Ethernet; identified by end-code behavior because type-name read is unavailable."
+        "Q06UDVCPU(built-in Ethernet)"
       ],
       "features": {
         "type_name": {

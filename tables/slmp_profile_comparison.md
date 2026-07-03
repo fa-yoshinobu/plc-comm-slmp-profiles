@@ -101,13 +101,13 @@ Cell format inside each value group is `state/source`.
 
 | Profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Derived from | Verified models |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | - | R120PCPU |
-| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | - | L16HCPU (model 0x48C2) |
-| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | melsec:iq-r | - |
-| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | melsec:iq-r | - |
-| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | - | FX5UC-32MT/D (model 0x4A91)<br>FX5U-32MR/DS (model 0x4A41) |
-| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | - | LCPU equivalent to L16HCPU; identified by end-code behavior because type-name read is unavailable. |
-| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | - | QnUDV built-in Ethernet; identified by end-code behavior because type-name read is unavailable. |
+| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | - | R120PCPU(built-in Ethernet) |
+| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | - | L16HCPU(built-in Ethernet) |
+| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | melsec:iq-r | Unconfirmed |
+| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | melsec:iq-r | Unconfirmed |
+| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | - | FX5UC-32MT/D,FX5U-32MR/DS(built-in Ethernet) |
+| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | - | L26CPU-BT(built-in Ethernet) |
+| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | - | Q06UDVCPU(built-in Ethernet) |
 
 ### Feature State Matrix
 
