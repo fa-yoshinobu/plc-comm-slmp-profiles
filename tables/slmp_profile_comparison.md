@@ -6,6 +6,45 @@ Generated from `capability/slmp_builtin_ethernet_profiles.json` and `device-rang
 
 The JSON files remain the canonical source of truth; this file is only a maintenance view.
 
+## How To Read Cells
+
+`state/source` combines the capability decision with the evidence source. For example, `config-dependent/live` means `state=config-dependent` and `source=live`.
+
+### State Values
+
+| State | Meaning |
+| --- | --- |
+| supported | Adopted as supported for this profile. Send normally. |
+| blocked | Not adopted for this profile. In strict mode, fail before transport. |
+| config-dependent | Depends on the PLC configuration, such as whether the target unit exists. Do not guard; send and let the PLC respond. |
+| unverified | Unverified. In strict mode, guard as blocked; with strict disabled, allow sending. |
+| delegated | Delegated to existing runtime mechanisms, such as SD-derived device range lookup and global rules. The profile does not decide or guard this feature. |
+
+### Source Values
+
+| Source | Meaning |
+| --- | --- |
+| live | Directly verified on live PLC hardware. |
+| policy | Adopted by explicit project/user policy; not necessarily live-verified for that exact profile. |
+| spec | Derived from the specification or from a structural hardware constraint. |
+| inferred | Inferred from another verified profile or an equivalent command group; not directly live-verified. |
+| manual | Taken from manual documentation. |
+
+### Common Combined Values
+
+| Cell | Meaning |
+| --- | --- |
+| supported/live | Works on live hardware. Send normally. |
+| supported/policy | Allowed by policy, usually by profile equivalence or user decision. Not directly live-verified for that exact profile. |
+| blocked/live | Verified unavailable on live hardware. In strict mode, fail before transport. |
+| blocked/policy | Blocked by project policy. In strict mode, fail before transport. |
+| blocked/spec | Blocked by specification or a structural hardware constraint. In strict mode, fail before transport. |
+| config-dependent/live | Depends on PLC configuration and succeeded on a live configuration where the required unit/path exists. Do not profile-guard; send and let the PLC respond if the unit/path is absent. |
+| config-dependent/policy | Treated as configuration-dependent by policy, without direct live verification for that exact profile. Do not profile-guard; send and let the PLC respond. |
+| unverified/policy | Not verified. In strict mode, guard as blocked; with strict disabled, allow sending. |
+| delegated/live | Live behavior shows the profile should not decide this feature. Delegate to existing runtime mechanisms such as range lookup or global route rules. |
+| delegated/policy | Policy says the profile should not decide this feature. Delegate to existing runtime mechanisms such as range lookup or global route rules. |
+
 ## Difference Views
 
 These tables group profiles that have the same value. Rows where every profile has the same value are omitted.

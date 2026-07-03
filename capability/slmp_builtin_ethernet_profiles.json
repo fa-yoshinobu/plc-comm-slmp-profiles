@@ -6,8 +6,8 @@
   "policy": {
     "default_strict": true,
     "state_semantics": {
-      "supported": "Verified on live hardware. Send normally.",
-      "blocked": "Verified as unavailable on live hardware. In strict mode, fail before transport.",
+      "supported": "Adopted as supported for this profile. Send normally.",
+      "blocked": "Not adopted for this profile. In strict mode, fail before transport.",
       "config-dependent": "Depends on the PLC configuration, such as whether the target unit exists. Do not guard; send and let the PLC respond.",
       "unverified": "Unverified. In strict mode, guard as blocked; with strict disabled, allow sending.",
       "delegated": "Delegated to existing runtime mechanisms, such as SD-derived device range lookup and global rules. The profile does not decide or guard this feature."
