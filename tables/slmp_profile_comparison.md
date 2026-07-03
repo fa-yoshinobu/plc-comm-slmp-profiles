@@ -6,6 +6,23 @@ Generated from `capability/slmp_builtin_ethernet_profiles.json` and `device-rang
 
 The JSON files remain the canonical source of truth; this file is only a maintenance view.
 
+## Port Scope
+
+| Item | Value |
+| --- | --- |
+| Scope | builtin-ethernet-port |
+| Description | Canonical PLC model profile definitions for the SLMP library family. The scope is features available through CPU built-in Ethernet ports only. Extension Ethernet modules may support additional commands; this built-in Ethernet profile is the stricter baseline and is conservative when used against an extension Ethernet module. This JSON is the source of truth for language implementations and conformance tests. Every edit must include evidence. |
+
+### Policy Notes
+
+| Note |
+| --- |
+| The profile does not own device-family existence or ranges; existing SD-read range lookup decides them. |
+| Limits are protocol limits backed by live evidence and are always enforced, even when strict mode is disabled. |
+| Standalone G/HG rejection is an existing global rule shared by all profiles and is not modeled here. |
+| These profiles target CPU built-in Ethernet ports, which are generally more constrained than extension Ethernet modules. |
+| Applying a built-in Ethernet profile to an extension Ethernet module is conservative: it should not enable commands beyond the stricter built-in Ethernet baseline, although it may leave module-specific capabilities unused. |
+
 ## How To Read Cells
 
 `state/source` combines the capability decision with the evidence source. For example, `config-dependent/live` means `state=config-dependent` and `source=live`.

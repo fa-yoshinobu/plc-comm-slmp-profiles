@@ -2,7 +2,7 @@
   "schema_version": 1,
   "date": "2026-07-03",
   "scope": "builtin-ethernet-port",
-  "description": "Canonical PLC model profile definitions for the SLMP library family. The scope is features available through built-in Ethernet ports only. This JSON is the source of truth for language implementations and conformance tests. Every edit must include evidence.",
+  "description": "Canonical PLC model profile definitions for the SLMP library family. The scope is features available through CPU built-in Ethernet ports only. Extension Ethernet modules may support additional commands; this built-in Ethernet profile is the stricter baseline and is conservative when used against an extension Ethernet module. This JSON is the source of truth for language implementations and conformance tests. Every edit must include evidence.",
   "policy": {
     "default_strict": true,
     "state_semantics": {
@@ -15,7 +15,9 @@
     "notes": [
       "The profile does not own device-family existence or ranges; existing SD-read range lookup decides them.",
       "Limits are protocol limits backed by live evidence and are always enforced, even when strict mode is disabled.",
-      "Standalone G/HG rejection is an existing global rule shared by all profiles and is not modeled here."
+      "Standalone G/HG rejection is an existing global rule shared by all profiles and is not modeled here.",
+      "These profiles target CPU built-in Ethernet ports, which are generally more constrained than extension Ethernet modules.",
+      "Applying a built-in Ethernet profile to an extension Ethernet module is conservative: it should not enable commands beyond the stricter built-in Ethernet baseline, although it may leave module-specific capabilities unused."
     ]
   },
   "evidence_files": {
