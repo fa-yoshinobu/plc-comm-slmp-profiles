@@ -23,9 +23,7 @@
     "melsec:iq-f": "evidence/iqf_slmp_live_verify_20260703.md",
     "melsec:iq-l": "evidence/iql_slmp_live_verify_20260703.md",
     "melsec:lcpu": "evidence/lcpu_slmp_live_verify_20260703.md",
-    "melsec:qnudv": "evidence/qnudv_slmp_live_verify_20260703.md",
-    "qnudv_monitor_probe": "evidence/qnudv_frame_results_20260703/qnudv_monitor_probe_20260703.md",
-    "audit_report": "evidence/review_slmp_spec_audit_20260703.md"
+    "melsec:qnudv": "evidence/qnudv_slmp_live_verify_20260703.md"
   },
   "profiles": {
     "melsec:iq-r": {
@@ -713,7 +711,7 @@
         "monitor": {
           "state": "supported",
           "source": "live",
-          "evidence": "qnudv_monitor_probe_20260703.md: D9000/R10/ZR10 単独・同時、192 word 登録成功"
+          "evidence": "D9000/R10/ZR10 単独・同時、192 word 登録成功"
         },
         "ext_module_access": {
           "state": "blocked",

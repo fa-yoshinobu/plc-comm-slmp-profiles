@@ -100,6 +100,4 @@ feature キー: `type_name` / `direct` / `random` / `block` / `monitor` / `ext_m
 ## 8. 根拠資料
 
 - 実機検証記録: `r120p_slmp_live_verify_20260703.md` / `iql_slmp_live_verify_20260703.md` / `iqf_slmp_live_verify_20260703.md` / `lcpu_slmp_live_verify_20260703.md` / `qnudv_slmp_live_verify_20260703.md`（いずれも D:\APP\）
-- QnUDV monitor 追試: `D:\APP\qnudv_frame_results_20260703\qnudv_monitor_probe_20260703.md`
-- マニュアル照合監査: `D:\APP\review_slmp_spec_audit_20260703.md`（F-3/F-4 が本機構で恒久修正される）
 - 意図的差異の記録: `plc-comm-slmp-python/internal_docs/maintainer/manual_implementation_differences.md`（本機構導入後、同ファイルに項を追加すること）
