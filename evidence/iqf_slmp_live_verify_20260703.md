@@ -34,7 +34,7 @@ For iQ-F / FX5, adopt the following positive paths.
 
 | Feature | Decision | Evidence |
 |---------|----------|----------|
-| Monitor `0801/0802` | Not a positive path | `C059` even with a single `D10` registration |
+| Monitor `0801/0802` | Not a positive path | Not listed for FX5 in the target manual; `0801/0000` single `D10` registration is also rejected on hardware |
 | `U0\G0` | Not a positive path | `C060` |
 | `U2\G1000` | Not a positive path | `C060` |
 | `ZR` | Not a positive path | `C05C` |
@@ -112,7 +112,7 @@ Conclusion: `U1\G...` is a positive path for direct extended word `0401/0080` / 
 | Type Name | `FX5UC-32MT/D`, model `0x4A91` | `FX5U-32MR/DS`, model `0x4A41` | Model name only |
 | Normal direct/random/named | Succeeds | Succeeds | Treat the same |
 | block `0406/1406` | Succeeds | Succeeds | Positive path |
-| monitor `0801/0802` | `C059` | `C059` | Not a positive path |
+| monitor `0801/0802` | Not adopted | Not adopted | Not listed for FX5 in the target manual; hardware also rejects registration |
 | SD ranges | Same | Same | Treat the same |
 | `LC` / `LZ` | Succeeds | Succeeds | Positive path |
 | `ZR/RD/V/LT/LST` | `C05C` | `C05C` | Not a positive path |

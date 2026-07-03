@@ -28,9 +28,9 @@
 - state별動作: `blocked`/`unverified` → strict時は送信前エラー。`supported`/`config-dependent`/`delegated` → ガードなし。
 - strictフラグ: 正準名 `strict_profile`、**既定 true**。クライアント生成オプション。falseで state 由来ガードのみ無効。
 - **limits は strict に関係なく常時強制**。
-- **write_policy（S/X read-only 等）も strict に関係なく常時強制**（既存実装の挙動を維持）。
+- **write_policy（S read-only 等）も strict に関係なく常時強制**（既存実装の挙動を維持）。
 - raw送信API（raw_command相当）はガード対象外のまま残す。
-- **capability未定義プロファイル（`melsec:qcpu` / `melsec:qnu`）はfeatureガードを適用しない**（現行動作のまま）。上限も現行実装値を維持する。
+- `melsec:qcpu` / `melsec:qnu` は正準JSONの capability profile として扱う。QnUDV同等の state / limits（source は policy）で feature ガードと上限を適用する。
 - プロファイル未指定のクライアントは完全に現行動作（後方互換、opt-in導入）。
 
 ### 1.3 エラー仕様
@@ -68,7 +68,7 @@
 | T2 | strict解除 | 同ケースで `strict_profile=false` なら送信されること（モックで送信バイトを確認） |
 | T3 | 通過 | `supported`/`config-dependent` feature: ガードされず、プロファイル規定のフレーム種別+サブコマンドでフレーム構築されること（例: iq-f→3E+0000系、mx-r→4E+0002系） |
 | T4 | 上限 | 各limitsエントリ: max点で通過、max+1点で送信前エラー。strict解除でもmax+1はエラー |
-| T5 | write_policy | read-onlyファミリへのwriteが送信前拒否（iq-r/iq-l/mx-r/mx-f: S・LCS、iq-f: X） |
+| T5 | write_policy | read-onlyファミリへのwriteが送信前拒否（全プロファイル: S） |
 | T6 | 整合 | 実装内テーブル全エントリ == fixtureの正準JSON（state/上限値/サブコマンド組の完全一致） |
 | T7 | 後方互換 | プロファイル未指定クライアントで既存代表APIの挙動が変わらないこと |
 

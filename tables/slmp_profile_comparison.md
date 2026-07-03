@@ -10,8 +10,14 @@ The JSON files remain the canonical source of truth; this file is only a mainten
 
 | Item | Value |
 | --- | --- |
+| Capability schema version | 1 |
+| Capability date | 2026-07-03 |
 | Scope | builtin-ethernet-port |
 | Description | Canonical PLC model profile definitions for the SLMP library family. The scope is features available through CPU built-in Ethernet ports only. Extension Ethernet modules may support additional commands; this built-in Ethernet profile is the stricter baseline and is conservative when used against an extension Ethernet module. This JSON is the source of truth for language implementations and conformance tests. Every edit must include evidence. |
+| Default strict mode | True |
+| Device range schema version | 1 |
+| Device range date | 2026-07-03 |
+| Device range description | Canonical rules for SLMP device range discovery from SD block reads. For each profile, this defines the SD register block start/count and per-device-family resolution rules (fixed, word-register, dword-register, clipped variants, unsupported, undefined). Initially machine-extracted from plc-comm-slmp-python slmp/device_ranges.py as of 2026-07-03. This JSON is now the source of truth imported by each language implementation. |
 
 ### Policy Notes
 
@@ -61,193 +67,123 @@ The JSON files remain the canonical source of truth; this file is only a mainten
 | delegated/live | Live behavior shows the profile should not decide this feature. Delegate to existing runtime mechanisms such as range lookup or global route rules. |
 | delegated/policy | Policy says the profile should not decide this feature. Delegate to existing runtime mechanisms such as range lookup or global route rules. |
 
-## Difference Views
-
-These tables group profiles that have the same value. Rows where every profile has the same value are omitted.
-
-### Profile Setting Differences
-
-| Item | Value groups |
-| --- | --- |
-| Frame | `4E`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`3E`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-| Compatibility | `iQ-R`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`Q/L`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-| Word subcommand | `0002`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0000`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-| Bit subcommand | `0003`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0001`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-| Extended word subcommand | `0082`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0080`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-| Extended bit subcommand | `0083`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`0081`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-
-### Feature State Differences
-
-Cell format inside each value group is `state/source`.
-
-| Feature | Value groups |
-| --- | --- |
-| Type name | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`blocked/live`: melsec:lcpu, melsec:qnudv |
-| Direct read/write | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f, melsec:lcpu, melsec:qnudv<br>`supported/policy`: melsec:mx-r, melsec:mx-f |
-| Random read/write | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f, melsec:lcpu, melsec:qnudv<br>`supported/policy`: melsec:mx-r, melsec:mx-f |
-| Block read/write | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`blocked/live`: melsec:lcpu, melsec:qnudv |
-| Monitor | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`blocked/live`: melsec:iq-f |
-| U\G module access | `config-dependent/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`config-dependent/policy`: melsec:mx-r, melsec:mx-f<br>`blocked/live`: melsec:lcpu, melsec:qnudv |
-| Link direct | `config-dependent/policy`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`unverified/policy`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-| HG CPU buffer | `supported/live`: melsec:iq-r<br>`blocked/policy`: melsec:iq-l, melsec:iq-f, melsec:lcpu, melsec:qnudv<br>`blocked/spec`: melsec:mx-r, melsec:mx-f |
-| Long-device route | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`delegated/live`: melsec:lcpu, melsec:qnudv |
-| LZ 32-bit route | `supported/live`: melsec:iq-r, melsec:iq-l, melsec:iq-f<br>`supported/policy`: melsec:mx-r, melsec:mx-f<br>`delegated/live`: melsec:lcpu<br>`delegated/policy`: melsec:qnudv |
-
-### Point Limit Differences
-
-| Limit | Value groups |
-| --- | --- |
-| Direct word read | `max 960, over C051, [live]`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`max 960, over C051, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 960, over C052, [live]`: melsec:iq-f |
-| Direct word write | `max 960, over C051, [live]`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`max 960, over C051, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 960, over C052, [live]`: melsec:iq-f |
-| Direct bit read | `max 7168, over C052, [live]`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`max 7168, over C052, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 3584, over C051, [live]`: melsec:iq-f |
-| Direct bit write | `max 7168, over C052, [live]`: melsec:iq-r, melsec:iq-l, melsec:lcpu, melsec:qnudv<br>`max 7168, over C052, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 3584, over C051, [live]`: melsec:iq-f |
-| Random word read | `max 96, over C054, [live]`: melsec:iq-r, melsec:iq-l<br>`max 96, over C054, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 192, over C054, [live]`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-| Random word write | `max 80, weighted 960, over C054, [live]`: melsec:iq-r<br>`max 80, over C054, [live]`: melsec:iq-l<br>`max 80, weighted 960, over C054, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 160, over C054, [live]`: melsec:iq-f<br>`max 160, weighted 1920, over C054, [live]`: melsec:lcpu, melsec:qnudv |
-| Random bit write | `max 94, over C053, [live]`: melsec:iq-r, melsec:iq-l<br>`max 94, over C053, [inferred]`: melsec:mx-r, melsec:mx-f<br>`max 188, over C053, [live]`: melsec:iq-f, melsec:lcpu, melsec:qnudv |
-| Monitor word register | `max 96, over C054, [live]`: melsec:iq-r<br>`max 96, [inferred]`: melsec:iq-l<br>`max 96, over C054, [inferred]`: melsec:mx-r, melsec:mx-f<br>`-`: melsec:iq-f<br>`max 192, [inferred]`: melsec:lcpu<br>`max 192, over C054, [live]`: melsec:qnudv |
-
-### Write Policy Differences
-
-| Item | Value groups |
-| --- | --- |
-| Write policy | `LCS=read-only, S=read-only`: melsec:iq-r, melsec:iq-l, melsec:mx-r, melsec:mx-f<br>`X=read-only`: melsec:iq-f<br>`-`: melsec:lcpu, melsec:qnudv |
-
-### Device Range Block Differences
-
-| Item | Value groups |
-| --- | --- |
-| SD register start | `260`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`290`: melsec:qcpu<br>`286`: melsec:lcpu, melsec:qnu, melsec:qnudv |
-| SD register count | `50`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`46`: melsec:iq-f<br>`15`: melsec:qcpu<br>`26`: melsec:lcpu, melsec:qnu, melsec:qnudv |
-
-### Device Family Rule Differences
-
-| Device family | Value groups |
-| --- | --- |
-| X | `dword-register SD260-SD261 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD290`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| Y | `dword-register SD262-SD263 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD291`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| M | `dword-register SD264-SD265 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register-clipped SD292 clip 32768`: melsec:qcpu<br>`dword-register SD286-SD287 (32-bit)`: melsec:lcpu, melsec:qnu, melsec:qnudv |
-| B | `dword-register SD266-SD267 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register-clipped SD294 clip 32768`: melsec:qcpu<br>`dword-register SD288-SD289 (32-bit)`: melsec:lcpu, melsec:qnu, melsec:qnudv |
-| SB | `dword-register SD268-SD269 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD296`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| F | `dword-register SD270-SD271 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD295`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| V | `dword-register SD272-SD273 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`unsupported`: melsec:iq-f<br>`word-register SD297`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| L | `dword-register SD274-SD275 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD293`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| S | `dword-register SD276-SD277 (32-bit)`: melsec:iq-r, melsec:iq-l<br>`unsupported`: melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD298`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| D | `dword-register SD280-SD281 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register-clipped SD302 clip 32768`: melsec:qcpu<br>`dword-register SD308-SD309 (32-bit)`: melsec:lcpu, melsec:qnu, melsec:qnudv |
-| W | `dword-register SD282-SD283 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register-clipped SD303 clip 32768`: melsec:qcpu<br>`dword-register SD310-SD311 (32-bit)`: melsec:lcpu, melsec:qnu, melsec:qnudv |
-| SW | `dword-register SD284-SD285 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD304`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| R | `dword-register-clipped SD306-SD307 (32-bit) clip 32768`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:lcpu, melsec:qnu, melsec:qnudv<br>`dword-register SD304-SD305 (32-bit)`: melsec:iq-f<br>`fixed 32768`: melsec:qcpu |
-| T | `dword-register SD288-SD289 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD299`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| ST | `dword-register SD290-SD291 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD300`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| C | `dword-register SD292-SD293 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`word-register SD301`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| LT | `dword-register SD294-SD295 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`unsupported`: melsec:iq-f, melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| LST | `dword-register SD296-SD297 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`unsupported`: melsec:iq-f, melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| LC | `dword-register SD298-SD299 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`unsupported`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| Z | `word-register SD300`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`fixed 10`: melsec:qcpu<br>`fixed 20`: melsec:lcpu, melsec:qnu, melsec:qnudv |
-| LZ | `word-register SD302`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:iq-f<br>`unsupported`: melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| ZR | `dword-register SD306-SD307 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r, melsec:lcpu, melsec:qnu, melsec:qnudv<br>`unsupported`: melsec:iq-f<br>`undefined`: melsec:qcpu |
-| RD | `dword-register SD308-SD309 (32-bit)`: melsec:iq-r, melsec:iq-l, melsec:mx-f, melsec:mx-r<br>`unsupported`: melsec:iq-f, melsec:qcpu, melsec:lcpu, melsec:qnu, melsec:qnudv |
-| SM | `fixed 4096`: melsec:iq-r, melsec:iq-l<br>`fixed 10000`: melsec:mx-f, melsec:iq-f<br>`fixed 4496`: melsec:mx-r<br>`fixed 1024`: melsec:qcpu<br>`fixed 2048`: melsec:lcpu, melsec:qnu, melsec:qnudv |
-| SD | `fixed 4096`: melsec:iq-r, melsec:iq-l<br>`fixed 10000`: melsec:mx-f<br>`fixed 4496`: melsec:mx-r<br>`fixed 12000`: melsec:iq-f<br>`fixed 1024`: melsec:qcpu<br>`fixed 2048`: melsec:lcpu, melsec:qnu, melsec:qnudv |
-
 ## Capability Profiles
 
 ### Profile Summary
 
-| Profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) |
-| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) |
-| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
-| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
-| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5UC-32MT/D,FX5U-32MR/DS(built-in Ethernet) |
-| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) |
-| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) |
+| Profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models | Evidence file |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) | evidence/r120p_slmp_live_verify_20260703.md |
+| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) | evidence/iql_slmp_live_verify_20260703.md |
+| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed | - |
+| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed | - |
+| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5UC-32MT/D,FX5U-32MR/DS(built-in Ethernet) | evidence/iqf_slmp_live_verify_20260703.md |
+| melsec:qcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Unconfirmed | - |
+| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) | evidence/lcpu_slmp_live_verify_20260703.md |
+| melsec:qnu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Unconfirmed | - |
+| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) | evidence/qnudv_slmp_live_verify_20260703.md |
 
-### Feature State Matrix
+### Feature Matrix
 
-Cell format: `state/source`.
+Cell format starts with `state/source`; `note` and `evidence` from JSON are included in the same cell when present.
 
-| Feature | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:lcpu | melsec:qnudv |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Type name | supported/live | supported/live | supported/policy | supported/policy | supported/live | blocked/live | blocked/live |
-| Direct read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | supported/live | supported/live |
-| Random read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | supported/live | supported/live |
-| Block read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | blocked/live | blocked/live |
-| Monitor | supported/live | supported/live | supported/policy | supported/policy | blocked/live | supported/live | supported/live |
-| U\G module access | config-dependent/live | config-dependent/live | config-dependent/policy | config-dependent/policy | config-dependent/live | blocked/live | blocked/live |
-| Link direct | config-dependent/policy | config-dependent/policy | config-dependent/policy | config-dependent/policy | unverified/policy | unverified/policy | unverified/policy |
-| HG CPU buffer | supported/live | blocked/policy | blocked/spec | blocked/spec | blocked/policy | blocked/policy | blocked/policy |
-| Long-device route | supported/live | supported/live | supported/policy | supported/policy | supported/live | delegated/live | delegated/live |
-| LZ 32-bit route | supported/live | supported/live | supported/policy | supported/policy | supported/live | delegated/live | delegated/policy |
+| Feature | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Type name | supported/live | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/live | blocked/policy | blocked/live<br>evidence: 0101/0000 returned C059. | blocked/policy | blocked/live<br>evidence: 0101/0000 returned C059. |
+| Direct read/write | supported/live | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/live | supported/policy | supported/live | supported/policy | supported/live |
+| Random read/write | supported/live | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/live | supported/policy | supported/live | supported/policy | supported/live |
+| Block read/write | supported/live<br>note: Mixed word+bit succeeded in one request. | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/live | blocked/policy | blocked/live<br>evidence: Raw send also returned C059. | blocked/policy | blocked/live<br>evidence: Raw send also returned C059. High-level APIs should guard before transport. |
+| Monitor | supported/live | supported/live | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R; not live-verified. | blocked/live<br>evidence: C059 even for single D10 registration on both FX5UC and FX5U. | supported/policy | supported/live<br>note: Succeeded with D10/R10/ZR10. | supported/policy | supported/live<br>evidence: D9000/R10/ZR10 registration succeeded both individually and together, including 192-word registration. |
+| U\G module access | config-dependent/live<br>note: U3E0\G10 / U2\G100 succeeded in this configuration. Unit existence is PLC-configuration-dependent, so do not guard. | config-dependent/live<br>note: U1\G10 succeeded in this configuration. Unit existence is PLC-configuration-dependent, so do not guard. | config-dependent/policy<br>note: Treated as equivalent to iQ-R. Unit existence is PLC-configuration-dependent, so do not guard. | config-dependent/policy<br>note: Treated as equivalent to iQ-R. Unit existence is PLC-configuration-dependent, so do not guard. | config-dependent/live<br>note: U1\G0/G1/G10 succeeded with a special-unit configuration; without the unit, the PLC returned C060. Treat this as a configuration difference and do not guard. | blocked/policy | blocked/live<br>evidence: U0\G10 / U2\G1000 returned C070. | blocked/policy | blocked/live<br>evidence: U0\G10 / U2\G1000 returned C070. |
+| Link direct | config-dependent/policy<br>note: Not live-verified. Treat as network-unit-configuration-dependent and do not guard; this inference follows the 2026-07-03 iQ-L decision and requires user approval. | config-dependent/policy<br>note: Not live-verified because the required hardware was unavailable, but likely usable. Allowed by the 2026-07-03 user decision; do not guard. | config-dependent/policy<br>note: Treated as equivalent to iQ-R. Network-unit configuration dependent, so do not guard. | config-dependent/policy<br>note: Treated as equivalent to iQ-R. Network-unit configuration dependent, so do not guard. | unverified/policy<br>note: Not live-verified. Guard in strict mode. | unverified/policy | unverified/policy<br>note: Not live-verified. Guard in strict mode. | unverified/policy | unverified/policy<br>note: Not live-verified. Guard in strict mode. |
+| HG CPU buffer | supported/live<br>note: iQ-R-only route. U3E0\HG20 direct/random/monitor succeeded. | blocked/policy<br>note: iQ-R-only route; not defined for iQ-L. | blocked/spec<br>note: Confirmed unavailable because multi-CPU configuration is not possible; 2026-07-03 user decision. | blocked/spec<br>note: Confirmed unavailable because multi-CPU configuration is not possible; 2026-07-03 user decision. | blocked/policy<br>note: iQ-R-only route; not defined for iQ-F. | blocked/policy | blocked/policy<br>note: iQ-R-only route; not defined for LCPU. | blocked/policy | blocked/policy<br>note: iQ-R-only route; not defined for QnUDV. |
+| Long-device route | supported/live<br>note: LT/LST/LC use dedicated long-device routes only. Direct/block bit routes for LTS/LTC/LSTS/LSTC are forbidden by route rules; writes returned 4030 in live testing. | supported/live<br>note: LTN/LSTN/LCN/LCC write-read-restore was live-verified. Use dedicated long-device routes only. | supported/policy<br>note: Treated as equivalent to iQ-R. Use dedicated long-device routes only. | supported/policy<br>note: Treated as equivalent to iQ-R. Use dedicated long-device routes only. | supported/live<br>note: Only LC long counters are available; LC0..LC63 was live-verified. LT/LST families do not exist on FX5 and are handled by range lookup. | delegated/policy | delegated/live<br>note: LT/LST/LC families do not exist; representative reads returned C05B. Delegate the decision to range lookup. | delegated/policy | delegated/live<br>note: LT/LST/LC families do not exist; representative reads returned C05B. Delegate the decision to range lookup. |
+| LZ 32-bit route | supported/live<br>note: LZ uses 32-bit routes only. 16-bit direct/block routes are forbidden by route rules. | supported/live<br>note: LZ uses 32-bit routes only; LZ1:D was live-verified. | supported/policy<br>note: Treated as equivalent to iQ-R. LZ uses 32-bit routes only. | supported/policy<br>note: Treated as equivalent to iQ-R. LZ uses 32-bit routes only. | supported/live<br>note: LZ uses 32-bit routes only. | delegated/policy | delegated/live<br>note: The LZ family does not exist; reads returned C05B. Delegate the decision to range lookup. | delegated/policy | delegated/policy<br>note: The LZ family is assumed absent; not live-verified. Delegate the decision to range lookup. |
 
 ### Point Limit Matrix
 
-| Limit | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:lcpu | melsec:qnudv |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Direct word read | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [live] | max 960, over C051, [live] |
-| Direct word write | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [live] | max 960, over C051, [live] |
-| Direct bit read | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] |
-| Direct bit write | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] |
-| Random word read | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] |
-| Random word write | max 80, weighted 960, over C054, [live] | max 80, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 160, over C054, [live] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [live] |
-| Random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] |
-| Monitor word register | max 96, over C054, [live] | max 96, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | max 192, [inferred] | max 192, over C054, [live] |
+| Limit | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Direct word read | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred], note: Uses the iQ-R live-verified value. | max 960, over C051, [inferred], note: Uses the iQ-R live-verified value. | max 960, over C052, [live] | max 960, over C051, [policy] | max 960, over C051, [live] | max 960, over C051, [policy] | max 960, over C051, [live] |
+| Direct word write | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [policy] | max 960, over C051, [live] | max 960, over C051, [policy] | max 960, over C051, [live] |
+| Direct bit read | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live], note: FX5-specific limit that differs from the 7168-point limit on other models. | max 7168, over C052, [policy] | max 7168, over C052, [live] | max 7168, over C052, [policy] | max 7168, over C052, [live] |
+| Direct bit write | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [policy] | max 7168, over C052, [live] | max 7168, over C052, [policy] | max 7168, over C052, [live] |
+| Random word read | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [policy] | max 192, over C054, [live] | max 192, over C054, [policy] | max 192, over C054, [live] |
+| Random word write | max 80, weighted 960, over C054, [live] | max 80, over C054, [live], note: Weighted limit is not live-verified; iQ-R uses 960. | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 160, over C054, [live] | max 160, weighted 1920, over C054, [policy] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [policy] | max 160, weighted 1920, over C054, [live] |
+| Random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [policy] | max 188, over C053, [live] | max 188, over C053, [policy] | max 188, over C053, [live] |
+| Monitor word register | max 96, over C054, [live] | max 96, [inferred], note: Not live-verified. Inferred from the iQ-R live value 96 with the same subcommand group. | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | max 192, over C054, [policy] | max 192, [inferred], note: Not live-verified. Inferred from the QnUDV live value 192 with the same subcommand group. | max 192, over C054, [policy] | max 192, over C054, [live] |
 
 ### Write Policy
 
 | Profile | Policy |
 | --- | --- |
-| melsec:iq-r | LCS=read-only, S=read-only |
-| melsec:iq-l | LCS=read-only, S=read-only |
-| melsec:mx-r | LCS=read-only, S=read-only |
-| melsec:mx-f | LCS=read-only, S=read-only |
-| melsec:iq-f | X=read-only |
-| melsec:lcpu | - |
-| melsec:qnudv | - |
+| melsec:iq-r | S=read-only |
+| melsec:iq-l | S=read-only |
+| melsec:mx-r | S=read-only |
+| melsec:mx-f | S=read-only |
+| melsec:iq-f | S=read-only |
+| melsec:qcpu | S=read-only |
+| melsec:lcpu | S=read-only |
+| melsec:qnu | S=read-only |
+| melsec:qnudv | S=read-only |
 
 ## Device Range Rules
 
-### SD Register Blocks
+These tables are generated from the device range JSON. They show the range metadata and every per-profile rule without omitting common values.
 
-| Profile | Register start | Register count |
+### Device Value Kinds
+
+| Kind | Meaning |
+| --- | --- |
+| fixed | Use fixed_value as the point count without reading SD. |
+| word-register | Use the 16-bit value at SDn as the point count. |
+| dword-register | Use the 32-bit value at SDn..SDn+1 as the point count. |
+| word-register-clipped | Clip the 16-bit value to clip_value. |
+| dword-register-clipped | Clip the 32-bit value to clip_value. |
+| unsupported | This family does not exist in this profile. |
+| undefined | No finite upper-bound register is defined; handle through runtime probes or equivalent logic. |
+
+### Device Range Blocks
+
+| Profile | SD register start | SD register count |
 | --- | --- | --- |
 | melsec:iq-r | 260 | 50 |
 | melsec:iq-l | 260 | 50 |
-| melsec:mx-f | 260 | 50 |
 | melsec:mx-r | 260 | 50 |
+| melsec:mx-f | 260 | 50 |
 | melsec:iq-f | 260 | 46 |
 | melsec:qcpu | 290 | 15 |
 | melsec:lcpu | 286 | 26 |
 | melsec:qnu | 286 | 26 |
 | melsec:qnudv | 286 | 26 |
 
-### Device Family Rule Matrix
+### Device Family Rule Comparison
 
-| Device family | melsec:iq-r | melsec:iq-l | melsec:mx-f | melsec:mx-r | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| X | dword-register SD260-SD261 (32-bit) | dword-register SD260-SD261 (32-bit) | dword-register SD260-SD261 (32-bit) | dword-register SD260-SD261 (32-bit) | dword-register SD260-SD261 (32-bit) | word-register SD290 | word-register SD290 | word-register SD290 | word-register SD290 |
-| Y | dword-register SD262-SD263 (32-bit) | dword-register SD262-SD263 (32-bit) | dword-register SD262-SD263 (32-bit) | dword-register SD262-SD263 (32-bit) | dword-register SD262-SD263 (32-bit) | word-register SD291 | word-register SD291 | word-register SD291 | word-register SD291 |
-| M | dword-register SD264-SD265 (32-bit) | dword-register SD264-SD265 (32-bit) | dword-register SD264-SD265 (32-bit) | dword-register SD264-SD265 (32-bit) | dword-register SD264-SD265 (32-bit) | word-register-clipped SD292 clip 32768 | dword-register SD286-SD287 (32-bit) | dword-register SD286-SD287 (32-bit) | dword-register SD286-SD287 (32-bit) |
-| B | dword-register SD266-SD267 (32-bit) | dword-register SD266-SD267 (32-bit) | dword-register SD266-SD267 (32-bit) | dword-register SD266-SD267 (32-bit) | dword-register SD266-SD267 (32-bit) | word-register-clipped SD294 clip 32768 | dword-register SD288-SD289 (32-bit) | dword-register SD288-SD289 (32-bit) | dword-register SD288-SD289 (32-bit) |
-| SB | dword-register SD268-SD269 (32-bit) | dword-register SD268-SD269 (32-bit) | dword-register SD268-SD269 (32-bit) | dword-register SD268-SD269 (32-bit) | dword-register SD268-SD269 (32-bit) | word-register SD296 | word-register SD296 | word-register SD296 | word-register SD296 |
-| F | dword-register SD270-SD271 (32-bit) | dword-register SD270-SD271 (32-bit) | dword-register SD270-SD271 (32-bit) | dword-register SD270-SD271 (32-bit) | dword-register SD270-SD271 (32-bit) | word-register SD295 | word-register SD295 | word-register SD295 | word-register SD295 |
-| V | dword-register SD272-SD273 (32-bit) | dword-register SD272-SD273 (32-bit) | dword-register SD272-SD273 (32-bit) | dword-register SD272-SD273 (32-bit) | unsupported | word-register SD297 | word-register SD297 | word-register SD297 | word-register SD297 |
-| L | dword-register SD274-SD275 (32-bit) | dword-register SD274-SD275 (32-bit) | dword-register SD274-SD275 (32-bit) | dword-register SD274-SD275 (32-bit) | dword-register SD274-SD275 (32-bit) | word-register SD293 | word-register SD293 | word-register SD293 | word-register SD293 |
-| S | dword-register SD276-SD277 (32-bit) | dword-register SD276-SD277 (32-bit) | unsupported | unsupported | unsupported | word-register SD298 | word-register SD298 | word-register SD298 | word-register SD298 |
-| D | dword-register SD280-SD281 (32-bit) | dword-register SD280-SD281 (32-bit) | dword-register SD280-SD281 (32-bit) | dword-register SD280-SD281 (32-bit) | dword-register SD280-SD281 (32-bit) | word-register-clipped SD302 clip 32768 | dword-register SD308-SD309 (32-bit) | dword-register SD308-SD309 (32-bit) | dword-register SD308-SD309 (32-bit) |
-| W | dword-register SD282-SD283 (32-bit) | dword-register SD282-SD283 (32-bit) | dword-register SD282-SD283 (32-bit) | dword-register SD282-SD283 (32-bit) | dword-register SD282-SD283 (32-bit) | word-register-clipped SD303 clip 32768 | dword-register SD310-SD311 (32-bit) | dword-register SD310-SD311 (32-bit) | dword-register SD310-SD311 (32-bit) |
-| SW | dword-register SD284-SD285 (32-bit) | dword-register SD284-SD285 (32-bit) | dword-register SD284-SD285 (32-bit) | dword-register SD284-SD285 (32-bit) | dword-register SD284-SD285 (32-bit) | word-register SD304 | word-register SD304 | word-register SD304 | word-register SD304 |
-| R | dword-register-clipped SD306-SD307 (32-bit) clip 32768 | dword-register-clipped SD306-SD307 (32-bit) clip 32768 | dword-register-clipped SD306-SD307 (32-bit) clip 32768 | dword-register-clipped SD306-SD307 (32-bit) clip 32768 | dword-register SD304-SD305 (32-bit) | fixed 32768 | dword-register-clipped SD306-SD307 (32-bit) clip 32768 | dword-register-clipped SD306-SD307 (32-bit) clip 32768 | dword-register-clipped SD306-SD307 (32-bit) clip 32768 |
-| T | dword-register SD288-SD289 (32-bit) | dword-register SD288-SD289 (32-bit) | dword-register SD288-SD289 (32-bit) | dword-register SD288-SD289 (32-bit) | dword-register SD288-SD289 (32-bit) | word-register SD299 | word-register SD299 | word-register SD299 | word-register SD299 |
-| ST | dword-register SD290-SD291 (32-bit) | dword-register SD290-SD291 (32-bit) | dword-register SD290-SD291 (32-bit) | dword-register SD290-SD291 (32-bit) | dword-register SD290-SD291 (32-bit) | word-register SD300 | word-register SD300 | word-register SD300 | word-register SD300 |
-| C | dword-register SD292-SD293 (32-bit) | dword-register SD292-SD293 (32-bit) | dword-register SD292-SD293 (32-bit) | dword-register SD292-SD293 (32-bit) | dword-register SD292-SD293 (32-bit) | word-register SD301 | word-register SD301 | word-register SD301 | word-register SD301 |
-| LT | dword-register SD294-SD295 (32-bit) | dword-register SD294-SD295 (32-bit) | dword-register SD294-SD295 (32-bit) | dword-register SD294-SD295 (32-bit) | unsupported | unsupported | unsupported | unsupported | unsupported |
-| LST | dword-register SD296-SD297 (32-bit) | dword-register SD296-SD297 (32-bit) | dword-register SD296-SD297 (32-bit) | dword-register SD296-SD297 (32-bit) | unsupported | unsupported | unsupported | unsupported | unsupported |
-| LC | dword-register SD298-SD299 (32-bit) | dword-register SD298-SD299 (32-bit) | dword-register SD298-SD299 (32-bit) | dword-register SD298-SD299 (32-bit) | dword-register SD298-SD299 (32-bit) | unsupported | unsupported | unsupported | unsupported |
-| Z | word-register SD300 | word-register SD300 | word-register SD300 | word-register SD300 | word-register SD300 | fixed 10 | fixed 20 | fixed 20 | fixed 20 |
-| LZ | word-register SD302 | word-register SD302 | word-register SD302 | word-register SD302 | word-register SD302 | unsupported | unsupported | unsupported | unsupported |
-| ZR | dword-register SD306-SD307 (32-bit) | dword-register SD306-SD307 (32-bit) | dword-register SD306-SD307 (32-bit) | dword-register SD306-SD307 (32-bit) | unsupported | undefined | dword-register SD306-SD307 (32-bit) | dword-register SD306-SD307 (32-bit) | dword-register SD306-SD307 (32-bit) |
-| RD | dword-register SD308-SD309 (32-bit) | dword-register SD308-SD309 (32-bit) | dword-register SD308-SD309 (32-bit) | dword-register SD308-SD309 (32-bit) | unsupported | unsupported | unsupported | unsupported | unsupported |
-| SM | fixed 4096 | fixed 4096 | fixed 10000 | fixed 4496 | fixed 10000 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 |
-| SD | fixed 4096 | fixed 4096 | fixed 10000 | fixed 4496 | fixed 12000 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 |
+| Device family | Metadata | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| X | category=bit<br>notation=base16<br>devices=X:bit | dword-register: SD260-SD261 (32-bit) | dword-register: SD260-SD261 (32-bit) | dword-register: SD260-SD261 (32-bit) | dword-register: SD260-SD261 (32-bit) | dword-register: SD260-SD261 (32-bit) | word-register: SD290 | word-register: SD290 | word-register: SD290 | word-register: SD290 |
+| Y | category=bit<br>notation=base16<br>devices=Y:bit | dword-register: SD262-SD263 (32-bit) | dword-register: SD262-SD263 (32-bit) | dword-register: SD262-SD263 (32-bit) | dword-register: SD262-SD263 (32-bit) | dword-register: SD262-SD263 (32-bit) | word-register: SD291 | word-register: SD291 | word-register: SD291 | word-register: SD291 |
+| M | category=bit<br>notation=base10<br>devices=M:bit | dword-register: SD264-SD265 (32-bit) | dword-register: SD264-SD265 (32-bit) | dword-register: SD264-SD265 (32-bit) | dword-register: SD264-SD265 (32-bit) | dword-register: SD264-SD265 (32-bit) | word-register-clipped: SD292 clip 32768 | dword-register: SD286-SD287 (32-bit) | dword-register: SD286-SD287 (32-bit) | dword-register: SD286-SD287 (32-bit) |
+| B | category=bit<br>notation=base16<br>devices=B:bit | dword-register: SD266-SD267 (32-bit) | dword-register: SD266-SD267 (32-bit) | dword-register: SD266-SD267 (32-bit) | dword-register: SD266-SD267 (32-bit) | dword-register: SD266-SD267 (32-bit) | word-register-clipped: SD294 clip 32768 | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) |
+| SB | category=bit<br>notation=base16<br>devices=SB:bit | dword-register: SD268-SD269 (32-bit) | dword-register: SD268-SD269 (32-bit) | dword-register: SD268-SD269 (32-bit) | dword-register: SD268-SD269 (32-bit) | dword-register: SD268-SD269 (32-bit) | word-register: SD296 | word-register: SD296 | word-register: SD296 | word-register: SD296 |
+| F | category=bit<br>notation=base10<br>devices=F:bit | dword-register: SD270-SD271 (32-bit) | dword-register: SD270-SD271 (32-bit) | dword-register: SD270-SD271 (32-bit) | dword-register: SD270-SD271 (32-bit) | dword-register: SD270-SD271 (32-bit) | word-register: SD295 | word-register: SD295 | word-register: SD295 | word-register: SD295 |
+| V | category=bit<br>notation=base10<br>devices=V:bit | dword-register: SD272-SD273 (32-bit) | dword-register: SD272-SD273 (32-bit) | dword-register: SD272-SD273 (32-bit) | dword-register: SD272-SD273 (32-bit) | unsupported | word-register: SD297 | word-register: SD297 | word-register: SD297 | word-register: SD297 |
+| L | category=bit<br>notation=base10<br>devices=L:bit | dword-register: SD274-SD275 (32-bit) | dword-register: SD274-SD275 (32-bit) | dword-register: SD274-SD275 (32-bit) | dword-register: SD274-SD275 (32-bit) | dword-register: SD274-SD275 (32-bit) | word-register: SD293 | word-register: SD293 | word-register: SD293 | word-register: SD293 |
+| S | category=bit<br>notation=base10<br>devices=S:bit | dword-register: SD276-SD277 (32-bit) | dword-register: SD276-SD277 (32-bit) | unsupported | unsupported | unsupported | word-register: SD298 | word-register: SD298 | word-register: SD298 | word-register: SD298 |
+| D | category=word<br>notation=base10<br>devices=D:word | dword-register: SD280-SD281 (32-bit) | dword-register: SD280-SD281 (32-bit) | dword-register: SD280-SD281 (32-bit) | dword-register: SD280-SD281 (32-bit) | dword-register: SD280-SD281 (32-bit) | word-register-clipped: SD302 clip 32768 | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) |
+| W | category=word<br>notation=base16<br>devices=W:word | dword-register: SD282-SD283 (32-bit) | dword-register: SD282-SD283 (32-bit) | dword-register: SD282-SD283 (32-bit) | dword-register: SD282-SD283 (32-bit) | dword-register: SD282-SD283 (32-bit) | word-register-clipped: SD303 clip 32768 | dword-register: SD310-SD311 (32-bit) | dword-register: SD310-SD311 (32-bit) | dword-register: SD310-SD311 (32-bit) |
+| SW | category=word<br>notation=base16<br>devices=SW:word | dword-register: SD284-SD285 (32-bit) | dword-register: SD284-SD285 (32-bit) | dword-register: SD284-SD285 (32-bit) | dword-register: SD284-SD285 (32-bit) | dword-register: SD284-SD285 (32-bit) | word-register: SD304 | word-register: SD304 | word-register: SD304 | word-register: SD304 |
+| R | category=word<br>notation=base10<br>devices=R:word | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register: SD304-SD305 (32-bit) | fixed 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 | dword-register-clipped: SD306-SD307 (32-bit) clip 32768 |
+| T | category=timer-counter<br>notation=base10<br>devices=TS:bit, TC:bit, TN:word | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | dword-register: SD288-SD289 (32-bit) | word-register: SD299 | word-register: SD299 | word-register: SD299 | word-register: SD299 |
+| ST | category=timer-counter<br>notation=base10<br>devices=STS:bit, STC:bit, STN:word | dword-register: SD290-SD291 (32-bit) | dword-register: SD290-SD291 (32-bit) | dword-register: SD290-SD291 (32-bit) | dword-register: SD290-SD291 (32-bit) | dword-register: SD290-SD291 (32-bit) | word-register: SD300 | word-register: SD300 | word-register: SD300 | word-register: SD300 |
+| C | category=timer-counter<br>notation=base10<br>devices=CS:bit, CC:bit, CN:word | dword-register: SD292-SD293 (32-bit) | dword-register: SD292-SD293 (32-bit) | dword-register: SD292-SD293 (32-bit) | dword-register: SD292-SD293 (32-bit) | dword-register: SD292-SD293 (32-bit) | word-register: SD301 | word-register: SD301 | word-register: SD301 | word-register: SD301 |
+| LT | category=timer-counter<br>notation=base10<br>devices=LTS:bit, LTC:bit, LTN:word | dword-register: SD294-SD295 (32-bit) | dword-register: SD294-SD295 (32-bit) | dword-register: SD294-SD295 (32-bit) | dword-register: SD294-SD295 (32-bit) | unsupported | unsupported | unsupported | unsupported | unsupported |
+| LST | category=timer-counter<br>notation=base10<br>devices=LSTS:bit, LSTC:bit, LSTN:word | dword-register: SD296-SD297 (32-bit) | dword-register: SD296-SD297 (32-bit) | dword-register: SD296-SD297 (32-bit) | dword-register: SD296-SD297 (32-bit) | unsupported | unsupported | unsupported | unsupported | unsupported |
+| LC | category=timer-counter<br>notation=base10<br>devices=LCS:bit, LCC:bit, LCN:word | dword-register: SD298-SD299 (32-bit) | dword-register: SD298-SD299 (32-bit) | dword-register: SD298-SD299 (32-bit) | dword-register: SD298-SD299 (32-bit) | dword-register: SD298-SD299 (32-bit) | unsupported | unsupported | unsupported | unsupported |
+| Z | category=index<br>notation=base10<br>devices=Z:word | word-register: SD300 | word-register: SD300 | word-register: SD300 | word-register: SD300 | word-register: SD300 | fixed 10 | fixed 20 | fixed 20 | fixed 20 |
+| LZ | category=index<br>notation=base10<br>devices=LZ:word | word-register: SD302 | word-register: SD302 | word-register: SD302 | word-register: SD302 | word-register: SD302 | unsupported | unsupported | unsupported | unsupported |
+| ZR | category=file-refresh<br>notation=base10<br>devices=ZR:word | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) | unsupported | undefined | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) | dword-register: SD306-SD307 (32-bit) |
+| RD | category=file-refresh<br>notation=base10<br>devices=RD:word | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) | dword-register: SD308-SD309 (32-bit) | unsupported | unsupported | unsupported | unsupported | unsupported |
+| SM | category=bit<br>notation=base10<br>devices=SM:bit | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 10000 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 |
+| SD | category=word<br>notation=base10<br>devices=SD:word | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 12000 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 |
 

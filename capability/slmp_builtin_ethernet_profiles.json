@@ -132,8 +132,7 @@
         }
       },
       "write_policy": {
-        "S": "read-only",
-        "LCS": "read-only"
+        "S": "read-only"
       }
     },
     "melsec:iq-l": {
@@ -239,8 +238,7 @@
         }
       },
       "write_policy": {
-        "S": "read-only",
-        "LCS": "read-only"
+        "S": "read-only"
       }
     },
     "melsec:mx-r": {
@@ -353,8 +351,7 @@
         }
       },
       "write_policy": {
-        "S": "read-only",
-        "LCS": "read-only"
+        "S": "read-only"
       }
     },
     "melsec:mx-f": {
@@ -467,8 +464,7 @@
         }
       },
       "write_policy": {
-        "S": "read-only",
-        "LCS": "read-only"
+        "S": "read-only"
       }
     },
     "melsec:iq-f": {
@@ -570,7 +566,109 @@
         }
       },
       "write_policy": {
-        "X": "read-only"
+        "S": "read-only"
+      }
+    },
+    "melsec:qcpu": {
+      "frame": "3E",
+      "compat": "Q/L",
+      "subcommands": {
+        "word": "0000",
+        "bit": "0001",
+        "ext_word": "0080",
+        "ext_bit": "0081"
+      },
+      "verified_models": [
+        "Unconfirmed"
+      ],
+      "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to QnUDV for built-in Ethernet capability guards and point limits until live evidence supersedes this policy.",
+      "features": {
+        "type_name": {
+          "state": "blocked",
+          "source": "policy"
+        },
+        "direct": {
+          "state": "supported",
+          "source": "policy"
+        },
+        "random": {
+          "state": "supported",
+          "source": "policy"
+        },
+        "block": {
+          "state": "blocked",
+          "source": "policy"
+        },
+        "monitor": {
+          "state": "supported",
+          "source": "policy"
+        },
+        "ext_module_access": {
+          "state": "blocked",
+          "source": "policy"
+        },
+        "ext_link_direct": {
+          "state": "unverified",
+          "source": "policy"
+        },
+        "hg_cpu_buffer": {
+          "state": "blocked",
+          "source": "policy"
+        },
+        "long_device_path": {
+          "state": "delegated",
+          "source": "policy"
+        },
+        "lz_32bit_path": {
+          "state": "delegated",
+          "source": "policy"
+        }
+      },
+      "limits": {
+        "direct_word_read": {
+          "max": 960,
+          "over_end_code": "C051",
+          "source": "policy"
+        },
+        "direct_word_write": {
+          "max": 960,
+          "over_end_code": "C051",
+          "source": "policy"
+        },
+        "direct_bit_read": {
+          "max": 7168,
+          "over_end_code": "C052",
+          "source": "policy"
+        },
+        "direct_bit_write": {
+          "max": 7168,
+          "over_end_code": "C052",
+          "source": "policy"
+        },
+        "random_read_word": {
+          "max": 192,
+          "over_end_code": "C054",
+          "source": "policy"
+        },
+        "random_write_word": {
+          "max": 160,
+          "weighted_max": 1920,
+          "over_end_code": "C054",
+          "source": "policy"
+        },
+        "random_write_bit": {
+          "max": 188,
+          "over_end_code": "C053",
+          "source": "policy"
+        },
+        "monitor_register_word": {
+          "max": 192,
+          "over_end_code": "C054",
+          "source": "policy"
+        }
+      },
+      "write_policy": {
+        "S": "read-only"
       }
     },
     "melsec:lcpu": {
@@ -678,7 +776,111 @@
           "note": "Not live-verified. Inferred from the QnUDV live value 192 with the same subcommand group."
         }
       },
-      "write_policy": {}
+      "write_policy": {
+        "S": "read-only"
+      }
+    },
+    "melsec:qnu": {
+      "frame": "3E",
+      "compat": "Q/L",
+      "subcommands": {
+        "word": "0000",
+        "bit": "0001",
+        "ext_word": "0080",
+        "ext_bit": "0081"
+      },
+      "verified_models": [
+        "Unconfirmed"
+      ],
+      "profile_note": "No live hardware was available. By the 2026-07-03 user decision, treat as equivalent to QnUDV for built-in Ethernet capability guards and point limits until live evidence supersedes this policy.",
+      "features": {
+        "type_name": {
+          "state": "blocked",
+          "source": "policy"
+        },
+        "direct": {
+          "state": "supported",
+          "source": "policy"
+        },
+        "random": {
+          "state": "supported",
+          "source": "policy"
+        },
+        "block": {
+          "state": "blocked",
+          "source": "policy"
+        },
+        "monitor": {
+          "state": "supported",
+          "source": "policy"
+        },
+        "ext_module_access": {
+          "state": "blocked",
+          "source": "policy"
+        },
+        "ext_link_direct": {
+          "state": "unverified",
+          "source": "policy"
+        },
+        "hg_cpu_buffer": {
+          "state": "blocked",
+          "source": "policy"
+        },
+        "long_device_path": {
+          "state": "delegated",
+          "source": "policy"
+        },
+        "lz_32bit_path": {
+          "state": "delegated",
+          "source": "policy"
+        }
+      },
+      "limits": {
+        "direct_word_read": {
+          "max": 960,
+          "over_end_code": "C051",
+          "source": "policy"
+        },
+        "direct_word_write": {
+          "max": 960,
+          "over_end_code": "C051",
+          "source": "policy"
+        },
+        "direct_bit_read": {
+          "max": 7168,
+          "over_end_code": "C052",
+          "source": "policy"
+        },
+        "direct_bit_write": {
+          "max": 7168,
+          "over_end_code": "C052",
+          "source": "policy"
+        },
+        "random_read_word": {
+          "max": 192,
+          "over_end_code": "C054",
+          "source": "policy"
+        },
+        "random_write_word": {
+          "max": 160,
+          "weighted_max": 1920,
+          "over_end_code": "C054",
+          "source": "policy"
+        },
+        "random_write_bit": {
+          "max": 188,
+          "over_end_code": "C053",
+          "source": "policy"
+        },
+        "monitor_register_word": {
+          "max": 192,
+          "over_end_code": "C054",
+          "source": "policy"
+        }
+      },
+      "write_policy": {
+        "S": "read-only"
+      }
     },
     "melsec:qnudv": {
       "frame": "3E",
@@ -785,7 +987,9 @@
           "source": "live"
         }
       },
-      "write_policy": {}
+      "write_policy": {
+        "S": "read-only"
+      }
     }
   }
 }

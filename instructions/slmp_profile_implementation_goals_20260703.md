@@ -21,7 +21,7 @@
 - [ ] write_policy（read-only ファミリへの書込拒否）は strict に関係なく常時強制される
 - [ ] 専用エラーにはプロファイルID・featureキー・state・実測根拠（終了コードがある場合）・解除方法が含まれ、PLC終了コードエラーとは型で区別できる
 - [ ] raw送信API（raw_command 相当）はガードを受けない
-- [ ] `melsec:qcpu` / `melsec:qnu`（capability未定義）はfeatureガード非適用で現行動作を維持する
+- [ ] `melsec:qcpu` / `melsec:qnu` は正準JSONの capability profile として扱い、QnUDV同等の state / limits（source は policy）で feature ガードと上限を適用する
 - [ ] プロファイル未指定のクライアントは既存動作と完全一致（既存テスト全通過、回帰ゼロ）
 - [ ] フレームビルダー・コーデック・デバイス範囲取得関数に変更がない
 

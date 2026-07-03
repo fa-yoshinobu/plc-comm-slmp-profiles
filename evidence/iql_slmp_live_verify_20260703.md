@@ -14,6 +14,10 @@
 
 Treat iQ-L separately from `melsec:lcpu`. Do not carry LCPU 3E / Q-L-compatible results into iQ-L.
 
+## Errata
+
+Rows below that describe `LCS` as "do not write" are not canonical write-policy evidence. The canonical write policy is maintained in `capability/slmp_builtin_ethernet_profiles.json`; as of the 2026-07-03 correction, `S=read-only` is the only write-policy restriction and it applies to every profile.
+
 ## Adopted Features
 
 | Feature | Decision |
