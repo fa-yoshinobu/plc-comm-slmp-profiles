@@ -73,14 +73,6 @@ Use this when the default devices are not available on the prepared test PLC.
 slmp-profile-collector.exe --profile melsec:iq-f --host 192.168.250.100 --word-write-device D2000 --bit-write-device M2000 --s-write-device S2
 ```
 
-## Read-Only Run
-
-Use this only when writes are intentionally not allowed. This is less useful for profile maintenance because write policy cannot be confirmed.
-
-```bat
-slmp-profile-collector.exe --profile melsec:iq-f --host 192.168.250.100 --skip-writes
-```
-
 ## Other Connection Options
 
 ```bat
