@@ -63,7 +63,7 @@ Capability schema 1, capability date 2026-07-03, scope `builtin-ethernet-port`, 
 
 ## Device Availability Matrix
 
-`o` means available for the profile, `x` means unsupported, and `?` means undefined until confirmed by probe or PLC response.
+`o` means available for the profile. `x` means unsupported. Availability does not imply a static range upper bound.
 
 `DX` and `DY` are public parser families without range catalog rules; they are listed here only for profile availability.
 
@@ -92,7 +92,7 @@ Capability schema 1, capability date 2026-07-03, scope `builtin-ethernet-port`, 
 | LC | o | o | o | o | o | x | x | x | x |
 | Z | o | o | o | o | o | o | o | o | o |
 | LZ | o | o | o | o | o | x | x | x | x |
-| ZR | o | o | o | o | x | ? | o | o | o |
+| ZR | o | o | o | o | x | o | o | o | o |
 | RD | o | o | o | o | x | x | x | x | x |
 | SM | o | o | o | o | o | o | o | o | o |
 | SD | o | o | o | o | o | o | o | o | o |

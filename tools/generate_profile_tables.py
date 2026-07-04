@@ -178,8 +178,6 @@ def availability_cell(rule: dict[str, Any] | None) -> str:
     kind = rule.get("kind")
     if kind == "unsupported":
         return "x"
-    if kind == "undefined":
-        return "?"
     return "o"
 
 
@@ -312,7 +310,7 @@ def build_device_availability_matrix(device_ranges: dict[str, Any]) -> str:
     return "\n\n".join(
         [
             "## Device Availability Matrix",
-            "`o` means available for the profile, `x` means unsupported, and `?` means undefined until confirmed by probe or PLC response.",
+            "`o` means available for the profile. `x` means unsupported. Availability does not imply a static range upper bound.",
             "`DX` and `DY` are public parser families without range catalog rules; they are listed here only for profile availability.",
             md_table(["Device family"] + profile_ids, rows),
         ]
