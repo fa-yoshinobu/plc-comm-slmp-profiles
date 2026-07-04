@@ -20,6 +20,8 @@ This repository publishes canonical profile data consumed by implementation repo
 - Tooling: Added a live verification draft generator that pre-fills checklist rows from the canonical capability and device-range JSON files.
 - Tooling: Added a field collection tool for gathering profile evidence from PLCs that maintainers do not have, including write probes by default.
 - Docs: Added hand-off usage instructions for the SLMP profile collector executable.
+- Data: Added `display_name` to each built-in Ethernet capability profile.
+- Tooling: Added JSON validation and schema files for profile maintenance.
 - Data: Added iQ-R/iQ-L live evidence for 0082/0083 extended random and monitor point limits.
 - Data: Recorded LCPU/QnU/QnUDV 0080 direct-device probes returning `C070` as route evidence, not point-limit evidence.
 - Docs: Added extended random limit rows to the live verification checklist template.

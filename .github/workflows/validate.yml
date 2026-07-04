@@ -1,0 +1,20 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  profiles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: python tools/generate_capability_profiles.py
+      - run: python tools/generate_device_range_rules.py
+      - run: python tools/generate_profile_tables.py
+      - run: python tools/validate_profiles.py
+      - run: git diff --exit-code
+

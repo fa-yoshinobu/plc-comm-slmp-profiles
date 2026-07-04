@@ -250,6 +250,7 @@ def build_profile_summary(capability: dict[str, Any]) -> str:
         rows.append(
             [
                 profile_id,
+                profile.get("display_name", "-"),
                 profile.get("frame", "-"),
                 profile.get("compat", "-"),
                 subcommands.get("word", "-"),
@@ -265,6 +266,7 @@ def build_profile_summary(capability: dict[str, Any]) -> str:
             md_table(
                 [
                     "Profile",
+                    "Display name",
                     "Frame",
                     "Compat",
                     "Word subcmd",

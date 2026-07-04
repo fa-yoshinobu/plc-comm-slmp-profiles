@@ -8,17 +8,17 @@ Capability schema 1, capability date 2026-07-04, scope `builtin-ethernet-port`, 
 
 ## Profile Summary
 
-| Profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) |
-| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) |
-| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
-| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
-| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5U-32MR/DS(built-in Ethernet) |
-| melsec:qcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | No built-in Ethernet CPU target (QnU-derived conservative baseline) |
-| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) |
-| melsec:qnu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU(built-in Ethernet) |
-| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) |
+| Profile | Display name | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| melsec:iq-r | MELSEC iQ-R (built-in Ethernet) | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) |
+| melsec:iq-l | MELSEC iQ-L (built-in Ethernet) | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) |
+| melsec:mx-r | MELSEC MX (R mode) | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
+| melsec:mx-f | MELSEC MX (F mode) | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
+| melsec:iq-f | MELSEC iQ-F / FX5 (built-in Ethernet) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5U-32MR/DS(built-in Ethernet) |
+| melsec:qcpu | MELSEC Q (conservative baseline) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | No built-in Ethernet CPU target (QnU-derived conservative baseline) |
+| melsec:lcpu | MELSEC L (built-in Ethernet) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) |
+| melsec:qnu | MELSEC QnU (built-in Ethernet) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU(built-in Ethernet) |
+| melsec:qnudv | MELSEC QnUDV (built-in Ethernet) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) |
 
 ## Device Definitions
 

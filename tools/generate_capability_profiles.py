@@ -26,6 +26,18 @@ PROFILE_ORDER = [
     "melsec:qnudv",
 ]
 
+PROFILE_DISPLAY_NAMES = {
+    "melsec:iq-r": "MELSEC iQ-R (built-in Ethernet)",
+    "melsec:iq-l": "MELSEC iQ-L (built-in Ethernet)",
+    "melsec:mx-r": "MELSEC MX (R mode)",
+    "melsec:mx-f": "MELSEC MX (F mode)",
+    "melsec:iq-f": "MELSEC iQ-F / FX5 (built-in Ethernet)",
+    "melsec:qcpu": "MELSEC Q (conservative baseline)",
+    "melsec:lcpu": "MELSEC L (built-in Ethernet)",
+    "melsec:qnu": "MELSEC QnU (built-in Ethernet)",
+    "melsec:qnudv": "MELSEC QnUDV (built-in Ethernet)",
+}
+
 STATE_SEMANTICS = {
     "supported": "Adopted as supported for this profile. Send normally.",
     "blocked": "Not adopted for this profile. In strict mode, fail before transport.",
@@ -211,6 +223,7 @@ def build_profiles(definitions: dict[str, dict[str, Any]]) -> dict[str, Any]:
                 set_dotted(profile, key, value)
         else:
             raise ValueError(f"unsupported definition_type {dtype!r} for {profile_id}")
+        profile = {**profile, "display_name": PROFILE_DISPLAY_NAMES[profile_id]}
         built[profile_id] = profile
         return profile
 
