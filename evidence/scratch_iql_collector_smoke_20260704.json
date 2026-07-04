@@ -1,0 +1,831 @@
+{
+  "schema_version": 1,
+  "collector": "collect_live_plc_profile.py",
+  "timestamp": "2026-07-04T16:31:30+09:00",
+  "connection": {
+    "host": "192.168.250.100",
+    "port": 1025,
+    "timeout": 5.0,
+    "network": 0,
+    "station": 255,
+    "module_io": 1023,
+    "multidrop": 0,
+    "monitoring_timer": 16
+  },
+  "site_note": "",
+  "plc_model": "iQ-L",
+  "profile": "melsec:iq-l",
+  "profile_settings": {
+    "frame": "4E",
+    "compat": "iQ-R",
+    "subcommands": {
+      "word": "0002",
+      "bit": "0003",
+      "ext_word": "0082",
+      "ext_bit": "0083"
+    },
+    "features": {
+      "type_name": {
+        "state": "supported",
+        "source": "live"
+      },
+      "direct": {
+        "state": "supported",
+        "source": "live"
+      },
+      "random": {
+        "state": "supported",
+        "source": "live"
+      },
+      "block": {
+        "state": "supported",
+        "source": "live"
+      },
+      "monitor": {
+        "state": "supported",
+        "source": "live"
+      },
+      "ext_module_access": {
+        "state": "config-dependent",
+        "source": "live"
+      },
+      "ext_link_direct": {
+        "state": "config-dependent",
+        "source": "live"
+      },
+      "hg_cpu_buffer": {
+        "state": "blocked",
+        "source": "spec"
+      },
+      "long_device_path": {
+        "state": "supported",
+        "source": "live"
+      },
+      "lz_32bit_path": {
+        "state": "supported",
+        "source": "live"
+      }
+    },
+    "limits": {
+      "direct_word_read": {
+        "source": "live",
+        "max": 960,
+        "over_end_code": "C051"
+      },
+      "direct_word_write": {
+        "source": "live",
+        "max": 960,
+        "over_end_code": "C051"
+      },
+      "direct_bit_read": {
+        "source": "live",
+        "max": 7168,
+        "over_end_code": "C052"
+      },
+      "direct_bit_write": {
+        "source": "live",
+        "max": 7168,
+        "over_end_code": "C052"
+      },
+      "random_read_word": {
+        "source": "live",
+        "max": 96,
+        "over_end_code": "C054"
+      },
+      "random_write_word": {
+        "source": "live",
+        "max": 80,
+        "weighted_max": 960,
+        "over_end_code": "C054"
+      },
+      "random_write_bit": {
+        "source": "live",
+        "max": 94,
+        "over_end_code": "C053"
+      },
+      "monitor_register_word": {
+        "source": "live",
+        "max": 96,
+        "over_end_code": "C054"
+      },
+      "random_read_word_ext": {
+        "source": "live",
+        "max": 96,
+        "over_end_code": "C054"
+      },
+      "random_write_word_ext": {
+        "source": "live",
+        "max": 80,
+        "weighted_max": 960,
+        "over_end_code": "C054"
+      },
+      "random_write_bit_ext": {
+        "source": "live",
+        "max": 94,
+        "over_end_code": "C053"
+      },
+      "monitor_register_word_ext": {
+        "source": "live",
+        "max": 96,
+        "over_end_code": "C054"
+      }
+    },
+    "write_policy": {
+      "S": "read-only"
+    }
+  },
+  "read_only": true,
+  "type_name": {
+    "ok": true,
+    "end_code": "0000",
+    "data_hex": "4c313648435055202020202020202020c248",
+    "text": "L16HCPU         �H"
+  },
+  "write_probes": {
+    "enabled": false,
+    "reason": "disabled by --skip-writes",
+    "items": {}
+  },
+  "sd_range_block": {
+    "ok": true,
+    "end_code": "0000",
+    "data_hex": "003000000030000000300000002000000008000000080000000800000020000000040000000000000028000000200000000800000000000000040000000200000002000000040000000200000002000014000000020000000000000000f00a0000000800",
+    "device": "SD260",
+    "points": 50,
+    "kind": "word",
+    "values": [
+      12288,
+      0,
+      12288,
+      0,
+      12288,
+      0,
+      8192,
+      0,
+      2048,
+      0,
+      2048,
+      0,
+      2048,
+      0,
+      8192,
+      0,
+      1024,
+      0,
+      0,
+      0,
+      10240,
+      0,
+      8192,
+      0,
+      2048,
+      0,
+      0,
+      0,
+      1024,
+      0,
+      512,
+      0,
+      512,
+      0,
+      1024,
+      0,
+      512,
+      0,
+      512,
+      0,
+      20,
+      0,
+      2,
+      0,
+      0,
+      0,
+      61440,
+      10,
+      0,
+      8
+    ],
+    "register_start": 260,
+    "register_count": 50
+  },
+  "device_family_reads": [
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "X0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "X",
+      "device_code": "X",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 260
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "Y0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "Y",
+      "device_code": "Y",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 262
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "M0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "M",
+      "device_code": "M",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 264
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "B0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "B",
+      "device_code": "B",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 266
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "SB0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "SB",
+      "device_code": "SB",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 268
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "F0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "F",
+      "device_code": "F",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 270
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "V0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "V",
+      "device_code": "V",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 272
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "L0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "L",
+      "device_code": "L",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 274
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "S0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "S",
+      "device_code": "S",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 276
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "D0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "D",
+      "device_code": "D",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 280
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "W0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "W",
+      "device_code": "W",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 282
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "SW0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "SW",
+      "device_code": "SW",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 284
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "R0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "R",
+      "device_code": "R",
+      "expected_rule": {
+        "kind": "dword-register-clipped",
+        "clip_value": 32768,
+        "register": 306
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "TS0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "T",
+      "device_code": "TS",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 288
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "TC0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "T",
+      "device_code": "TC",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 288
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "TN0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "T",
+      "device_code": "TN",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 288
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "STS0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "ST",
+      "device_code": "STS",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 290
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "STC0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "ST",
+      "device_code": "STC",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 290
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "STN0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "ST",
+      "device_code": "STN",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 290
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "CS0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "C",
+      "device_code": "CS",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 292
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "CC0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "C",
+      "device_code": "CC",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 292
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "CN0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "C",
+      "device_code": "CN",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 292
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "4030",
+      "data_hex": "00ffff030001040300",
+      "device": "LTS0",
+      "points": 1,
+      "kind": "bit",
+      "family": "LT",
+      "device_code": "LTS",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 294
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "4030",
+      "data_hex": "00ffff030001040300",
+      "device": "LTC0",
+      "points": 1,
+      "kind": "bit",
+      "family": "LT",
+      "device_code": "LTC",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 294
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "LTN0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "LT",
+      "device_code": "LTN",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 294
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "4030",
+      "data_hex": "00ffff030001040300",
+      "device": "LSTS0",
+      "points": 1,
+      "kind": "bit",
+      "family": "LST",
+      "device_code": "LSTS",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 296
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "4030",
+      "data_hex": "00ffff030001040300",
+      "device": "LSTC0",
+      "points": 1,
+      "kind": "bit",
+      "family": "LST",
+      "device_code": "LSTC",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 296
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "LSTN0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "LST",
+      "device_code": "LSTN",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 296
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "LCS0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "LC",
+      "device_code": "LCS",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 298
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "00",
+      "device": "LCC0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        false
+      ],
+      "family": "LC",
+      "device_code": "LCC",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 298
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "LCN0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "LC",
+      "device_code": "LCN",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 298
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "Z0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "Z",
+      "device_code": "Z",
+      "expected_rule": {
+        "kind": "word-register",
+        "register": 300
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "LZ0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "LZ",
+      "device_code": "LZ",
+      "expected_rule": {
+        "kind": "word-register",
+        "register": 302
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "ZR0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "ZR",
+      "device_code": "ZR",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 306
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "0000",
+      "device": "RD0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        0
+      ],
+      "family": "RD",
+      "device_code": "RD",
+      "expected_rule": {
+        "kind": "dword-register",
+        "register": 308
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "10",
+      "device": "SM0",
+      "points": 1,
+      "kind": "bit",
+      "values": [
+        true
+      ],
+      "family": "SM",
+      "device_code": "SM",
+      "expected_rule": {
+        "kind": "fixed",
+        "fixed_value": 4096
+      }
+    },
+    {
+      "ok": true,
+      "end_code": "0000",
+      "data_hex": "9010",
+      "device": "SD0",
+      "points": 1,
+      "kind": "word",
+      "values": [
+        4240
+      ],
+      "family": "SD",
+      "device_code": "SD",
+      "expected_rule": {
+        "kind": "fixed",
+        "fixed_value": 4096
+      }
+    }
+  ]
+}
