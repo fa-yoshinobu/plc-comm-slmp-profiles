@@ -29,13 +29,13 @@ PROFILE_ORDER = [
 PROFILE_DISPLAY_NAMES = {
     "melsec:iq-r": "MELSEC iQ-R (built-in Ethernet)",
     "melsec:iq-l": "MELSEC iQ-L (built-in Ethernet)",
-    "melsec:mx-r": "MELSEC MX (R mode)",
-    "melsec:mx-f": "MELSEC MX (F mode)",
-    "melsec:iq-f": "MELSEC iQ-F / FX5 (built-in Ethernet)",
-    "melsec:qcpu": "MELSEC Q (conservative baseline)",
-    "melsec:lcpu": "MELSEC L (built-in Ethernet)",
-    "melsec:qnu": "MELSEC QnU (built-in Ethernet)",
-    "melsec:qnudv": "MELSEC QnUDV (built-in Ethernet)",
+    "melsec:mx-r": "MELSEC MX-R (built-in Ethernet)",
+    "melsec:mx-f": "MELSEC MX-F (built-in Ethernet)",
+    "melsec:iq-f": "MELSEC iQ-F (built-in Ethernet)",
+    "melsec:qcpu": "MELSEC-Q (conservative baseline)",
+    "melsec:lcpu": "MELSEC-L (built-in Ethernet)",
+    "melsec:qnu": "MELSEC-QnU (built-in Ethernet)",
+    "melsec:qnudv": "MELSEC-QnUDV (built-in Ethernet)",
 }
 
 STATE_SEMANTICS = {
