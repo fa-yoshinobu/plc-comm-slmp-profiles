@@ -15,7 +15,7 @@ Capability schema 1, capability date 2026-07-03, scope `builtin-ethernet-port`, 
 | melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
 | melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
 | melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5U-32MR/DS(built-in Ethernet) |
-| melsec:qcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Unconfirmed |
+| melsec:qcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | No built-in Ethernet CPU target (QnU-derived conservative baseline) |
 | melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) |
 | melsec:qnu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU(built-in Ethernet) |
 | melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) |

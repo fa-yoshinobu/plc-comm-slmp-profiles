@@ -15,10 +15,10 @@
   },
   "evidence_files": {
     "melsec:iq-r": "evidence/profile-definitions/iq-r_slmp_profile_definition_20260703.md",
-    "melsec:iq-l": "evidence/profile-definitions/iql_slmp_profile_definition_20260703.md",
+    "melsec:iq-l": "evidence/profile-definitions/iq-l_slmp_profile_definition_20260703.md",
     "melsec:mx-r": "evidence/profile-definitions/mx-r_slmp_profile_definition_20260703.md",
     "melsec:mx-f": "evidence/profile-definitions/mx-f_slmp_profile_definition_20260703.md",
-    "melsec:iq-f": "evidence/profile-definitions/iqf_slmp_profile_definition_20260703.md",
+    "melsec:iq-f": "evidence/profile-definitions/iq-f_slmp_profile_definition_20260703.md",
     "melsec:qcpu": "evidence/profile-definitions/qcpu_slmp_profile_definition_20260703.md",
     "melsec:lcpu": "evidence/profile-definitions/lcpu_slmp_profile_definition_20260703.md",
     "melsec:qnu": "evidence/profile-definitions/qnu_slmp_profile_definition_20260703.md",
@@ -535,7 +535,7 @@
         "ext_bit": "0081"
       },
       "verified_models": [
-        "Unconfirmed"
+        "No built-in Ethernet CPU target (QnU-derived conservative baseline)"
       ],
       "features": {
         "type_name": {

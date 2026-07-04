@@ -65,6 +65,10 @@ Only run these when limit testing is intended. A point-limit failure is `limit`,
 | Random word write | max 160, weighted max 1920, over `C054` | limit | 160 word pass; 161 word returned `C054`; 138 dword weighted over returned `C054` |
 | Random bit write | max 188, over `C053` | limit | 188 pass and reset OFF; 189 returned `C053` |
 | Monitor word register | not adopted | spec | Monitor feature is not adopted for iQ-F |
+| Extended random word read | implementation rule: `min(profile, 008x default)` | limit | `U1\G0` 0080 path: 96 pass; 97 returned `C054` |
+| Extended random word write | implementation rule: `min(profile, 008x default)` weighted max 960 | limit | `U1\G0` 0080 path: 80 word pass; 81 word returned `C054`; 68 dword pass; 69 dword returned `C054`; readback is not used as a decision condition because the unit may overwrite buffer values |
+| Extended random bit write | implementation rule: `min(profile, 008x default)` max 94 | limit | 0081 path: 94 M-bit reset writes pass; 95 returned `C053` |
+| Extended monitor register | not adopted | spec | `U1\G0` 0080 monitor registration returned `C059` at both 96 and 97 points; not usable as a point-limit boundary for iQ-F |
 
 ## Write Policy Checklist
 
@@ -112,6 +116,6 @@ Use the device-range JSON. This table is for whether each device family exists a
 |------|----------|----------------------------|
 | Features | Adopt JSON expectations for `melsec:iq-f`; monitor remains not adopted | None |
 | Qualified access | Adopt `U\G`; do not adopt `J` link direct; keep `HG` as iQ-R-only spec route | None |
-| Limits | Adopt JSON limits for `melsec:iq-f` | None |
+| Limits | Adopt JSON limits for `melsec:iq-f`; for 008x extended random routes, use the implementation rule `min(profile limit, 008x default)` rather than adding separate profile keys | None |
 | Write policy | Adopt `S` as read/write-capable for `melsec:iq-f` | None |
 | Device families | Adopt observed iQ-F family results including `S` support | None |
