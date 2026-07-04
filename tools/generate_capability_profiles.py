@@ -241,7 +241,7 @@ def build_output() -> dict[str, Any]:
     definitions = definition_files()
     return {
         "schema_version": 1,
-        "date": "2026-07-03",
+        "date": "2026-07-04",
         "scope": "builtin-ethernet-port",
         "description": (
             "Canonical PLC model profile definitions for the SLMP library family. "

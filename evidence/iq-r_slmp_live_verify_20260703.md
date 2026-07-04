@@ -65,6 +65,10 @@ Only run these when limit testing is intended. A point-limit failure is `limit`,
 | Random word write | max 80, weighted max 960, over `C054` | limit | 80 word pass; 81 word returned `C054`; 40 word + 40 dword weighted over returned `C054` |
 | Random bit write | max 94, over `C053` | limit | 94 pass and reset OFF; 95 returned `C053` |
 | Monitor word register | max 96, over `C054` | limit | 96 pass; 97 returned `C054` |
+| Extended random word read | ext max 96, over `C054` | limit | 2026-07-04 `U2\G100` 0082 path: 96 pass; 97 returned `C054` |
+| Extended random word write | ext max 80, weighted max 960, over `C054` | limit | 2026-07-04 `U2\G100` 0082 path: 80 word pass; 81 word returned `C054`; 68 dword pass; 69 dword returned `C054` |
+| Extended random bit write | ext max 94, over `C053` | limit | 2026-07-04 0083 path: 94 `M1000...` reset writes pass; 95 returned `C053` |
+| Extended monitor word register | ext max 96, over `C054` | limit | 2026-07-04 `U2\G100` 0082 path: 96 pass; 97 returned `C054` |
 
 ## Write Policy Checklist
 
@@ -112,6 +116,6 @@ Use the device-range JSON. This table is for whether each device family exists a
 |------|----------|----------------------------|
 | Features | Adopt JSON expectations for `melsec:iq-r` | None |
 | Qualified access | Adopt `U\G` and iQ-R `HG`; keep `J` link direct configuration-dependent | None |
-| Limits | Adopt JSON limits for `melsec:iq-r` | None |
+| Limits | Adopt JSON limits for `melsec:iq-r`; 0082/0083 extended random and monitor routes have live evidence for ext-specific 96 / 80 weighted 960 / 94 limits | None |
 | Write policy | Adopt `S=read-only` | None |
 | Device families | All JSON-listed iQ-R device families are reachable | None |

@@ -49,6 +49,8 @@ DEVICE_CODES: dict[str, tuple[int, int]] = {
     "R": (0x00AF, 10),
     "ZR": (0x00B0, 10),
     "RD": (0x002C, 10),
+    "G": (0x00AB, 10),
+    "HG": (0x002E, 10),
     "LTS": (0x0051, 10),
     "LTC": (0x0050, 10),
     "LTN": (0x0052, 10),
@@ -62,6 +64,9 @@ DEVICE_CODES: dict[str, tuple[int, int]] = {
 
 COMMAND_DEVICE_READ = 0x0401
 COMMAND_DEVICE_WRITE = 0x1401
+COMMAND_DEVICE_READ_RANDOM = 0x0403
+COMMAND_DEVICE_WRITE_RANDOM = 0x1402
+COMMAND_DEVICE_ENTRY_MONITOR = 0x0801
 COMMAND_TYPE_NAME = 0x0101
 
 
@@ -103,6 +108,45 @@ def parse_device(device: str) -> tuple[str, int]:
     raise ValueError(f"unsupported device: {device!r}")
 
 
+def format_device(code: str, number: int) -> str:
+    _, radix = DEVICE_CODES[code]
+    if radix == 16:
+        return f"{code}{number:X}"
+    return f"{code}{number}"
+
+
+def parse_extended_device(device: str) -> tuple[str, int, int, int]:
+    text = device.strip().upper()
+    qualifier = ""
+    extension_specification = 0
+    direct_memory = 0x00
+    if "\\" in text or "/" in text:
+        sep = "\\" if "\\" in text else "/"
+        prefix, raw_device = text.split(sep, 1)
+        if prefix.startswith("U"):
+            qualifier = prefix
+            extension_specification = int(prefix[1:], 16)
+            code, number = parse_device(raw_device)
+            if code == "G":
+                direct_memory = 0xF8
+            elif code == "HG":
+                direct_memory = 0xFA
+            return code, number, extension_specification, direct_memory
+        raise ValueError(f"unsupported extended device qualifier: {device!r}")
+    code, number = parse_device(text)
+    return code, number, extension_specification, direct_memory
+
+
+def format_extended_device(template: str, offset: int) -> str:
+    code, number, _, _ = parse_extended_device(template)
+    text = template.strip().upper()
+    if "\\" in text or "/" in text:
+        sep = "\\" if "\\" in text else "/"
+        prefix, _ = text.split(sep, 1)
+        return f"{prefix}\\{format_device(code, number + offset)}"
+    return format_device(code, number + offset)
+
+
 def uses_ql_device_format(profile: Profile) -> bool:
     return profile.compat.strip().lower() in {"q/l", "ql", "q"}
 
@@ -115,6 +159,21 @@ def encode_device_spec(profile: Profile, device: str) -> bytes:
             raise ValueError(f"device number out of Q/L range: {device}")
         return number.to_bytes(3, "little") + bytes([device_code & 0xFF])
     return number.to_bytes(4, "little") + device_code.to_bytes(2, "little")
+
+
+def encode_extended_device_spec(profile: Profile, device: str) -> bytes:
+    code, number, extension_specification, direct_memory = parse_extended_device(device)
+    device_code, _ = DEVICE_CODES[code]
+    device = format_device(code, number)
+    payload = bytearray()
+    payload += b"\x00"  # device modification index
+    payload += b"\x00"  # device modification flags
+    payload += encode_device_spec(profile, device)
+    payload += b"\x00"  # extension specification modification
+    payload += b"\x00"  # reserved
+    payload += extension_specification.to_bytes(2, "little")
+    payload += direct_memory.to_bytes(1, "little")
+    return bytes(payload)
 
 
 def pack_bits(values: list[bool]) -> bytes:
@@ -216,6 +275,193 @@ def device_payload(profile: Profile, device: str, points: int, data: bytes = b""
 
 def emit(result: dict[str, Any]) -> None:
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+
+
+def generated_devices(template: str, count: int) -> list[str]:
+    if count < 0 or count > 255:
+        raise ValueError("random device count must be in 0..255")
+    return [format_extended_device(template, offset) for offset in range(count)]
+
+
+def random_read_ext_payload(profile: Profile, word_devices: list[str], dword_devices: list[str]) -> bytes:
+    payload = bytearray([len(word_devices), len(dword_devices)])
+    for device in word_devices:
+        payload += encode_extended_device_spec(profile, device)
+    for device in dword_devices:
+        payload += encode_extended_device_spec(profile, device)
+    return bytes(payload)
+
+
+def random_write_words_ext_payload(
+    profile: Profile,
+    word_devices: list[str],
+    dword_devices: list[str],
+    *,
+    word_value: int,
+    dword_value: int,
+) -> bytes:
+    payload = bytearray([len(word_devices), len(dword_devices)])
+    for device in word_devices:
+        payload += encode_extended_device_spec(profile, device)
+        payload += int(word_value).to_bytes(2, "little", signed=False)
+    for device in dword_devices:
+        payload += encode_extended_device_spec(profile, device)
+        payload += int(dword_value).to_bytes(4, "little", signed=False)
+    return bytes(payload)
+
+
+def random_write_bits_ext_payload(profile: Profile, devices: list[str], value: bool) -> bytes:
+    bit_data = b"\x01\x00" if value and not uses_ql_device_format(profile) else b"\x01" if value else b"\x00\x00" if not uses_ql_device_format(profile) else b"\x00"
+    payload = bytearray([len(devices)])
+    for device in devices:
+        payload += encode_extended_device_spec(profile, device)
+        payload += bit_data
+    return bytes(payload)
+
+
+def run_read_random_ext(args: argparse.Namespace) -> None:
+    profile = load_profile(args.profile)
+    word_devices = generated_devices(args.word_device, args.word_count) if args.word_device else []
+    dword_devices = generated_devices(args.dword_device, args.dword_count) if args.dword_device else []
+    with open_socket(args) as sock:
+        frame = request_frame(
+            profile,
+            COMMAND_DEVICE_READ_RANDOM,
+            profile.subcommands["ext_word"],
+            random_read_ext_payload(profile, word_devices, dword_devices),
+            serial=1,
+            monitoring_timer=args.monitoring_timer,
+            network=args.network,
+            station=args.station,
+            module_io=args.module_io,
+            multidrop=args.multidrop,
+        )
+        response = send_request(sock, profile, frame)
+    result: dict[str, Any] = {
+        "profile": profile.name,
+        "operation": "read-random-ext",
+        "word_device": args.word_device,
+        "word_count": len(word_devices),
+        "dword_device": args.dword_device,
+        "dword_count": len(dword_devices),
+        "end_code": f"{response.end_code:04X}",
+        "data_bytes": len(response.data),
+    }
+    emit(result)
+
+
+def run_write_random_words_ext(args: argparse.Namespace) -> None:
+    profile = load_profile(args.profile)
+    word_devices = generated_devices(args.word_device, args.word_count) if args.word_device else []
+    dword_devices = generated_devices(args.dword_device, args.dword_count) if args.dword_device else []
+    with open_socket(args) as sock:
+        frame = request_frame(
+            profile,
+            COMMAND_DEVICE_WRITE_RANDOM,
+            profile.subcommands["ext_word"],
+            random_write_words_ext_payload(
+                profile,
+                word_devices,
+                dword_devices,
+                word_value=args.word_value,
+                dword_value=args.dword_value,
+            ),
+            serial=1,
+            monitoring_timer=args.monitoring_timer,
+            network=args.network,
+            station=args.station,
+            module_io=args.module_io,
+            multidrop=args.multidrop,
+        )
+        response = send_request(sock, profile, frame)
+    result = {
+        "profile": profile.name,
+        "operation": "write-random-words-ext",
+        "word_device": args.word_device,
+        "word_count": len(word_devices),
+        "word_value": int(args.word_value),
+        "dword_device": args.dword_device,
+        "dword_count": len(dword_devices),
+        "dword_value": int(args.dword_value),
+        "end_code": f"{response.end_code:04X}",
+    }
+    emit(result)
+
+
+def run_write_random_bits_ext(args: argparse.Namespace) -> None:
+    profile = load_profile(args.profile)
+    devices = generated_devices(args.device, args.count)
+    reset_response: Response | None = None
+    with open_socket(args) as sock:
+        frame = request_frame(
+            profile,
+            COMMAND_DEVICE_WRITE_RANDOM,
+            profile.subcommands["ext_bit"],
+            random_write_bits_ext_payload(profile, devices, bool(args.value)),
+            serial=1,
+            monitoring_timer=args.monitoring_timer,
+            network=args.network,
+            station=args.station,
+            module_io=args.module_io,
+            multidrop=args.multidrop,
+        )
+        response = send_request(sock, profile, frame)
+        if args.reset and response.end_code == 0:
+            reset_frame = request_frame(
+                profile,
+                COMMAND_DEVICE_WRITE_RANDOM,
+                profile.subcommands["ext_bit"],
+                random_write_bits_ext_payload(profile, devices, False),
+                serial=2,
+                monitoring_timer=args.monitoring_timer,
+                network=args.network,
+                station=args.station,
+                module_io=args.module_io,
+                multidrop=args.multidrop,
+            )
+            reset_response = send_request(sock, profile, reset_frame)
+    result: dict[str, Any] = {
+        "profile": profile.name,
+        "operation": "write-random-bits-ext",
+        "device": args.device,
+        "count": len(devices),
+        "value": bool(args.value),
+        "end_code": f"{response.end_code:04X}",
+    }
+    if reset_response is not None:
+        result["reset_end"] = f"{reset_response.end_code:04X}"
+    emit(result)
+
+
+def run_register_monitor_ext(args: argparse.Namespace) -> None:
+    profile = load_profile(args.profile)
+    word_devices = generated_devices(args.word_device, args.word_count) if args.word_device else []
+    dword_devices = generated_devices(args.dword_device, args.dword_count) if args.dword_device else []
+    with open_socket(args) as sock:
+        frame = request_frame(
+            profile,
+            COMMAND_DEVICE_ENTRY_MONITOR,
+            profile.subcommands["ext_word"],
+            random_read_ext_payload(profile, word_devices, dword_devices),
+            serial=1,
+            monitoring_timer=args.monitoring_timer,
+            network=args.network,
+            station=args.station,
+            module_io=args.module_io,
+            multidrop=args.multidrop,
+        )
+        response = send_request(sock, profile, frame)
+    result: dict[str, Any] = {
+        "profile": profile.name,
+        "operation": "register-monitor-ext",
+        "word_device": args.word_device,
+        "word_count": len(word_devices),
+        "dword_device": args.dword_device,
+        "dword_count": len(dword_devices),
+        "end_code": f"{response.end_code:04X}",
+        "data_bytes": len(response.data),
+    }
+    emit(result)
 
 
 def run_read(args: argparse.Namespace, *, bit: bool) -> None:
@@ -381,6 +627,36 @@ def build_parser() -> argparse.ArgumentParser:
         if bit:
             sub.add_argument("--reset", action="store_true", help="Reset the tested bit OFF and read it back.")
         sub.set_defaults(func=lambda args, bit=bit: run_write(args, bit=bit))
+
+    sub = subparsers.add_parser("read-random-ext")
+    sub.add_argument("--word-device")
+    sub.add_argument("--word-count", type=int, default=0)
+    sub.add_argument("--dword-device")
+    sub.add_argument("--dword-count", type=int, default=0)
+    sub.set_defaults(func=run_read_random_ext)
+
+    sub = subparsers.add_parser("write-random-words-ext")
+    sub.add_argument("--word-device")
+    sub.add_argument("--word-count", type=int, default=0)
+    sub.add_argument("--word-value", type=lambda value: int(value, 0), default=0)
+    sub.add_argument("--dword-device")
+    sub.add_argument("--dword-count", type=int, default=0)
+    sub.add_argument("--dword-value", type=lambda value: int(value, 0), default=0)
+    sub.set_defaults(func=run_write_random_words_ext)
+
+    sub = subparsers.add_parser("write-random-bits-ext")
+    sub.add_argument("--device", required=True)
+    sub.add_argument("--count", type=int, required=True)
+    sub.add_argument("--value", type=lambda value: int(value, 0), required=True)
+    sub.add_argument("--reset", action="store_true", help="Reset the tested bits OFF after a successful write.")
+    sub.set_defaults(func=run_write_random_bits_ext)
+
+    sub = subparsers.add_parser("register-monitor-ext")
+    sub.add_argument("--word-device")
+    sub.add_argument("--word-count", type=int, default=0)
+    sub.add_argument("--dword-device")
+    sub.add_argument("--dword-count", type=int, default=0)
+    sub.set_defaults(func=run_register_monitor_ext)
 
     sub = subparsers.add_parser("type-name")
     sub.set_defaults(func=run_type_name)

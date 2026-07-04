@@ -36,6 +36,10 @@ LIMIT_LABELS = {
     "random_write_word": "Random word write",
     "random_write_bit": "Random bit write",
     "monitor_register_word": "Monitor word register",
+    "random_read_word_ext": "Extended random word read",
+    "random_write_word_ext": "Extended random word write",
+    "random_write_bit_ext": "Extended random bit write",
+    "monitor_register_word_ext": "Extended monitor word register",
 }
 
 PROFILE_ORDER = [

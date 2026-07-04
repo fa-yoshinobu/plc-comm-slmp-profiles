@@ -41,6 +41,10 @@
 | random_write_word | 80 | 960 | C054 | live |
 | random_write_bit | 94 |  | C053 | live |
 | monitor_register_word | 96 |  | C054 | live |
+| random_read_word_ext | 96 |  | C054 | live |
+| random_write_word_ext | 80 | 960 | C054 | live |
+| random_write_bit_ext | 94 |  | C053 | live |
+| monitor_register_word_ext | 96 |  | C054 | live |
 
 ## Write Policy
 

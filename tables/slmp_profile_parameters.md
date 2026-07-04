@@ -4,7 +4,7 @@
 
 Generated user-facing reference. Source: `capability/slmp_builtin_ethernet_profiles.json` / `device-ranges/slmp_device_range_rules.json`.
 
-Capability schema 1, capability date 2026-07-03, scope `builtin-ethernet-port`, default strict mode `True`. Device-range schema 1, device-range date 2026-07-03.
+Capability schema 1, capability date 2026-07-04, scope `builtin-ethernet-port`, default strict mode `True`. Device-range schema 1, device-range date 2026-07-03.
 
 ## Profile Summary
 
@@ -126,6 +126,10 @@ Cell format is `state/source`.
 | Random word write | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [inferred] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [live] |
 | Random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] |
 | Monitor word register | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | max 192, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] |
+| Extended random word read | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [inferred] |
+| Extended random word write | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] |
+| Extended random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 94, over C053, [inferred] |
+| Extended monitor word register | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [inferred] |
 
 Note: `melsec:iq-f` uses live-verified over-limit end codes where word overrun returns `C052` and bit overrun returns `C051`.
 
