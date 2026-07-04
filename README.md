@@ -63,6 +63,30 @@ python tools/generate_profile_tables.py
 
 Run the relevant generator after changing its Markdown source. Run the table generator after either JSON file changes.
 
+To start a live PLC verification record from the canonical JSON values:
+
+```powershell
+python tools/generate_live_verification_draft.py --profile melsec:iq-f --plc-model FX5U-32MR/DS
+```
+
+The generated file is only a checklist draft. Keep untested rows as `unverified` until a live probe is run.
+
+To collect field evidence from a PLC that the maintainer does not have:
+
+```powershell
+python tools/collect_live_plc_profile.py --profile melsec:iq-f --host 192.168.250.100 --plc-model FX5U-32MR/DS
+```
+
+This collector writes to the configured test devices by default so that write policy and basic write behavior are recorded. Numeric write probes use random values and are not restored. Bit probes are reset to OFF after the check. Use `--skip-writes` only when a read-only collection is intentionally required.
+
+For a single-file Windows executable, bundle this collector together with `capability/slmp_builtin_ethernet_profiles.json` and `device-ranges/slmp_device_range_rules.json`; the executable must use the same JSON data version as this repository tag.
+
+```bat
+tools\build_profile_collector_exe.bat
+```
+
+Hand off [PROFILE_COLLECTOR_USAGE.md](tools/PROFILE_COLLECTOR_USAGE.md) with the executable when asking someone else to run the collector.
+
 ## Downstream use
 
 Implementation repositories should import a fixed tag and keep fixture tests that compare their embedded data against this repository.

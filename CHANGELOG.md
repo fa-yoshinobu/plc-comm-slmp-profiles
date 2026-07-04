@@ -17,6 +17,9 @@ This repository publishes canonical profile data consumed by implementation repo
 ### Changed
 
 - Docs: Split the generated SLMP profile comparison into user-facing profile parameter and device-range tables without changing the canonical JSON data.
+- Tooling: Added a live verification draft generator that pre-fills checklist rows from the canonical capability and device-range JSON files.
+- Tooling: Added a field collection tool for gathering profile evidence from PLCs that maintainers do not have, including write probes by default.
+- Docs: Added hand-off usage instructions for the SLMP profile collector executable.
 
 ## [1.0.0] - 2026-07-04
 
