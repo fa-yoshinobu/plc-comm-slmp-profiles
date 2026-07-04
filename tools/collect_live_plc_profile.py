@@ -247,12 +247,6 @@ def collect_write(
 
 
 def collect_write_probes(args: argparse.Namespace, profile: Profile) -> dict[str, Any]:
-    if args.skip_writes:
-        return {
-            "enabled": False,
-            "reason": "disabled by --skip-writes",
-            "items": {},
-        }
     rng = random.SystemRandom()
     word_value = rng.randint(1, 0xFFFF)
     return {
@@ -376,7 +370,6 @@ def collect(args: argparse.Namespace) -> dict[str, Any]:
             "limits": profile_json.get("limits", {}),
             "write_policy": profile_json.get("write_policy", {}),
         },
-        "read_only": bool(args.skip_writes),
         "type_name": collect_type_name(args, profile),
         "write_probes": collect_write_probes(args, profile),
         "sd_range_block": collect_sd_range(args, profile, device_ranges),
@@ -409,7 +402,6 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--word-write-device", default=DEFAULT_WORD_WRITE_DEVICE)
     parser.add_argument("--bit-write-device", default=DEFAULT_BIT_WRITE_DEVICE)
     parser.add_argument("--s-write-device", default=DEFAULT_S_WRITE_DEVICE)
-    parser.add_argument("--skip-writes", action="store_true", help="Collect only read results.")
     parser.add_argument("--output", type=Path, help="Output JSON file. Defaults to the current directory.")
     return parser
 
