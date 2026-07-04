@@ -259,7 +259,11 @@ def build_output() -> dict[str, Any]:
 
 
 def main() -> int:
-    OUTPUT.write_text(json.dumps(build_output(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    OUTPUT.write_text(
+        json.dumps(build_output(), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+        newline="\n",
+    )
     return 0
 
 

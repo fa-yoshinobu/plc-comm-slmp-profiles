@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate Markdown comparison tables from the SLMP profile JSON files."""
+"""Generate user-facing Markdown tables from the SLMP profile JSON files."""
 
 from __future__ import annotations
 
@@ -11,7 +11,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 CAPABILITY_JSON = ROOT / "capability" / "slmp_builtin_ethernet_profiles.json"
 DEVICE_RANGES_JSON = ROOT / "device-ranges" / "slmp_device_range_rules.json"
-OUTPUT = ROOT / "tables" / "slmp_profile_comparison.md"
+PARAMETERS_OUTPUT = ROOT / "tables" / "slmp_profile_parameters.md"
+DEVICE_RANGES_OUTPUT = ROOT / "tables" / "slmp_device_ranges.md"
 
 FEATURE_LABELS = {
     "type_name": "Type name",
@@ -57,17 +58,23 @@ SOURCE_SEMANTICS = {
     "manual": "Taken from manual documentation.",
 }
 
-COMMON_CELL_MEANINGS = {
-    "supported/live": "Works on live hardware. Send normally.",
-    "supported/policy": "Allowed by policy, usually by profile equivalence or user decision. Not directly live-verified for that exact profile.",
-    "blocked/live": "Verified unavailable on live hardware. In strict mode, fail before transport.",
-    "blocked/policy": "Blocked by project policy. In strict mode, fail before transport.",
-    "blocked/spec": "Blocked by specification or a structural hardware constraint. In strict mode, fail before transport.",
-    "config-dependent/live": "Depends on PLC configuration and succeeded on a live configuration where the required unit/path exists. Do not profile-guard; send and let the PLC respond if the unit/path is absent.",
-    "config-dependent/policy": "Treated as configuration-dependent by policy, without direct live verification for that exact profile. Do not profile-guard; send and let the PLC respond.",
-    "unverified/policy": "Not verified. In strict mode, guard as blocked; with strict disabled, allow sending.",
-    "delegated/live": "Live behavior shows the profile should not decide this feature. Delegate to existing runtime mechanisms such as range lookup or global route rules.",
-    "delegated/policy": "Policy says the profile should not decide this feature. Delegate to existing runtime mechanisms such as range lookup or global route rules.",
+SUPPLEMENTAL_DEVICE_ROWS = {
+    "DX": {
+        "classification": "Direct access I/O",
+        "device_name": "Direct input",
+        "devices": [{"device": "DX", "type": "bit", "is_bit": True}],
+        "notation": "base16",
+    },
+    "DY": {
+        "classification": "Direct access I/O",
+        "device_name": "Direct output",
+        "devices": [{"device": "DY", "type": "bit", "is_bit": True}],
+        "notation": "base16",
+    },
+}
+
+SUPPLEMENTAL_UNSUPPORTED_BY_PROFILE = {
+    "melsec:iq-f": {"DX", "DY"},
 }
 
 
@@ -95,6 +102,14 @@ def md_table(headers: list[str], rows: list[list[Any]]) -> str:
     return "\n".join(lines)
 
 
+def ordered_profiles(profiles: dict[str, Any]) -> dict[str, Any]:
+    ordered = {profile_id: profiles[profile_id] for profile_id in PROFILE_ORDER if profile_id in profiles}
+    for profile_id, profile in profiles.items():
+        if profile_id not in ordered:
+            ordered[profile_id] = profile
+    return ordered
+
+
 def state_cell(feature: dict[str, Any] | None) -> str:
     if not feature:
         return "-"
@@ -103,10 +118,6 @@ def state_cell(feature: dict[str, Any] | None) -> str:
     if source:
         return f"{state}/{source}"
     return state
-
-
-def feature_cell(feature: dict[str, Any] | None) -> str:
-    return state_cell(feature)
 
 
 def limit_cell(limit: dict[str, Any] | None) -> str:
@@ -161,23 +172,21 @@ def range_rule_cell(rule: dict[str, Any] | None) -> str:
     return " ".join(parts)
 
 
-def device_row_cell(row: dict[str, Any] | None) -> str:
-    if not row:
-        return "-"
-    devices = []
-    for device in row.get("devices", []):
-        name = device.get("device", "-")
-        device_type = device.get("type")
-        if not device_type:
-            device_type = "bit" if device.get("is_bit") else "word"
-        devices.append(f"{name}:{device_type}")
-    parts = [
-        f"classification={row.get('classification', '-')}",
-        f"name={row.get('device_name', '-')}",
-        f"notation={row.get('notation', '-')}",
-        "devices=" + ", ".join(devices) if devices else "devices=-",
-    ]
-    return "<br>".join(parts)
+def availability_cell(rule: dict[str, Any] | None) -> str:
+    if not rule:
+        return "?"
+    kind = rule.get("kind")
+    if kind == "unsupported":
+        return "x"
+    if kind == "undefined":
+        return "?"
+    return "o"
+
+
+def supplemental_availability_cell(device_family: str, profile_id: str) -> str:
+    if device_family in SUPPLEMENTAL_UNSUPPORTED_BY_PROFILE.get(profile_id, set()):
+        return "x"
+    return "o"
 
 
 def device_definition_type(row: dict[str, Any]) -> str:
@@ -193,37 +202,30 @@ def device_definition_type(row: dict[str, Any]) -> str:
     return ", ".join(devices)
 
 
-def ordered_profiles(profiles: dict[str, Any]) -> dict[str, Any]:
-    ordered = {profile_id: profiles[profile_id] for profile_id in PROFILE_ORDER if profile_id in profiles}
-    for profile_id, profile in profiles.items():
-        if profile_id not in ordered:
-            ordered[profile_id] = profile
-    return ordered
+def device_definition_items(device_ranges: dict[str, Any], include_supplemental: bool) -> list[tuple[str, dict[str, Any]]]:
+    items: list[tuple[str, dict[str, Any]]] = []
+    inserted = False
+    for symbol, row in device_ranges.get("rows", {}).items():
+        items.append((symbol, row))
+        if include_supplemental and symbol == "SB":
+            items.extend(SUPPLEMENTAL_DEVICE_ROWS.items())
+            inserted = True
+    if include_supplemental and not inserted:
+        items.extend(SUPPLEMENTAL_DEVICE_ROWS.items())
+    return items
 
 
-def build_port_scope_section(capability: dict[str, Any], device_ranges: dict[str, Any]) -> str:
-    description = str(capability.get("description", "-")).replace(
-        " Generated from evidence/profile-definitions.",
-        "",
-    )
-    rows = [
-        ["Capability schema version", capability.get("schema_version", "-")],
-        ["Capability date", capability.get("date", "-")],
-        ["Scope", capability.get("scope", "-")],
-        ["Description", description],
-        ["Default strict mode", capability.get("policy", {}).get("default_strict", "-")],
-        ["Device range schema version", device_ranges.get("schema_version", "-")],
-        ["Device range date", device_ranges.get("date", "-")],
-    ]
-    if "description" in device_ranges:
-        rows.append(["Device range description", device_ranges["description"]])
-
-    return "\n\n".join(
-        [
-        "## Port Scope",
-        md_table(["Item", "Value"], rows),
-        ]
-    )
+def availability_items(device_ranges: dict[str, Any]) -> list[str]:
+    items: list[str] = []
+    inserted = False
+    for item in device_ranges["ordered_items"]:
+        items.append(item)
+        if item == "SB":
+            items.extend(SUPPLEMENTAL_DEVICE_ROWS)
+            inserted = True
+    if not inserted:
+        items.extend(SUPPLEMENTAL_DEVICE_ROWS)
+    return items
 
 
 def collect_used_sources(capability: dict[str, Any]) -> list[str]:
@@ -238,96 +240,12 @@ def collect_used_sources(capability: dict[str, Any]) -> list[str]:
     return [source for source in SOURCE_SEMANTICS if source in used]
 
 
-def build_cell_legend_section(capability: dict[str, Any]) -> str:
-    state_semantics = capability.get("policy", {}).get("state_semantics", {})
-
-    state_rows = [[state, meaning] for state, meaning in state_semantics.items()]
-    source_rows = [[source, SOURCE_SEMANTICS[source]] for source in collect_used_sources(capability)]
-    combined_rows = [[cell, meaning] for cell, meaning in COMMON_CELL_MEANINGS.items()]
-
-    return "\n\n".join(
-        [
-            "## How To Read Cells",
-            "`state/source` combines the capability decision with the evidence source. For example, `config-dependent/live` means `state=config-dependent` and `source=live`.",
-            "### State Values",
-            md_table(["State", "Meaning"], state_rows),
-            "### Source Values",
-            md_table(["Source", "Meaning"], source_rows),
-            "### Common Combined Values",
-            md_table(["Cell", "Meaning"], combined_rows),
-        ]
-    )
-
-
-def build_device_range_section(device_ranges: dict[str, Any]) -> str:
-    range_profiles: dict[str, Any] = ordered_profiles(device_ranges["profiles"])
-    range_profile_ids = list(range_profiles)
-
-    value_kind_rows = [
-        [kind, meaning]
-        for kind, meaning in device_ranges.get("value_kinds", {}).items()
-    ]
-
-    range_block_rows = [
-        [
-            profile_id,
-            range_profiles[profile_id].get("register_start", "-"),
-            range_profiles[profile_id].get("register_count", "-"),
-        ]
-        for profile_id in range_profile_ids
-    ]
-
-    definition_rows = [
-        [
-            row.get("classification", "-"),
-            symbol,
-            row.get("device_name", "-"),
-            device_definition_type(row),
-            row.get("notation", "-"),
-        ]
-        for symbol, row in device_ranges.get("rows", {}).items()
-    ]
-
-    range_rule_rows = []
-    for item in device_ranges["ordered_items"]:
-        range_rule_rows.append(
-            [
-                item,
-                device_row_cell(device_ranges.get("rows", {}).get(item)),
-            ]
-            + [
-                range_rule_cell(range_profiles[profile_id].get("rules", {}).get(item))
-                for profile_id in range_profile_ids
-            ]
-        )
-
-    sections = [
-        "## Device Range Rules",
-        "These tables are generated from the device range JSON. They show the range metadata and every per-profile rule without omitting common values.",
-    ]
-    if value_kind_rows:
-        sections.extend(["### Device Value Kinds", md_table(["Kind", "Meaning"], value_kind_rows)])
-    sections.extend(
-        [
-            "### Device Definitions",
-            md_table(["Classification", "Symbol", "Device name", "Type", "Notation"], definition_rows),
-            "### Device Range Blocks",
-            md_table(["Profile", "SD register start", "SD register count"], range_block_rows),
-            "### Device Family Rule Comparison",
-            md_table(["Device family", "Metadata"] + range_profile_ids, range_rule_rows),
-        ]
-    )
-    return "\n\n".join(sections)
-
-
-def build_capability_section(capability: dict[str, Any]) -> str:
+def build_profile_summary(capability: dict[str, Any]) -> str:
     profiles: dict[str, Any] = ordered_profiles(capability["profiles"])
-    profile_ids = list(profiles)
-    summary_rows = []
-    for profile_id in profile_ids:
-        profile = profiles[profile_id]
+    rows = []
+    for profile_id, profile in profiles.items():
         subcommands = profile.get("subcommands", {})
-        summary_rows.append(
+        rows.append(
             [
                 profile_id,
                 profile.get("frame", "-"),
@@ -339,46 +257,9 @@ def build_capability_section(capability: dict[str, Any]) -> str:
                 "<br>".join(profile.get("verified_models", [])) or "-",
             ]
         )
-
-    feature_ids = [
-        feature_id
-        for feature_id in FEATURE_LABELS
-        if any(feature_id in profiles[profile_id].get("features", {}) for profile_id in profile_ids)
-    ]
-    feature_rows = []
-    for feature_id in feature_ids:
-        feature_rows.append(
-            [FEATURE_LABELS.get(feature_id, feature_id)]
-            + [
-                feature_cell(profiles[profile_id].get("features", {}).get(feature_id))
-                for profile_id in profile_ids
-            ]
-        )
-
-    limit_ids = [
-        limit_id
-        for limit_id in LIMIT_LABELS
-        if any(limit_id in profiles[profile_id].get("limits", {}) for profile_id in profile_ids)
-    ]
-    limit_rows = []
-    for limit_id in limit_ids:
-        limit_rows.append(
-            [LIMIT_LABELS.get(limit_id, limit_id)]
-            + [
-                limit_cell(profiles[profile_id].get("limits", {}).get(limit_id))
-                for profile_id in profile_ids
-            ]
-        )
-
-    write_policy_rows = [
-        [profile_id, write_policy_cell(profiles[profile_id].get("write_policy"))]
-        for profile_id in profile_ids
-    ]
-
     return "\n\n".join(
         [
-            "## Capability Profiles",
-            "### Profile Summary",
+            "## Profile Summary",
             md_table(
                 [
                     "Profile",
@@ -390,39 +271,241 @@ def build_capability_section(capability: dict[str, Any]) -> str:
                     "Ext bit",
                     "Verified models",
                 ],
-                summary_rows,
+                rows,
             ),
-            "### Feature Matrix",
-            "Cell format is `state/source`.",
-            md_table(["Feature"] + profile_ids, feature_rows),
-            "### Point Limit Matrix",
-            md_table(["Limit"] + profile_ids, limit_rows),
-            "### Write Policy",
-            md_table(["Profile", "Policy"], write_policy_rows),
         ]
     )
+
+
+def build_device_definitions(device_ranges: dict[str, Any]) -> str:
+    rows = [
+        [
+            row.get("classification", "-"),
+            symbol,
+            row.get("device_name", "-"),
+            device_definition_type(row),
+            row.get("notation", "-"),
+        ]
+        for symbol, row in device_definition_items(device_ranges, include_supplemental=True)
+    ]
+    return "\n\n".join(
+        [
+            "## Device Definitions",
+            md_table(["Classification", "Symbol", "Device name", "Type", "Notation"], rows),
+        ]
+    )
+
+
+def build_device_availability_matrix(device_ranges: dict[str, Any]) -> str:
+    profiles: dict[str, Any] = ordered_profiles(device_ranges["profiles"])
+    profile_ids = list(profiles)
+    rows = []
+    for item in availability_items(device_ranges):
+        if item in SUPPLEMENTAL_DEVICE_ROWS:
+            cells = [supplemental_availability_cell(item, profile_id) for profile_id in profile_ids]
+        else:
+            cells = [
+                availability_cell(profiles[profile_id].get("rules", {}).get(item))
+                for profile_id in profile_ids
+            ]
+        rows.append([item] + cells)
+    return "\n\n".join(
+        [
+            "## Device Availability Matrix",
+            "`o` means available for the profile, `x` means unsupported, and `?` means undefined until confirmed by probe or PLC response.",
+            "`DX` and `DY` are public parser families without range catalog rules; they are listed here only for profile availability.",
+            md_table(["Device family"] + profile_ids, rows),
+        ]
+    )
+
+
+def build_feature_matrix(capability: dict[str, Any]) -> str:
+    profiles: dict[str, Any] = ordered_profiles(capability["profiles"])
+    profile_ids = list(profiles)
+    feature_ids = [
+        feature_id
+        for feature_id in FEATURE_LABELS
+        if any(feature_id in profiles[profile_id].get("features", {}) for profile_id in profile_ids)
+    ]
+    rows = []
+    for feature_id in feature_ids:
+        rows.append(
+            [FEATURE_LABELS.get(feature_id, feature_id)]
+            + [
+                state_cell(profiles[profile_id].get("features", {}).get(feature_id))
+                for profile_id in profile_ids
+            ]
+        )
+    return "\n\n".join(
+        [
+            "## Feature Matrix",
+            "Cell format is `state/source`.",
+            md_table(["Feature"] + profile_ids, rows),
+        ]
+    )
+
+
+def build_point_limit_matrix(capability: dict[str, Any]) -> str:
+    profiles: dict[str, Any] = ordered_profiles(capability["profiles"])
+    profile_ids = list(profiles)
+    limit_ids = [
+        limit_id
+        for limit_id in LIMIT_LABELS
+        if any(limit_id in profiles[profile_id].get("limits", {}) for profile_id in profile_ids)
+    ]
+    rows = []
+    for limit_id in limit_ids:
+        rows.append(
+            [LIMIT_LABELS.get(limit_id, limit_id)]
+            + [
+                limit_cell(profiles[profile_id].get("limits", {}).get(limit_id))
+                for profile_id in profile_ids
+            ]
+        )
+    return "\n\n".join(
+        [
+            "## Point Limit Matrix",
+            md_table(["Limit"] + profile_ids, rows),
+            "Note: `melsec:iq-f` uses live-verified over-limit end codes where word overrun returns `C052` and bit overrun returns `C051`.",
+        ]
+    )
+
+
+def build_write_policy(capability: dict[str, Any]) -> str:
+    profiles: dict[str, Any] = ordered_profiles(capability["profiles"])
+    rows = [
+        [profile_id, write_policy_cell(profile.get("write_policy"))]
+        for profile_id, profile in profiles.items()
+    ]
+    return "\n\n".join(["## Write Policy", md_table(["Profile", "Policy"], rows)])
+
+
+def build_cell_appendix(capability: dict[str, Any]) -> str:
+    state_semantics = capability.get("policy", {}).get("state_semantics", {})
+    state_rows = [[state, meaning] for state, meaning in state_semantics.items()]
+    source_rows = [[source, SOURCE_SEMANTICS[source]] for source in collect_used_sources(capability)]
+    return "\n\n".join(
+        [
+            "## Appendix: How To Read Cells",
+            "`state/source` combines the capability decision with the evidence source. For example, `config-dependent/live` means `state=config-dependent` and `source=live`.",
+            "### State Values",
+            md_table(["State", "Meaning"], state_rows),
+            "### Source Values",
+            md_table(["Source", "Meaning"], source_rows),
+        ]
+    )
+
+
+def build_parameters_page(capability: dict[str, Any], device_ranges: dict[str, Any]) -> str:
+    source_label = (
+        f"Generated user-facing reference. Source: `{CAPABILITY_JSON.relative_to(ROOT).as_posix()}` / "
+        f"`{DEVICE_RANGES_JSON.relative_to(ROOT).as_posix()}`."
+    )
+    metadata = (
+        f"Capability schema {capability.get('schema_version', '-')}, "
+        f"capability date {capability.get('date', '-')}, "
+        f"scope `{capability.get('scope', '-')}`, "
+        f"default strict mode `{capability.get('policy', {}).get('default_strict', '-')}`. "
+        f"Device-range schema {device_ranges.get('schema_version', '-')}, "
+        f"device-range date {device_ranges.get('date', '-')}."
+    )
+    return "\n\n".join(
+        [
+            "# SLMP Profile Parameters",
+            "<!-- Generated by tools/generate_profile_tables.py. Do not edit manually. -->",
+            source_label,
+            metadata,
+            build_profile_summary(capability),
+            build_device_definitions(device_ranges),
+            build_device_availability_matrix(device_ranges),
+            build_feature_matrix(capability),
+            build_point_limit_matrix(capability),
+            build_write_policy(capability),
+            build_cell_appendix(capability),
+            "",
+        ]
+    )
+
+
+def build_device_value_kinds(device_ranges: dict[str, Any]) -> str:
+    rows = [
+        [kind, meaning]
+        for kind, meaning in device_ranges.get("value_kinds", {}).items()
+    ]
+    if not rows:
+        return ""
+    return "\n\n".join(["## Device Value Kinds", md_table(["Kind", "Meaning"], rows)])
+
+
+def build_device_range_blocks(device_ranges: dict[str, Any]) -> str:
+    profiles: dict[str, Any] = ordered_profiles(device_ranges["profiles"])
+    rows = [
+        [
+            profile_id,
+            profile.get("register_start", "-"),
+            profile.get("register_count", "-"),
+        ]
+        for profile_id, profile in profiles.items()
+    ]
+    return "\n\n".join(
+        [
+            "## Device Range Blocks",
+            md_table(["Profile", "SD register start", "SD register count"], rows),
+        ]
+    )
+
+
+def build_device_family_rule_comparison(device_ranges: dict[str, Any]) -> str:
+    profiles: dict[str, Any] = ordered_profiles(device_ranges["profiles"])
+    profile_ids = list(profiles)
+    rows = []
+    for item in device_ranges["ordered_items"]:
+        row = device_ranges.get("rows", {}).get(item, {})
+        rows.append(
+            [item, device_definition_type(row)]
+            + [
+                range_rule_cell(profiles[profile_id].get("rules", {}).get(item))
+                for profile_id in profile_ids
+            ]
+        )
+    return "\n\n".join(
+        [
+            "## Device Family Rule Comparison",
+            md_table(["Device family", "Type"] + profile_ids, rows),
+        ]
+    )
+
+
+def build_device_ranges_page(device_ranges: dict[str, Any]) -> str:
+    source_label = f"Generated user-facing reference. Source: `{DEVICE_RANGES_JSON.relative_to(ROOT).as_posix()}`."
+    return "\n\n".join(
+        [
+            "# SLMP Device Ranges",
+            "<!-- Generated by tools/generate_profile_tables.py. Do not edit manually. -->",
+            source_label,
+            "## Purpose",
+            "Device range rules are not send/receive address guards for communication libraries.",
+            "They are for device monitor, diagnostic, setup, and application-layer validation tools that need to discover or display valid ranges.",
+            "When an exact range is configuration-dependent, prefer a live probe or the PLC response over a static upper-bound assumption.",
+            build_device_value_kinds(device_ranges),
+            build_device_range_blocks(device_ranges),
+            build_device_family_rule_comparison(device_ranges),
+            "",
+        ]
+    )
+
+
+def write_text(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(content, encoding="utf-8", newline="\n")
 
 
 def main() -> None:
     capability = load_json(CAPABILITY_JSON)
     device_ranges = load_json(DEVICE_RANGES_JSON)
 
-    content = "\n\n".join(
-        [
-            "# SLMP Profile Comparison Tables",
-            "<!-- Generated by tools/generate_profile_tables.py. Do not edit manually. -->",
-            f"Generated from `{CAPABILITY_JSON.relative_to(ROOT).as_posix()}` and `{DEVICE_RANGES_JSON.relative_to(ROOT).as_posix()}`.",
-            "This file is a maintenance view of the generated JSON and device range rules.",
-            build_port_scope_section(capability, device_ranges),
-            build_cell_legend_section(capability),
-            build_capability_section(capability),
-            build_device_range_section(device_ranges),
-            "",
-        ]
-    )
-
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(content, encoding="utf-8", newline="\n")
+    write_text(PARAMETERS_OUTPUT, build_parameters_page(capability, device_ranges))
+    write_text(DEVICE_RANGES_OUTPUT, build_device_ranges_page(device_ranges))
 
 
 if __name__ == "__main__":

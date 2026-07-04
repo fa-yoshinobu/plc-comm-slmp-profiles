@@ -45,7 +45,8 @@ Extension Ethernet modules may support additional commands. A built-in Ethernet 
 | Page | Use it for |
 | --- | --- |
 | [Full documentation site](https://fa-yoshinobu.github.io/plc-comm-docs-site/) | Unified docs for all PLC communication libraries. |
-| [Profile comparison](tables/slmp_profile_comparison.md) | Compare capability and device-range data across profiles. |
+| [Profile parameters](tables/slmp_profile_parameters.md) | Compare frame defaults, feature decisions, point limits, write policy, and device availability across profiles. |
+| [Device ranges](tables/slmp_device_ranges.md) | Check SD-derived range rules, fixed ranges, probe markers, and unsupported device families. |
 | [Profile definitions](evidence/profile-definitions/) | Edit capability profile source data. |
 | [Device range source](device-ranges/slmp_device_range_rules.md) | Edit device-range source data. |
 | [Live evidence](evidence/) | Check live verification decisions used by the profile definitions. |

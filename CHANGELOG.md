@@ -12,6 +12,12 @@ This repository publishes canonical profile data consumed by implementation repo
 - `Tooling`: Generators, validation scripts, or other maintainer utilities.
 - `Release`: Tagging and publication preparation.
 
+## [Unreleased]
+
+### Changed
+
+- Docs: Split the generated SLMP profile comparison into user-facing profile parameter and device-range tables without changing the canonical JSON data.
+
 ## [1.0.0] - 2026-07-04
 
 ### Added

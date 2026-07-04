@@ -7,7 +7,7 @@ This is a definition record, not live verification.
 | profile | `melsec:qcpu` |
 | definition_type | `derived` |
 | base_profile | `melsec:qnu` |
-| inherit | feature states, limits, write policy, device-range model |
+| inherit | feature states, limits, write policy |
 | live_verified | `false` |
 
 ## Overrides
