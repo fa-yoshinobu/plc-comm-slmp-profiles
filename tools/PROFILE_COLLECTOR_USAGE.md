@@ -13,6 +13,8 @@ Do not run this tool against a production machine or a PLC that controls live eq
 - Writes test values to configured test devices and reads them back.
 - Saves one JSON result file in the current folder.
 
+Device family read results are raw probe evidence. Do not turn one failed first-address read directly into an unsupported-family decision; classify it later as address, family, route, config, or policy evidence using the connected PLC setup.
+
 By default, the tool writes to these devices:
 
 | Purpose | Default device |

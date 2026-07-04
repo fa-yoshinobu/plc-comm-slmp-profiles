@@ -130,8 +130,21 @@ def collect_type_name(args: argparse.Namespace, profile: Profile) -> dict[str, A
     )
     if result.get("ok") and result.get("end_code") == "0000":
         raw = bytes.fromhex(result["data_hex"])
-        result["text"] = raw.rstrip(b"\x00 ").decode("ascii", errors="replace")
+        name = raw[:16].rstrip(b"\x00 ").decode("ascii", errors="replace")
+        result["text"] = name
+        result["type_name"] = name
+        if len(raw) >= 18:
+            type_code = raw[16:18]
+            result["type_code"] = f"{int.from_bytes(type_code, 'little'):04X}"
+            result["type_code_raw_hex"] = type_code.hex()
+        if len(raw) > 18:
+            result["extra_hex"] = raw[18:].hex()
     return result
+
+
+def unpack_dwords(data: bytes, count: int) -> list[int]:
+    value_count = min(len(data) // 4, count)
+    return [int.from_bytes(data[index * 4 : index * 4 + 4], "little") for index in range(value_count)]
 
 
 def collect_read(
@@ -142,6 +155,7 @@ def collect_read(
     points: int,
     bit: bool,
     serial: int,
+    device_type: str | None = None,
 ) -> dict[str, Any]:
     subcommand = profile.subcommands["bit" if bit else "word"]
     result = request(
@@ -162,9 +176,16 @@ def collect_read(
     result["device"] = device
     result["points"] = points
     result["kind"] = "bit" if bit else "word"
+    if device_type:
+        result["device_type"] = device_type
     if result.get("ok") and result.get("end_code") == "0000":
         raw = bytes.fromhex(result["data_hex"])
+        result["value_bytes"] = len(raw)
         result["values"] = unpack_bits(raw, points) if bit else unpack_words(raw, points)
+        if device_type == "dword":
+            dword_values = unpack_dwords(raw, points)
+            if dword_values:
+                result["values_32bit"] = dword_values
     return result
 
 
@@ -287,9 +308,18 @@ def collect_device_family_reads(
         row = rows[family]
         for device in row.get("devices", []):
             device_name = device["device"]
+            device_type = str(device.get("type", "bit" if device.get("is_bit") else "word"))
             is_bit = bool(device.get("is_bit"))
             probe = family_probe_device(device_name)
-            result = collect_read(args, profile, device=probe, points=1, bit=is_bit, serial=serial)
+            result = collect_read(
+                args,
+                profile,
+                device=probe,
+                points=1,
+                bit=is_bit,
+                serial=serial,
+                device_type=device_type,
+            )
             result["family"] = family
             result["device_code"] = device_name
             result["expected_rule"] = (
@@ -397,6 +427,7 @@ def main() -> int:
         parser.error("--profile is required unless --list-profiles is used")
     result = collect(args)
     output = args.output or default_output(args.profile)
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8", newline="\n")
     print(output.resolve())
     print("collection finished")

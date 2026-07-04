@@ -14,6 +14,8 @@ Generated capability data is published as [slmp_builtin_ethernet_profiles.json](
 
 In a profile definition limit row, `Weighted max` is an additional weighted-count guard for commands that use weighted point accounting. A blank `Weighted max` means no weighted guard is defined for that limit row; it does not mean an unknown value.
 
+Extended random and monitor routes use their own `*_ext` limit rows. Implementations should read those rows directly when building 0080/0081 or 0082/0083 requests, instead of deriving extended limits from the plain random or monitor rows.
+
 ## Device range data
 
 The maintained device-range source is [slmp_device_range_rules.md](device-ranges/slmp_device_range_rules.md).

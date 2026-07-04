@@ -74,6 +74,11 @@ LIMIT_ROWS = [
     ("Random word write weighted", "random_write_word"),
     ("Random bit write", "random_write_bit"),
     ("Monitor word register", "monitor_register_word"),
+    ("Extended random word read", "random_read_word_ext"),
+    ("Extended random word write count", "random_write_word_ext"),
+    ("Extended random word write weighted", "random_write_word_ext"),
+    ("Extended random bit write", "random_write_bit_ext"),
+    ("Extended monitor word register", "monitor_register_word_ext"),
 ]
 
 DEVICE_FAMILY_NOTES = {
@@ -221,12 +226,18 @@ def render(args: argparse.Namespace) -> str:
 
     limit_rows: list[list[Any]] = []
     for label, key in LIMIT_ROWS:
-        weighted_only = label == "Random word write weighted"
+        weighted_only = label in {"Random word write weighted", "Extended random word write weighted"}
         note = ""
-        if label == "Random word write count":
+        if label in {"Random word write count", "Extended random word write count", "Extended random word read"}:
             note = "Record pass at max and fail at max+1"
         elif label == "Random word write weighted":
             note = "Required when weighted max exists; total point count must remain within max"
+        elif label == "Extended random word write weighted":
+            note = "Required when ext weighted max exists; total point count must remain within ext max"
+        elif label == "Extended random bit write":
+            note = "Bit probes must reset tested bits OFF"
+        elif label == "Extended monitor word register":
+            note = "Record whether the ext monitor path is adopted as a limit source"
         limit_rows.append(
             [
                 label,
@@ -303,6 +314,7 @@ def render(args: argparse.Namespace) -> str:
         "For random word write, verify the count limit and the weighted limit separately when `weighted max` is defined.",
         "The weighted-limit probe must keep the total point count within `max` and exceed only `weighted max`; do not treat `81 word` or `161 word` count-over probes as weighted-limit evidence.",
         "Typical weighted-only probes are `40 word + 40 dword` for `max 80 / weighted max 960`, and `138 dword` for `max 160 / weighted max 1920`.",
+        "For extended random routes, verify the ext-specific limit rows separately from the plain random rows.",
         "",
         md_table(["Limit item", "JSON value", "Status", "Decision note"], limit_rows),
         "",

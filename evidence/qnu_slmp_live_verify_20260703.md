@@ -65,6 +65,8 @@ Only run these when limit testing is intended. A point-limit failure is `limit`,
 | Random word write | max 160, weighted max 1920, over `C054` | limit | 160 word pass; 161 word returned `C054`; 138 dword weighted over returned `C054` |
 | Random bit write | max 188, over `C053` | limit | 188 pass and reset OFF; 189 returned `C053` |
 | Monitor word register | max 192, over `C054` | limit | 192 pass; 193 returned `C054` |
+| Extended random word read | max 96, over `C054`, source inferred | route | 2026-07-04 `D1000` 0080 direct-device path: 1 returned `C070`; this is route evidence, not a point-limit boundary |
+| Extended monitor word register | max 96, over `C054`, source inferred | route | 2026-07-04 `D1000` 0080 direct-device path: 1 returned `C070`; this is route evidence, not a point-limit boundary |
 
 ## Write Policy Checklist
 
@@ -112,6 +114,6 @@ Use the device-range JSON. This table is for whether each device family exists a
 |------|----------|----------------------------|
 | Features | Adopt direct, random, and monitor. Do not adopt type name or block for QnU built-in Ethernet | None |
 | Qualified access | Do not adopt `J` link direct, `U\G`, or `HG` for QnU built-in Ethernet | None |
-| Limits | Adopt JSON limits for `melsec:qnu` | None |
+| Limits | Adopt JSON plain limits for `melsec:qnu`; 0080 direct-device probes returned `C070`, so ext rows remain inferred rather than QnU live limit evidence | None |
 | Write policy | Keep `S=read-only` as library policy unless explicitly changed | None |
 | Device families | Adopt observed QnU family results | None |

@@ -57,6 +57,7 @@ Only run these when limit testing is intended. A point-limit failure is `limit`,
 For random word write, verify the count limit and the weighted limit separately when `weighted max` is defined.
 The weighted-limit probe must keep the total point count within `max` and exceed only `weighted max`; do not treat `81 word` or `161 word` count-over probes as weighted-limit evidence.
 Typical weighted-only probes are `40 word + 40 dword` for `max 80 / weighted max 960`, and `138 dword` for `max 160 / weighted max 1920`.
+For extended random routes, verify the ext-specific limit rows separately from the plain random rows.
 
 | Limit item | JSON value | Status | Decision note |
 |------------|------------|--------|---------------|
@@ -69,6 +70,11 @@ Typical weighted-only probes are `40 word + 40 dword` for `max 80 / weighted max
 | Random word write weighted | weighted max, over end code |  | Required when weighted max exists; total point count must remain within max |
 | Random bit write |  |  |  |
 | Monitor word register |  |  |  |
+| Extended random word read | ext max, over end code |  | Record pass at ext max and fail at ext max+1 |
+| Extended random word write count | ext max, over end code |  | Record pass at ext max and fail at ext max+1 |
+| Extended random word write weighted | ext weighted max, over end code |  | Required when ext weighted max exists; total point count must remain within ext max |
+| Extended random bit write | ext max, over end code |  | Bit probes must reset tested bits OFF |
+| Extended monitor word register | ext max, over end code or not adopted |  | Record whether the ext monitor path is adopted as a limit source |
 
 ## Write Policy Checklist
 
