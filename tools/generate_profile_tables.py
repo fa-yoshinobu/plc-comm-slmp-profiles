@@ -202,11 +202,15 @@ def ordered_profiles(profiles: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_port_scope_section(capability: dict[str, Any], device_ranges: dict[str, Any]) -> str:
+    description = str(capability.get("description", "-")).replace(
+        " Generated from evidence/profile-definitions.",
+        "",
+    )
     rows = [
         ["Capability schema version", capability.get("schema_version", "-")],
         ["Capability date", capability.get("date", "-")],
         ["Scope", capability.get("scope", "-")],
-        ["Description", capability.get("description", "-")],
+        ["Description", description],
         ["Default strict mode", capability.get("policy", {}).get("default_strict", "-")],
         ["Device range schema version", device_ranges.get("schema_version", "-")],
         ["Device range date", device_ranges.get("date", "-")],
@@ -319,8 +323,6 @@ def build_device_range_section(device_ranges: dict[str, Any]) -> str:
 def build_capability_section(capability: dict[str, Any]) -> str:
     profiles: dict[str, Any] = ordered_profiles(capability["profiles"])
     profile_ids = list(profiles)
-    evidence_files = capability.get("evidence_files", {})
-
     summary_rows = []
     for profile_id in profile_ids:
         profile = profiles[profile_id]
@@ -335,7 +337,6 @@ def build_capability_section(capability: dict[str, Any]) -> str:
                 subcommands.get("ext_word", "-"),
                 subcommands.get("ext_bit", "-"),
                 "<br>".join(profile.get("verified_models", [])) or "-",
-                evidence_files.get(profile_id, "-"),
             ]
         )
 
@@ -388,7 +389,6 @@ def build_capability_section(capability: dict[str, Any]) -> str:
                     "Ext word",
                     "Ext bit",
                     "Verified models",
-                    "Evidence file",
                 ],
                 summary_rows,
             ),

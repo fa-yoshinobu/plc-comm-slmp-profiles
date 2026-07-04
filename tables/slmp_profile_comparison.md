@@ -13,7 +13,7 @@ This file is a maintenance view of the generated JSON and device range rules.
 | Capability schema version | 1 |
 | Capability date | 2026-07-03 |
 | Scope | builtin-ethernet-port |
-| Description | Canonical PLC model profile definitions for the SLMP library family. Generated from evidence/profile-definitions. |
+| Description | Canonical PLC model profile definitions for the SLMP library family. |
 | Default strict mode | True |
 | Device range schema version | 1 |
 | Device range date | 2026-07-03 |
@@ -60,17 +60,17 @@ This file is a maintenance view of the generated JSON and device range rules.
 
 ### Profile Summary
 
-| Profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models | Evidence file |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) | evidence/profile-definitions/iq-r_slmp_profile_definition_20260703.md |
-| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) | evidence/profile-definitions/iql_slmp_profile_definition_20260703.md |
-| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed | evidence/profile-definitions/mx-r_slmp_profile_definition_20260703.md |
-| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed | evidence/profile-definitions/mx-f_slmp_profile_definition_20260703.md |
-| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5U-32MR/DS(built-in Ethernet) | evidence/profile-definitions/iqf_slmp_profile_definition_20260703.md |
-| melsec:qcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Unconfirmed | evidence/profile-definitions/qcpu_slmp_profile_definition_20260703.md |
-| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) | evidence/profile-definitions/lcpu_slmp_profile_definition_20260703.md |
-| melsec:qnu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU(built-in Ethernet) | evidence/profile-definitions/qnu_slmp_profile_definition_20260703.md |
-| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) | evidence/profile-definitions/qnudv_slmp_profile_definition_20260703.md |
+| Profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) |
+| melsec:iq-l | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) |
+| melsec:mx-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
+| melsec:mx-f | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
+| melsec:iq-f | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5U-32MR/DS(built-in Ethernet) |
+| melsec:qcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Unconfirmed |
+| melsec:lcpu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) |
+| melsec:qnu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU(built-in Ethernet) |
+| melsec:qnudv | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) |
 
 ### Feature Matrix
 
