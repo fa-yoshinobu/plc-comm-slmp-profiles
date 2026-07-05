@@ -44,6 +44,7 @@ LIMIT_LABELS = {
 
 PROFILE_ORDER = [
     "melsec:iq-r",
+    "melsec:iq-r:rj71en71",
     "melsec:iq-l",
     "melsec:mx-r",
     "melsec:mx-f",

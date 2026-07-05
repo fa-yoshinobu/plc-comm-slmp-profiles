@@ -16,6 +16,8 @@ This repository publishes canonical profile data consumed by implementation repo
 
 ### Changed
 
+- Data: Shortened SLMP `display_name` values to the `<series> (<route>)` UI label form for the `v1.2.1` data release.
+- Docs: Regenerated SLMP profile tables with the shortened display names and the RJ71EN71 profile row included in table order.
 - Data: Updated SLMP `display_name` values to match the approved profile naming table for the `v1.1.2` data release.
 - Docs: Split the generated SLMP profile comparison into user-facing profile parameter and device-range tables without changing the canonical JSON data.
 - Tooling: Added a live verification draft generator that pre-fills checklist rows from the canonical capability and device-range JSON files.

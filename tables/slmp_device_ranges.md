@@ -19,6 +19,7 @@ When an exact range is configuration-dependent, prefer a live probe or the PLC r
 | Profile | SD register start | SD register count | Base profile |
 | --- | --- | --- | --- |
 | melsec:iq-r | 260 | 50 | - |
+| melsec:iq-r:rj71en71 | 260 | 50 | melsec:iq-r |
 | melsec:iq-l | 260 | 50 | - |
 | melsec:mx-r | 260 | 50 | - |
 | melsec:mx-f | 260 | 50 | - |
@@ -31,35 +32,34 @@ When an exact range is configuration-dependent, prefer a live probe or the PLC r
 | melsec:qnu:qj71e71-100 | 286 | 26 | melsec:qnu |
 | melsec:qnudv | 286 | 26 | - |
 | melsec:qnudv:qj71e71-100 | 286 | 26 | melsec:qnudv |
-| melsec:iq-r:rj71en71 | 260 | 50 | melsec:iq-r |
 
 ## Device Family Rule Comparison
 
-| Device family | Type | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:qcpu:qj71e71-100 | melsec:lcpu | melsec:lcpu:lj71e71-100 | melsec:qnu | melsec:qnu:qj71e71-100 | melsec:qnudv | melsec:qnudv:qj71e71-100 | melsec:iq-r:rj71en71 |
+| Device family | Type | melsec:iq-r | melsec:iq-r:rj71en71 | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:qcpu:qj71e71-100 | melsec:lcpu | melsec:lcpu:lj71e71-100 | melsec:qnu | melsec:qnu:qj71e71-100 | melsec:qnudv | melsec:qnudv:qj71e71-100 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| X | bit | dword: SD260 | dword: SD260 | dword: SD260 | dword: SD260 | dword: SD260 | word: SD290 | word: SD290 | word: SD290 | word: SD290 | word: SD290 | word: SD290 | word: SD290 | word: SD290 | dword: SD260 |
-| Y | bit | dword: SD262 | dword: SD262 | dword: SD262 | dword: SD262 | dword: SD262 | word: SD291 | word: SD291 | word: SD291 | word: SD291 | word: SD291 | word: SD291 | word: SD291 | word: SD291 | dword: SD262 |
-| M | bit | dword: SD264 | dword: SD264 | dword: SD264 | dword: SD264 | dword: SD264 | word-clipped: SD292 clip 32768 | word-clipped: SD292 clip 32768 | dword: SD286 | dword: SD286 | dword: SD286 | dword: SD286 | dword: SD286 | dword: SD286 | dword: SD264 |
-| B | bit | dword: SD266 | dword: SD266 | dword: SD266 | dword: SD266 | dword: SD266 | word-clipped: SD294 clip 32768 | word-clipped: SD294 clip 32768 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD266 |
-| SB | bit | dword: SD268 | dword: SD268 | dword: SD268 | dword: SD268 | dword: SD268 | word: SD296 | word: SD296 | word: SD296 | word: SD296 | word: SD296 | word: SD296 | word: SD296 | word: SD296 | dword: SD268 |
-| F | bit | dword: SD270 | dword: SD270 | dword: SD270 | dword: SD270 | dword: SD270 | word: SD295 | word: SD295 | word: SD295 | word: SD295 | word: SD295 | word: SD295 | word: SD295 | word: SD295 | dword: SD270 |
-| V | bit | dword: SD272 | dword: SD272 | dword: SD272 | dword: SD272 | unsupported | word: SD297 | word: SD297 | word: SD297 | word: SD297 | word: SD297 | word: SD297 | word: SD297 | word: SD297 | dword: SD272 |
-| L | bit | dword: SD274 | dword: SD274 | dword: SD274 | dword: SD274 | dword: SD274 | word: SD293 | word: SD293 | word: SD293 | word: SD293 | word: SD293 | word: SD293 | word: SD293 | word: SD293 | dword: SD274 |
-| S | bit | dword: SD276 | dword: SD276 | dword: SD276 | dword: SD276 | dword: SD276 | word: SD298 | word: SD298 | word: SD298 | word: SD298 | word: SD298 | word: SD298 | word: SD298 | word: SD298 | dword: SD276 |
-| D | word | dword: SD280 | dword: SD280 | dword: SD280 | dword: SD280 | dword: SD280 | word-clipped: SD302 clip 32768 | word-clipped: SD302 clip 32768 | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD280 |
-| W | word | dword: SD282 | dword: SD282 | dword: SD282 | dword: SD282 | dword: SD282 | word-clipped: SD303 clip 32768 | word-clipped: SD303 clip 32768 | dword: SD310 | dword: SD310 | dword: SD310 | dword: SD310 | dword: SD310 | dword: SD310 | dword: SD282 |
-| SW | word | dword: SD284 | dword: SD284 | dword: SD284 | dword: SD284 | dword: SD284 | word: SD304 | word: SD304 | word: SD304 | word: SD304 | word: SD304 | word: SD304 | word: SD304 | word: SD304 | dword: SD284 |
-| R | word | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword: SD304 | fixed 32768 probe | fixed 32768 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword-clipped: SD306 clip 32768 |
-| T | TS:bit, TC:bit, TN:word | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | word: SD299 | word: SD299 | word: SD299 | word: SD299 | word: SD299 | word: SD299 | word: SD299 | word: SD299 | dword: SD288 |
-| ST | STS:bit, STC:bit, STN:word | dword: SD290 | dword: SD290 | dword: SD290 | dword: SD290 | dword: SD290 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | dword: SD290 |
-| C | CS:bit, CC:bit, CN:word | dword: SD292 | dword: SD292 | dword: SD292 | dword: SD292 | dword: SD292 | word: SD301 | word: SD301 | word: SD301 | word: SD301 | word: SD301 | word: SD301 | word: SD301 | word: SD301 | dword: SD292 |
-| LT | LTS:bit, LTC:bit, LTN:dword | dword: SD294 | dword: SD294 | dword: SD294 | dword: SD294 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | dword: SD294 |
-| LST | LSTS:bit, LSTC:bit, LSTN:dword | dword: SD296 | dword: SD296 | dword: SD296 | dword: SD296 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | dword: SD296 |
-| LC | LCS:bit, LCC:bit, LCN:dword | dword: SD298 | dword: SD298 | dword: SD298 | dword: SD298 | dword: SD298 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | dword: SD298 |
-| Z | word | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | fixed 10 probe | fixed 10 probe | fixed 20 | fixed 20 | fixed 20 | fixed 20 | fixed 20 | fixed 20 | word: SD300 |
-| LZ | dword | word: SD302 | word: SD302 | word: SD302 | word: SD302 | word: SD302 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | word: SD302 |
-| ZR | word | dword: SD306 | dword: SD306 | dword: SD306 | dword: SD306 | unsupported | undefined probe | undefined probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 |
-| RD | word | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | dword: SD308 |
-| SM | bit | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 10000 | fixed 1024 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 4096 |
-| SD | word | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 12000 | fixed 1024 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 4096 |
+| X | bit | dword: SD260 | dword: SD260 | dword: SD260 | dword: SD260 | dword: SD260 | dword: SD260 | word: SD290 | word: SD290 | word: SD290 | word: SD290 | word: SD290 | word: SD290 | word: SD290 | word: SD290 |
+| Y | bit | dword: SD262 | dword: SD262 | dword: SD262 | dword: SD262 | dword: SD262 | dword: SD262 | word: SD291 | word: SD291 | word: SD291 | word: SD291 | word: SD291 | word: SD291 | word: SD291 | word: SD291 |
+| M | bit | dword: SD264 | dword: SD264 | dword: SD264 | dword: SD264 | dword: SD264 | dword: SD264 | word-clipped: SD292 clip 32768 | word-clipped: SD292 clip 32768 | dword: SD286 | dword: SD286 | dword: SD286 | dword: SD286 | dword: SD286 | dword: SD286 |
+| B | bit | dword: SD266 | dword: SD266 | dword: SD266 | dword: SD266 | dword: SD266 | dword: SD266 | word-clipped: SD294 clip 32768 | word-clipped: SD294 clip 32768 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 |
+| SB | bit | dword: SD268 | dword: SD268 | dword: SD268 | dword: SD268 | dword: SD268 | dword: SD268 | word: SD296 | word: SD296 | word: SD296 | word: SD296 | word: SD296 | word: SD296 | word: SD296 | word: SD296 |
+| F | bit | dword: SD270 | dword: SD270 | dword: SD270 | dword: SD270 | dword: SD270 | dword: SD270 | word: SD295 | word: SD295 | word: SD295 | word: SD295 | word: SD295 | word: SD295 | word: SD295 | word: SD295 |
+| V | bit | dword: SD272 | dword: SD272 | dword: SD272 | dword: SD272 | dword: SD272 | unsupported | word: SD297 | word: SD297 | word: SD297 | word: SD297 | word: SD297 | word: SD297 | word: SD297 | word: SD297 |
+| L | bit | dword: SD274 | dword: SD274 | dword: SD274 | dword: SD274 | dword: SD274 | dword: SD274 | word: SD293 | word: SD293 | word: SD293 | word: SD293 | word: SD293 | word: SD293 | word: SD293 | word: SD293 |
+| S | bit | dword: SD276 | dword: SD276 | dword: SD276 | dword: SD276 | dword: SD276 | dword: SD276 | word: SD298 | word: SD298 | word: SD298 | word: SD298 | word: SD298 | word: SD298 | word: SD298 | word: SD298 |
+| D | word | dword: SD280 | dword: SD280 | dword: SD280 | dword: SD280 | dword: SD280 | dword: SD280 | word-clipped: SD302 clip 32768 | word-clipped: SD302 clip 32768 | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 |
+| W | word | dword: SD282 | dword: SD282 | dword: SD282 | dword: SD282 | dword: SD282 | dword: SD282 | word-clipped: SD303 clip 32768 | word-clipped: SD303 clip 32768 | dword: SD310 | dword: SD310 | dword: SD310 | dword: SD310 | dword: SD310 | dword: SD310 |
+| SW | word | dword: SD284 | dword: SD284 | dword: SD284 | dword: SD284 | dword: SD284 | dword: SD284 | word: SD304 | word: SD304 | word: SD304 | word: SD304 | word: SD304 | word: SD304 | word: SD304 | word: SD304 |
+| R | word | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword-clipped: SD306 clip 32768 | dword: SD304 | fixed 32768 probe | fixed 32768 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe |
+| T | TS:bit, TC:bit, TN:word | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | dword: SD288 | word: SD299 | word: SD299 | word: SD299 | word: SD299 | word: SD299 | word: SD299 | word: SD299 | word: SD299 |
+| ST | STS:bit, STC:bit, STN:word | dword: SD290 | dword: SD290 | dword: SD290 | dword: SD290 | dword: SD290 | dword: SD290 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 |
+| C | CS:bit, CC:bit, CN:word | dword: SD292 | dword: SD292 | dword: SD292 | dword: SD292 | dword: SD292 | dword: SD292 | word: SD301 | word: SD301 | word: SD301 | word: SD301 | word: SD301 | word: SD301 | word: SD301 | word: SD301 |
+| LT | LTS:bit, LTC:bit, LTN:dword | dword: SD294 | dword: SD294 | dword: SD294 | dword: SD294 | dword: SD294 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
+| LST | LSTS:bit, LSTC:bit, LSTN:dword | dword: SD296 | dword: SD296 | dword: SD296 | dword: SD296 | dword: SD296 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
+| LC | LCS:bit, LCC:bit, LCN:dword | dword: SD298 | dword: SD298 | dword: SD298 | dword: SD298 | dword: SD298 | dword: SD298 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
+| Z | word | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | word: SD300 | fixed 10 probe | fixed 10 probe | fixed 20 | fixed 20 | fixed 20 | fixed 20 | fixed 20 | fixed 20 |
+| LZ | dword | word: SD302 | word: SD302 | word: SD302 | word: SD302 | word: SD302 | word: SD302 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
+| ZR | word | dword: SD306 | dword: SD306 | dword: SD306 | dword: SD306 | dword: SD306 | unsupported | undefined probe | undefined probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe | dword: SD306 probe |
+| RD | word | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
+| SM | bit | fixed 4096 | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 10000 | fixed 1024 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 |
+| SD | word | fixed 4096 | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 12000 | fixed 1024 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 |
 

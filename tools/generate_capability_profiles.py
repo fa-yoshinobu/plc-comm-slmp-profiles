@@ -32,20 +32,20 @@ PROFILE_ORDER = [
 ]
 
 PROFILE_DISPLAY_NAMES = {
-    "melsec:iq-r": "MELSEC iQ-R (built-in Ethernet)",
-    "melsec:iq-r:rj71en71": "MELSEC iQ-R via RJ71EN71 (Ethernet unit)",
-    "melsec:iq-l": "MELSEC iQ-L (built-in Ethernet)",
-    "melsec:mx-r": "MELSEC MX-R (built-in Ethernet)",
-    "melsec:mx-f": "MELSEC MX-F (built-in Ethernet)",
-    "melsec:iq-f": "MELSEC iQ-F (built-in Ethernet)",
-    "melsec:qcpu": "MELSEC-Q (conservative baseline)",
-    "melsec:qcpu:qj71e71-100": "MELSEC-Q via QJ71E71-100 (Ethernet unit)",
-    "melsec:lcpu": "MELSEC-L (built-in Ethernet)",
-    "melsec:lcpu:lj71e71-100": "MELSEC-L via LJ71E71-100 (Ethernet unit)",
-    "melsec:qnu": "MELSEC-QnU (built-in Ethernet)",
-    "melsec:qnu:qj71e71-100": "MELSEC QnU via QJ71E71-100 (Ethernet unit)",
-    "melsec:qnudv": "MELSEC-QnUDV (built-in Ethernet)",
-    "melsec:qnudv:qj71e71-100": "MELSEC QnUDV via QJ71E71-100 (Ethernet unit)",
+    "melsec:iq-r": "MELSEC iQ-R (built-in)",
+    "melsec:iq-r:rj71en71": "MELSEC iQ-R (RJ71EN71)",
+    "melsec:iq-l": "MELSEC iQ-L (built-in)",
+    "melsec:mx-r": "MELSEC MX-R (built-in)",
+    "melsec:mx-f": "MELSEC MX-F (built-in)",
+    "melsec:iq-f": "MELSEC iQ-F (built-in)",
+    "melsec:qcpu": "MELSEC-Q (base profile)",
+    "melsec:qcpu:qj71e71-100": "MELSEC-Q (QJ71E71-100)",
+    "melsec:lcpu": "MELSEC-L (built-in)",
+    "melsec:lcpu:lj71e71-100": "MELSEC-L (LJ71E71-100)",
+    "melsec:qnu": "MELSEC QnU (built-in)",
+    "melsec:qnu:qj71e71-100": "MELSEC QnU (QJ71E71-100)",
+    "melsec:qnudv": "MELSEC QnUDV (built-in)",
+    "melsec:qnudv:qj71e71-100": "MELSEC QnUDV (QJ71E71-100)",
 }
 
 PROFILE_SCOPES = {
