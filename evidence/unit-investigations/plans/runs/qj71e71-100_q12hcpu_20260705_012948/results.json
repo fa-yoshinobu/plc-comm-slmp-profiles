@@ -1,0 +1,299 @@
+{
+  "plan": "evidence\\unit-investigations\\plans\\qj71e71-100_q12hcpu.json",
+  "profile": {
+    "profile": "melsec:qcpu",
+    "frame": "4E",
+    "compat": "Q/L",
+    "subcommands": {
+      "bit": "0001",
+      "ext_bit": "0081",
+      "ext_word": "0080",
+      "word": "0000"
+    }
+  },
+  "target": "192.168.250.100:1025",
+  "started_items": 28,
+  "recorded_items": 28,
+  "waived": [],
+  "errors": [],
+  "results": [
+    {
+      "id": "type_name",
+      "type": "type_name",
+      "end_code": "0000"
+    },
+    {
+      "id": "direct_read_word",
+      "type": "read_word",
+      "device": "D0",
+      "end_code": "0000"
+    },
+    {
+      "id": "direct_read_bit",
+      "type": "read_bit",
+      "device": "M0",
+      "end_code": "0000"
+    },
+    {
+      "id": "direct_write_word_verify",
+      "type": "write_word_verify",
+      "device": "D1000",
+      "value": 8738,
+      "end_codes": [
+        "0000",
+        "0000"
+      ]
+    },
+    {
+      "id": "direct_write_bit_verify",
+      "type": "write_bit_verify",
+      "device": "M1000",
+      "end_codes": [
+        "0000",
+        "0000",
+        "0000",
+        "0000"
+      ]
+    },
+    {
+      "id": "boundary_direct_read_word",
+      "type": "boundary_direct_read_word",
+      "device": "D0",
+      "status": "limit",
+      "largest_pass": 960,
+      "first_fail": 961,
+      "fail_end": "C051"
+    },
+    {
+      "id": "boundary_direct_write_word",
+      "type": "boundary_direct_write_word",
+      "device": "D1000",
+      "status": "limit",
+      "largest_pass": 960,
+      "first_fail": 961,
+      "fail_end": "C051"
+    },
+    {
+      "id": "boundary_direct_read_bit",
+      "type": "boundary_direct_read_bit",
+      "device": "M0",
+      "status": "limit",
+      "largest_pass": 7168,
+      "first_fail": 7169,
+      "fail_end": "C052"
+    },
+    {
+      "id": "boundary_direct_write_bit",
+      "type": "boundary_direct_write_bit",
+      "device": "M1000",
+      "status": "limit",
+      "largest_pass": 7168,
+      "first_fail": 7169,
+      "fail_end": "C052"
+    },
+    {
+      "id": "boundary_random_read_word",
+      "type": "boundary_random_read_word",
+      "word_device": "D0",
+      "status": "limit",
+      "largest_pass": 192,
+      "first_fail": 193,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word",
+      "type": "boundary_random_write_word",
+      "word_device": "D1000",
+      "status": "limit",
+      "largest_pass": 160,
+      "first_fail": 161,
+      "fail_end": "4080"
+    },
+    {
+      "id": "boundary_random_write_word_weighted",
+      "type": "boundary_random_write_word_weighted",
+      "dword_device": "D1000",
+      "status": "limit",
+      "largest_pass": 137,
+      "first_fail": 138,
+      "fail_end": "4080"
+    },
+    {
+      "id": "boundary_random_write_bit",
+      "type": "boundary_random_write_bit",
+      "device": "M1000",
+      "status": "limit",
+      "largest_pass": 188,
+      "first_fail": 189,
+      "fail_end": "C053"
+    },
+    {
+      "id": "boundary_random_read_word_ext",
+      "type": "boundary_random_read_word_ext",
+      "word_device": "U4\\G1000",
+      "status": "limit",
+      "largest_pass": 185,
+      "first_fail": 186,
+      "fail_end": "4080"
+    },
+    {
+      "id": "boundary_random_read_word_ext_jw",
+      "type": "boundary_random_read_word_ext",
+      "word_device": "J1\\W10",
+      "status": "limit",
+      "largest_pass": 185,
+      "first_fail": 186,
+      "fail_end": "4080"
+    },
+    {
+      "id": "boundary_random_write_word_ext",
+      "type": "boundary_random_write_word_ext",
+      "word_device": "U4\\G1000",
+      "status": "limit",
+      "largest_pass": 160,
+      "first_fail": 161,
+      "fail_end": "4080"
+    },
+    {
+      "id": "boundary_random_write_word_ext_jw",
+      "type": "boundary_random_write_word_ext",
+      "word_device": "J1\\W10",
+      "status": "limit",
+      "largest_pass": 160,
+      "first_fail": 161,
+      "fail_end": "4080"
+    },
+    {
+      "id": "boundary_random_write_word_weighted_ext",
+      "type": "boundary_random_write_word_weighted_ext",
+      "dword_device": "U4\\G1000",
+      "status": "limit",
+      "largest_pass": 137,
+      "first_fail": 138,
+      "fail_end": "4080"
+    },
+    {
+      "id": "boundary_random_write_word_weighted_ext_jw",
+      "type": "boundary_random_write_word_weighted_ext",
+      "dword_device": "J1\\W10",
+      "status": "limit",
+      "largest_pass": 137,
+      "first_fail": 138,
+      "fail_end": "4080"
+    },
+    {
+      "id": "boundary_random_write_bit_ext",
+      "type": "boundary_random_write_bit_ext",
+      "device": "J1\\B10",
+      "status": "limit",
+      "largest_pass": 188,
+      "first_fail": 189,
+      "fail_end": "C053"
+    },
+    {
+      "id": "boundary_monitor_register",
+      "type": "boundary_monitor_register",
+      "word_device": "D0",
+      "status": "limit",
+      "largest_pass": 192,
+      "first_fail": 193,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_monitor_register_ext",
+      "type": "boundary_monitor_register_ext",
+      "word_device": "U4\\G1000",
+      "status": "limit",
+      "largest_pass": 192,
+      "first_fail": 193,
+      "fail_end": "C054"
+    },
+    {
+      "id": "monitor_execute",
+      "type": "monitor_execute",
+      "word_device": "D1000",
+      "end_codes": [
+        "0000",
+        "0000"
+      ]
+    },
+    {
+      "id": "block_read",
+      "type": "block_read",
+      "end_code": "0000"
+    },
+    {
+      "id": "block_write",
+      "type": "block_write",
+      "end_code": "0000"
+    },
+    {
+      "id": "ext_read_routes",
+      "type": "ext_read_routes",
+      "routes": {
+        "J\\X": "0000",
+        "J\\Y": "0000",
+        "J\\B": "0000",
+        "J\\W": "0000",
+        "J\\SB": "0000",
+        "J\\SW": "0000",
+        "U\\G": "0000",
+        "U3E0\\HG": "C05B"
+      }
+    },
+    {
+      "id": "family_reachability",
+      "type": "family_reachability",
+      "families": {
+        "X": "0000",
+        "Y": "0000",
+        "M": "0000",
+        "L": "0000",
+        "F": "0000",
+        "V": "0000",
+        "B": "0000",
+        "S": "0000",
+        "SB": "0000",
+        "SM": "0000",
+        "D": "0000",
+        "W": "0000",
+        "SW": "0000",
+        "R": "0000",
+        "ZR": "0000",
+        "RD": "C05B",
+        "Z": "0000",
+        "SD": "0000",
+        "TS": "0000",
+        "TC": "0000",
+        "TN": "0000",
+        "STS": "0000",
+        "STC": "0000",
+        "STN": "0000",
+        "CS": "0000",
+        "CC": "0000",
+        "CN": "0000",
+        "LTS": "C05B",
+        "LTC": "C05B",
+        "LTN": "C05B",
+        "LSTS": "C05B",
+        "LSTC": "C05B",
+        "LSTN": "C05B",
+        "LCS": "C05B",
+        "LCC": "C05B",
+        "LCN": "C05B",
+        "LZ": "C05B"
+      }
+    },
+    {
+      "id": "write_policy_s",
+      "type": "write_bit_verify",
+      "device": "S2",
+      "end_codes": [
+        "0000",
+        "0000",
+        "0000",
+        "0000"
+      ]
+    }
+  ]
+}

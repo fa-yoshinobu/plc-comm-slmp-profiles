@@ -1,0 +1,59 @@
+{
+  "name": "qnu_q26udehcpu_builtin",
+  "description": "Q26UDEHCPU built-in Ethernet port baseline sweep (same method as the unit investigations; measures the previously inferred QnU ext rows live). Write targets were designated by the user on 2026-07-05: U4\\G1000 (word), J1\\W10 (word), J1\\B10 (bit), plus plain working areas D1000/M1000/S2. J1\\X and J1\\Y are read-only routes and are intentionally absent from write_allow.",
+  "connection": {
+    "host": "192.168.250.100",
+    "port": 1025,
+    "timeout": 10.0
+  },
+  "profile": {
+    "base": "melsec:qnu"
+  },
+  "write_allow": [
+    {"device": "D1000", "span": 1030},
+    {"device": "M1000", "span": 7310},
+    {"device": "U4\\G1000", "span": 300},
+    {"device": "J1\\W10", "span": 300},
+    {"device": "J1\\B10", "span": 300},
+    {"device": "S2", "span": 2}
+  ],
+  "items": [
+    {"id": "type_name", "type": "type_name", "params": {}},
+    {"id": "direct_read_word", "type": "read_word", "params": {"device": "D0", "points": 1}},
+    {"id": "direct_read_bit", "type": "read_bit", "params": {"device": "M0", "points": 1}},
+    {"id": "direct_write_word_verify", "type": "write_word_verify", "params": {"device": "D1000"}},
+    {"id": "direct_write_bit_verify", "type": "write_bit_verify", "params": {"device": "M1000"}},
+    {"id": "boundary_direct_read_word", "type": "boundary_direct_read_word", "params": {"device": "D0", "cap": 1024}},
+    {"id": "boundary_direct_write_word", "type": "boundary_direct_write_word", "params": {"device": "D1000", "cap": 1024}},
+    {"id": "boundary_direct_read_bit", "type": "boundary_direct_read_bit", "params": {"device": "M0", "cap": 7299}},
+    {"id": "boundary_direct_write_bit", "type": "boundary_direct_write_bit", "params": {"device": "M1000", "cap": 7299}},
+    {"id": "boundary_random_read_word", "type": "boundary_random_read_word", "params": {"word_device": "D0", "cap": 255}},
+    {"id": "boundary_random_write_word", "type": "boundary_random_write_word", "params": {"word_device": "D1000", "cap": 255}},
+    {"id": "boundary_random_write_word_weighted", "type": "boundary_random_write_word_weighted", "params": {"dword_device": "D1000", "cap": 255}},
+    {"id": "boundary_random_write_bit", "type": "boundary_random_write_bit", "params": {"device": "M1000", "cap": 255}},
+    {"id": "boundary_random_read_word_ext", "type": "boundary_random_read_word_ext", "params": {"word_device": "U4\\G1000", "cap": 255}},
+    {"id": "boundary_random_read_word_ext_jw", "type": "boundary_random_read_word_ext", "params": {"word_device": "J1\\W10", "cap": 255}},
+    {"id": "boundary_random_write_word_ext", "type": "boundary_random_write_word_ext", "params": {"word_device": "U4\\G1000", "cap": 255}},
+    {"id": "boundary_random_write_word_ext_jw", "type": "boundary_random_write_word_ext", "params": {"word_device": "J1\\W10", "cap": 255}},
+    {"id": "boundary_random_write_word_weighted_ext", "type": "boundary_random_write_word_weighted_ext", "params": {"dword_device": "U4\\G1000", "cap": 255}},
+    {"id": "boundary_random_write_word_weighted_ext_jw", "type": "boundary_random_write_word_weighted_ext", "params": {"dword_device": "J1\\W10", "cap": 255}},
+    {"id": "boundary_random_write_bit_ext", "type": "boundary_random_write_bit_ext", "params": {"device": "J1\\B10", "cap": 255}},
+    {"id": "boundary_monitor_register", "type": "boundary_monitor_register", "params": {"word_device": "D0", "cap": 255}},
+    {"id": "boundary_monitor_register_ext", "type": "boundary_monitor_register_ext", "params": {"word_device": "U4\\G1000", "cap": 255}},
+    {"id": "monitor_execute", "type": "monitor_execute", "params": {"word_device": "D1000"}},
+    {"id": "block_read", "type": "block_read", "params": {"word_device": "D1000", "word_points": 2, "bit_device": "M1000", "bit_points": 2}},
+    {"id": "block_write", "type": "block_write", "params": {"word_device": "D1000", "word_points": 2, "bit_device": "M1000", "bit_points": 2}},
+    {"id": "ext_read_routes", "type": "ext_read_routes", "params": {"routes": {
+      "J\\X": "J1\\X10",
+      "J\\Y": "J1\\Y10",
+      "J\\B": "J1\\B10",
+      "J\\W": "J1\\W10",
+      "J\\SB": "J1\\SB40",
+      "J\\SW": "J1\\SW33",
+      "U\\G": "U4\\G1000",
+      "U3E0\\HG": "U3E0\\HG20"
+    }}},
+    {"id": "family_reachability", "type": "family_reachability", "params": {"overrides": {}}},
+    {"id": "write_policy_s", "type": "write_bit_verify", "params": {"device": "S2"}}
+  ]
+}

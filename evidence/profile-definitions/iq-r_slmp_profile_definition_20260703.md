@@ -6,7 +6,7 @@
 | definition_type | `live` |
 | source_evidence | `evidence/iq-r_slmp_live_verify_20260703.md` |
 | live_verified | `true` |
-| verified_models | `R120PCPU(built-in Ethernet)` |
+| verified_models | `R120PCPU(built-in Ethernet), R120PCPU via RJ71EN71` |
 | frame | `4E` |
 | compat | `iQ-R` |
 | word_subcommand | `0002` |

@@ -218,6 +218,7 @@ class Runner:
         label: str,
         requests: list[tuple[int, int, bytes]],
         stop_on_nonzero: bool = True,
+        capture_data: bool = False,
     ) -> list[dict[str, Any]]:
         """Send requests on one socket; log every attempt; return per-request rows."""
         rows: list[dict[str, Any]] = []
@@ -244,6 +245,8 @@ class Runner:
                             "data_bytes": len(response.data),
                             "retry": retry,
                         }
+                        if capture_data:
+                            row["data_hex"] = response.data.hex()
                         rows.append(row)
                         self._log(row)
                         if stop_on_nonzero and response.end_code != 0:
@@ -264,9 +267,13 @@ class Runner:
         return rows
 
     def _end_code(self, rows: list[dict[str, Any]]) -> str | None:
-        if not rows or "error" in rows[0]:
-            return None
-        return rows[0]["end_code"]
+        for row in rows:
+            if "error" not in row:
+                return row["end_code"]
+        return None
+
+    def _response_rows(self, rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        return [row for row in rows if "error" not in row]
 
     # ---------------- boundary search ----------------
 
@@ -330,8 +337,16 @@ class Runner:
             return self._exchange(item_id, label, requests, stop_on_nonzero)
 
         if item_type == "type_name":
-            rows = ex("type-name", [(probe.COMMAND_TYPE_NAME, 0x0000, b"")])
-            return {"end_code": self._end_code(rows)}
+            rows = self._exchange(item_id, "type-name", [(probe.COMMAND_TYPE_NAME, 0x0000, b"")], capture_data=True)
+            result: dict[str, Any] = {"end_code": self._end_code(rows)}
+            response_rows = self._response_rows(rows)
+            if result["end_code"] == "0000" and response_rows and response_rows[0].get("data_hex"):
+                data = bytes.fromhex(response_rows[0]["data_hex"])
+                result["raw_hex"] = response_rows[0]["data_hex"]
+                result["text"] = data[:16].rstrip(b"\x00 ").decode("ascii", errors="replace")
+                if len(data) >= 18:
+                    result["type_code_hex"] = data[16:18].hex()
+            return result
 
         if item_type in ("read_word", "read_bit"):
             bit = item_type == "read_bit"
@@ -349,7 +364,7 @@ class Runner:
                     (probe.COMMAND_DEVICE_READ, sub["word"], probe.device_payload(p, device, 1)),
                 ],
             )
-            return {"device": device, "value": value, "end_codes": [r.get("end_code") for r in rows]}
+            return {"device": device, "value": value, "end_codes": [r["end_code"] for r in self._response_rows(rows)]}
 
         if item_type == "write_bit_verify":
             device = params["device"]
@@ -362,7 +377,7 @@ class Runner:
                     (probe.COMMAND_DEVICE_READ, sub["bit"], probe.device_payload(p, device, 1)),
                 ],
             )
-            return {"device": device, "end_codes": [r.get("end_code") for r in rows]}
+            return {"device": device, "end_codes": [r["end_code"] for r in self._response_rows(rows)]}
 
         if item_type in ("boundary_direct_read_word", "boundary_direct_read_bit"):
             bit = item_type.endswith("bit")
@@ -485,7 +500,7 @@ class Runner:
                     (probe.COMMAND_DEVICE_EXECUTE_MONITOR, sub["word"], b""),
                 ],
             )
-            return {"word_device": template, "end_codes": [r.get("end_code") for r in rows]}
+            return {"word_device": template, "end_codes": [r["end_code"] for r in self._response_rows(rows)]}
 
         if item_type == "block_read":
             data = probe.block_access_payload(
@@ -548,18 +563,47 @@ class Runner:
                 if access == "dword_random":
                     data = probe.random_read_payload(p, [], [device])
                     rows = ex(f"family {family} ({device})", [(probe.COMMAND_DEVICE_READ_RANDOM, sub["word"], data)])
+                elif access == "word4":  # intended long route: one 4-word unit
+                    data = probe.device_payload(p, device, 4)
+                    rows = ex(f"family {family} ({device} x4)", [(probe.COMMAND_DEVICE_READ, sub["word"], data)])
                 else:
                     data = probe.device_payload(p, device, 1)
                     rows = ex(
                         f"family {family} ({device})",
                         [(probe.COMMAND_DEVICE_READ, sub["bit" if access == "bit" else "word"], data)],
                     )
-                outcome[family] = self._end_code(rows)
+                entry: dict[str, Any] = {
+                    "device": device,
+                    "access": access,
+                    "end_code": self._end_code(rows),
+                }
+                if spec.get("raw"):
+                    entry["raw_device_code_probe"] = True  # library never sends this code; record only
+                if spec.get("note"):
+                    entry["note"] = spec["note"]
+                outcome[family] = entry
             return {"families": outcome}
 
         raise PlanError(f"unknown item type: {item_type}")
 
     # ---------------- orchestration ----------------
+
+    @staticmethod
+    def _outcome_failed(outcome: dict[str, Any]) -> bool:
+        """True when an item has an unmeasured hole (an all-retries-failed request)."""
+        if outcome.get("status") == "error":
+            return True
+        if outcome.get("status") in ("limit", "fail"):
+            return False
+        if "end_code" in outcome and outcome["end_code"] is None:
+            return True
+        if "end_codes" in outcome and not outcome["end_codes"]:
+            return True
+        if "routes" in outcome and any(code is None for code in outcome["routes"].values()):
+            return True
+        if "families" in outcome and any(entry.get("end_code") is None for entry in outcome["families"].values()):
+            return True
+        return False
 
     def run(self) -> int:
         self.out_dir.mkdir(parents=True, exist_ok=True)
@@ -580,11 +624,8 @@ class Runner:
                     outcome = self.run_item(item)
                 except Exception as exc:  # noqa: BLE001 -- an item failure must become a row, not an abort
                     outcome = {"status": "error", "error": type(exc).__name__, "detail": str(exc)}
-                status = outcome.get("status")
-                if status == "error" or (
-                    status is None and outcome.get("end_code") is None and "end_codes" not in outcome
-                    and "routes" not in outcome and "families" not in outcome
-                ):
+                if self._outcome_failed(outcome):
+                    outcome["status"] = "error"
                     errors += 1
                 self.results.append({"id": item_id, "type": item["type"], **outcome})
         summary = {

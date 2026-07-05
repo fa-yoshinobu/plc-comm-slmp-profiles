@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import copy
 import re
 from pathlib import Path
 from typing import Any
@@ -219,24 +220,35 @@ def build_json(lines: list[str]) -> dict[str, Any]:
             step["parameters"] = parameters
         runtime_probe_steps.append(step)
 
-    profile_blocks = {
-        row["Profile"]: {
+    profile_blocks: dict[str, dict[str, Any]] = {}
+    for row in table_after_heading(lines, "Profile Blocks"):
+        block: dict[str, Any] = {
             "register_start": parse_int(row["Register start"]),
             "register_count": parse_int(row["Register count"]),
             "rules": {},
         }
-        for row in table_after_heading(lines, "Profile Blocks")
-    }
+        base_profile = row.get("Base profile", "").strip()
+        if base_profile and base_profile != "-":
+            block["base_profile"] = base_profile
+        profile_blocks[row["Profile"]] = block
 
     rule_rows = table_after_heading(lines, "Rule Matrix")
     ordered_items = [row["Device family"] for row in rule_rows]
     profile_ids = list(profile_blocks)
+    matrix_profile_ids = [profile_id for profile_id in profile_ids if profile_id in rule_rows[0]]
     for row in rule_rows:
         family = row["Device family"]
         if family not in rows:
             raise ValueError(f"Rule Matrix family is missing from Device Families: {family}")
-        for profile_id in profile_ids:
+        for profile_id in matrix_profile_ids:
             profile_blocks[profile_id]["rules"][family] = parse_rule_cell(row[profile_id])
+    for profile_id, block in profile_blocks.items():
+        base_profile = block.get("base_profile")
+        if not base_profile:
+            continue
+        if base_profile not in profile_blocks:
+            raise ValueError(f"{profile_id}: unknown base profile {base_profile}")
+        block["rules"] = copy.deepcopy(profile_blocks[base_profile]["rules"])
 
     return {
         "schema_version": parse_int(metadata["schema_version"]),

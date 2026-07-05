@@ -57,15 +57,15 @@
     "CS": {"access": "bit", "device": "CS0"},
     "CC": {"access": "bit", "device": "CC0"},
     "CN": {"access": "word", "device": "CN0"},
-    "LTS": {"access": "bit", "device": "LTS0"},
-    "LTC": {"access": "bit", "device": "LTC0"},
-    "LTN": {"access": "word", "device": "LTN0"},
-    "LSTS": {"access": "bit", "device": "LSTS0"},
-    "LSTC": {"access": "bit", "device": "LSTC0"},
-    "LSTN": {"access": "word", "device": "LSTN0"},
+    "LTN": {"access": "word4", "device": "LTN0", "note": "intended long route: one 4-word unit; LTS/LTC decode from it"},
+    "LSTN": {"access": "word4", "device": "LSTN0", "note": "intended long route: one 4-word unit; LSTS/LSTC decode from it"},
+    "LCN": {"access": "dword_random", "device": "LCN0", "note": "intended long route: random dword read"},
     "LCS": {"access": "bit", "device": "LCS0"},
     "LCC": {"access": "bit", "device": "LCC0"},
-    "LCN": {"access": "word", "device": "LCN0"},
+    "LTS": {"access": "bit", "device": "LTS0", "raw": true},
+    "LTC": {"access": "bit", "device": "LTC0", "raw": true},
+    "LSTS": {"access": "bit", "device": "LSTS0", "raw": true},
+    "LSTC": {"access": "bit", "device": "LSTC0", "raw": true},
     "LZ": {"access": "dword_random", "device": "LZ0"}
   }
 }

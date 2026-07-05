@@ -4,21 +4,26 @@
 
 Generated user-facing reference. Source: `capability/slmp_builtin_ethernet_profiles.json` / `device-ranges/slmp_device_range_rules.json`.
 
-Capability schema 1, capability date 2026-07-04, scope `builtin-ethernet-port`, default strict mode `True`. Device-range schema 1, device-range date 2026-07-03.
+Capability schema 1, capability date 2026-07-05, scope `slmp-ethernet-port`, default strict mode `True`. Device-range schema 1, device-range date 2026-07-05.
 
 ## Profile Summary
 
-| Profile | Display name | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| melsec:iq-r | MELSEC iQ-R (built-in Ethernet) | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet) |
-| melsec:iq-l | MELSEC iQ-L (built-in Ethernet) | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) |
-| melsec:mx-r | MELSEC MX-R (built-in Ethernet) | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
-| melsec:mx-f | MELSEC MX-F (built-in Ethernet) | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
-| melsec:iq-f | MELSEC iQ-F (built-in Ethernet) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5U-32MR/DS(built-in Ethernet) |
-| melsec:qcpu | MELSEC-Q (conservative baseline) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | No built-in Ethernet CPU target (QnU-derived conservative baseline) |
-| melsec:lcpu | MELSEC-L (built-in Ethernet) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) |
-| melsec:qnu | MELSEC-QnU (built-in Ethernet) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU(built-in Ethernet) |
-| melsec:qnudv | MELSEC-QnUDV (built-in Ethernet) | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) |
+| Profile | Display name | Scope | Role | Base profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| melsec:iq-r | MELSEC iQ-R (built-in Ethernet) | builtin-ethernet-port | connection | - | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU(built-in Ethernet)<br>R120PCPU via RJ71EN71 |
+| melsec:iq-l | MELSEC iQ-L (built-in Ethernet) | builtin-ethernet-port | connection | - | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | L16HCPU(built-in Ethernet) |
+| melsec:mx-r | MELSEC MX-R (built-in Ethernet) | builtin-ethernet-port | connection | melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
+| melsec:mx-f | MELSEC MX-F (built-in Ethernet) | builtin-ethernet-port | connection | melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | Unconfirmed |
+| melsec:iq-f | MELSEC iQ-F (built-in Ethernet) | builtin-ethernet-port | connection | - | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | FX5U-32MR/DS(built-in Ethernet) |
+| melsec:qcpu | MELSEC-Q (conservative baseline) | base-profile | base | melsec:qnu | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | No built-in Ethernet CPU target (QnU-derived conservative baseline) |
+| melsec:qcpu:qj71e71-100 | MELSEC-Q via QJ71E71-100 (Ethernet unit) | ethernet-unit | connection | melsec:qcpu | 4E | Q/L | 0000 | 0001 | 0080 | 0081 | Q12HCPU via QJ71E71-100 |
+| melsec:lcpu | MELSEC-L (built-in Ethernet) | builtin-ethernet-port | connection | - | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | L26CPU-BT(built-in Ethernet) |
+| melsec:lcpu:lj71e71-100 | MELSEC-L via LJ71E71-100 (Ethernet unit) | ethernet-unit | connection | melsec:lcpu | 4E | Q/L | 0000 | 0001 | 0080 | 0081 | L02SCPU via LJ71E71-100 |
+| melsec:qnu | MELSEC-QnU (built-in Ethernet) | builtin-ethernet-port | connection | - | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU(built-in Ethernet) |
+| melsec:qnu:qj71e71-100 | MELSEC QnU via QJ71E71-100 (Ethernet unit) | ethernet-unit | connection | melsec:qnu | 4E | Q/L | 0000 | 0001 | 0080 | 0081 | Q26UDEHCPU via QJ71E71-100 |
+| melsec:qnudv | MELSEC-QnUDV (built-in Ethernet) | builtin-ethernet-port | connection | - | 3E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU(built-in Ethernet) |
+| melsec:qnudv:qj71e71-100 | MELSEC QnUDV via QJ71E71-100 (Ethernet unit) | ethernet-unit | connection | melsec:qnudv | 4E | Q/L | 0000 | 0001 | 0080 | 0081 | Q06UDVCPU via QJ71E71-100 |
+| melsec:iq-r:rj71en71 | MELSEC iQ-R via RJ71EN71 (Ethernet unit) | ethernet-unit | connection | melsec:iq-r | 4E | iQ-R | 0002 | 0003 | 0082 | 0083 | R120PCPU via RJ71EN71 |
 
 ## Device Definitions
 
@@ -67,69 +72,69 @@ Capability schema 1, capability date 2026-07-04, scope `builtin-ethernet-port`, 
 
 `DX` and `DY` are public parser families without range catalog rules; they are listed here only for profile availability.
 
-| Device family | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| X | o | o | o | o | o | o | o | o | o |
-| Y | o | o | o | o | o | o | o | o | o |
-| M | o | o | o | o | o | o | o | o | o |
-| B | o | o | o | o | o | o | o | o | o |
-| SB | o | o | o | o | o | o | o | o | o |
-| DX | o | o | o | o | x | o | o | o | o |
-| DY | o | o | o | o | x | o | o | o | o |
-| F | o | o | o | o | o | o | o | o | o |
-| V | o | o | o | o | x | o | o | o | o |
-| L | o | o | o | o | o | o | o | o | o |
-| S | o | o | o | o | o | o | o | o | o |
-| D | o | o | o | o | o | o | o | o | o |
-| W | o | o | o | o | o | o | o | o | o |
-| SW | o | o | o | o | o | o | o | o | o |
-| R | o | o | o | o | o | o | o | o | o |
-| T | o | o | o | o | o | o | o | o | o |
-| ST | o | o | o | o | o | o | o | o | o |
-| C | o | o | o | o | o | o | o | o | o |
-| LT | o | o | o | o | x | x | x | x | x |
-| LST | o | o | o | o | x | x | x | x | x |
-| LC | o | o | o | o | o | x | x | x | x |
-| Z | o | o | o | o | o | o | o | o | o |
-| LZ | o | o | o | o | o | x | x | x | x |
-| ZR | o | o | o | o | x | o | o | o | o |
-| RD | o | o | o | o | x | x | x | x | x |
-| SM | o | o | o | o | o | o | o | o | o |
-| SD | o | o | o | o | o | o | o | o | o |
+| Device family | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:qcpu:qj71e71-100 | melsec:lcpu | melsec:lcpu:lj71e71-100 | melsec:qnu | melsec:qnu:qj71e71-100 | melsec:qnudv | melsec:qnudv:qj71e71-100 | melsec:iq-r:rj71en71 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| X | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| Y | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| M | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| B | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| SB | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| DX | o | o | o | o | x | o | o | o | o | o | o | o | o | o |
+| DY | o | o | o | o | x | o | o | o | o | o | o | o | o | o |
+| F | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| V | o | o | o | o | x | o | o | o | o | o | o | o | o | o |
+| L | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| S | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| D | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| W | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| SW | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| R | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| T | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| ST | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| C | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| LT | o | o | o | o | x | x | x | x | x | x | x | x | x | o |
+| LST | o | o | o | o | x | x | x | x | x | x | x | x | x | o |
+| LC | o | o | o | o | o | x | x | x | x | x | x | x | x | o |
+| Z | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| LZ | o | o | o | o | o | x | x | x | x | x | x | x | x | o |
+| ZR | o | o | o | o | x | o | o | o | o | o | o | o | o | o |
+| RD | o | o | o | o | x | x | x | x | x | x | x | x | x | o |
+| SM | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
+| SD | o | o | o | o | o | o | o | o | o | o | o | o | o | o |
 
 ## Feature Matrix
 
 Cell format is `state/source`.
 
-| Feature | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Type name | supported/live | supported/live | supported/policy | supported/policy | supported/live | blocked/policy | blocked/live | blocked/live | blocked/live |
-| Direct read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | supported/policy | supported/live | supported/live | supported/live |
-| Random read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | supported/policy | supported/live | supported/live | supported/live |
-| Block read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | blocked/policy | blocked/live | blocked/live | blocked/live |
-| Monitor | supported/live | supported/live | supported/policy | supported/policy | blocked/live | supported/policy | supported/live | supported/live | supported/live |
-| U\G module access | config-dependent/live | config-dependent/live | config-dependent/policy | config-dependent/policy | config-dependent/live | blocked/policy | blocked/live | blocked/live | blocked/live |
-| Link direct | config-dependent/live | config-dependent/live | config-dependent/policy | config-dependent/policy | blocked/live | blocked/policy | blocked/live | blocked/live | blocked/live |
-| HG CPU buffer | supported/live | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec |
-| Long-device route | supported/live | supported/live | supported/policy | supported/policy | supported/live | delegated/policy | delegated/live | delegated/live | delegated/live |
-| LZ 32-bit route | supported/live | supported/live | supported/policy | supported/policy | supported/live | delegated/policy | delegated/live | delegated/live | delegated/live |
+| Feature | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:qcpu:qj71e71-100 | melsec:lcpu | melsec:lcpu:lj71e71-100 | melsec:qnu | melsec:qnu:qj71e71-100 | melsec:qnudv | melsec:qnudv:qj71e71-100 | melsec:iq-r:rj71en71 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Type name | supported/live | supported/live | supported/policy | supported/policy | supported/live | blocked/policy | supported/live | blocked/live | supported/live | blocked/live | supported/live | blocked/live | supported/live | supported/policy |
+| Direct read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | supported/policy | supported/live | supported/live | supported/live | supported/live | supported/live | supported/live | supported/live | supported/policy |
+| Random read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | supported/policy | supported/live | supported/live | supported/live | supported/live | supported/live | supported/live | supported/live | supported/policy |
+| Block read/write | supported/live | supported/live | supported/policy | supported/policy | supported/live | blocked/policy | supported/live | blocked/live | supported/live | blocked/live | supported/live | blocked/live | supported/live | supported/policy |
+| Monitor | supported/live | supported/live | supported/policy | supported/policy | blocked/live | supported/policy | supported/live | supported/live | supported/live | supported/live | supported/live | supported/live | supported/live | supported/policy |
+| U\G module access | config-dependent/live | config-dependent/live | config-dependent/policy | config-dependent/policy | config-dependent/live | blocked/policy | config-dependent/live | blocked/live | config-dependent/live | blocked/live | config-dependent/live | blocked/live | config-dependent/live | config-dependent/policy |
+| Link direct | config-dependent/live | config-dependent/live | config-dependent/policy | config-dependent/policy | blocked/live | blocked/policy | config-dependent/live | blocked/live | config-dependent/live | blocked/live | config-dependent/live | blocked/live | config-dependent/live | config-dependent/policy |
+| HG CPU buffer | supported/live | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | blocked/spec | supported/policy |
+| Long-device route | supported/live | supported/live | supported/policy | supported/policy | supported/live | delegated/policy | blocked/live | delegated/live | blocked/live | delegated/live | blocked/live | delegated/live | blocked/live | supported/policy |
+| LZ 32-bit route | supported/live | supported/live | supported/policy | supported/policy | supported/live | delegated/policy | blocked/live | delegated/live | blocked/live | delegated/live | blocked/live | delegated/live | blocked/live | supported/policy |
 
 ## Point Limit Matrix
 
-| Limit | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:lcpu | melsec:qnu | melsec:qnudv |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Direct word read | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [inferred] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] |
-| Direct word write | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [inferred] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] |
-| Direct bit read | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] |
-| Direct bit write | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] |
-| Random word read | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] |
-| Random word write | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [inferred] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [live] |
-| Random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] |
-| Monitor word register | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | max 192, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] |
-| Extended random word read | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [inferred] |
-| Extended random word write | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] |
-| Extended random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 94, over C053, [inferred] |
-| Extended monitor word register | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [inferred] |
+| Limit | melsec:iq-r | melsec:iq-l | melsec:mx-r | melsec:mx-f | melsec:iq-f | melsec:qcpu | melsec:qcpu:qj71e71-100 | melsec:lcpu | melsec:lcpu:lj71e71-100 | melsec:qnu | melsec:qnu:qj71e71-100 | melsec:qnudv | melsec:qnudv:qj71e71-100 | melsec:iq-r:rj71en71 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Direct word read | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [inferred] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] |
+| Direct word write | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] | max 960, over C051, [inferred] | max 960, over C052, [live] | max 960, over C051, [inferred] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [live] | max 960, over C051, [inferred] |
+| Direct bit read | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] |
+| Direct bit write | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [inferred] | max 3584, over C051, [live] | max 7168, over C052, [inferred] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [live] | max 7168, over C052, [inferred] |
+| Random word read | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 96, over C054, [inferred] |
+| Random word write | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over C054, [inferred] | max 160, weighted 1920, over 4080, [live] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over 4080, [live] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over 4080, [live] | max 160, weighted 1920, over C054, [live] | max 160, weighted 1920, over 4080, [live] | max 80, weighted 960, over C054, [inferred] |
+| Random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [inferred] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] | max 188, over C053, [live] | max 94, over C053, [inferred] |
+| Monitor word register | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | max 192, over C054, [inferred] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 192, over C054, [live] | max 96, over C054, [inferred] |
+| Extended random word read | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | max 96, over C054, [live] | - | max 185, over 4080, [live] | - | max 192, over C054, [live] | - | max 192, over C054, [live] | - | max 192, over C054, [live] | max 96, over C054, [inferred] |
+| Extended random word write | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [live] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [inferred] | max 80, weighted 960, over C054, [live] | - | max 160, weighted 1920, over 4080, [live] | - | max 160, weighted 1920, over 4080, [live] | - | max 160, weighted 1920, over 4080, [live] | - | max 160, weighted 1920, over 4080, [live] | max 80, weighted 960, over C054, [inferred] |
+| Extended random bit write | max 94, over C053, [live] | max 94, over C053, [live] | max 94, over C053, [inferred] | max 94, over C053, [inferred] | max 94, over C053, [live] | - | max 188, over C053, [live] | - | - | - | max 188, over C053, [live] | - | max 188, over C053, [live] | max 94, over C053, [inferred] |
+| Extended monitor word register | max 96, over C054, [live] | max 96, over C054, [live] | max 96, over C054, [inferred] | max 96, over C054, [inferred] | - | - | max 192, over C054, [live] | - | max 192, over C054, [live] | - | max 192, over C054, [live] | - | max 192, over C054, [live] | max 96, over C054, [inferred] |
 
 Note: `melsec:iq-f` uses live-verified over-limit end codes where word overrun returns `C052` and bit overrun returns `C051`.
 
@@ -143,9 +148,14 @@ Note: `melsec:iq-f` uses live-verified over-limit end codes where word overrun r
 | melsec:mx-f | S=read-only |
 | melsec:iq-f | S=read-write |
 | melsec:qcpu | S=read-only |
+| melsec:qcpu:qj71e71-100 | S=read-write |
 | melsec:lcpu | S=read-only |
+| melsec:lcpu:lj71e71-100 | S=read-write |
 | melsec:qnu | S=read-only |
+| melsec:qnu:qj71e71-100 | S=read-write |
 | melsec:qnudv | S=read-only |
+| melsec:qnudv:qj71e71-100 | S=read-write |
+| melsec:iq-r:rj71en71 | S=read-only |
 
 ## Appendix: How To Read Cells
 

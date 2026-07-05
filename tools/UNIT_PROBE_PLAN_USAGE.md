@@ -93,6 +93,7 @@ Hand off the executable together with a **reviewed plan JSON** and this document
 
 ## Notes
 
+- Long timer/counter families are probed by their **intended library routes**: `LTN`/`LSTN` as one 4-word unit (contact/coil bits decode from it), `LCN` and `LZ` by random dword read, `LCS`/`LCC` by direct bit read. `LTS`/`LTC`/`LSTS`/`LSTC` raw device codes are also probed but marked `raw_device_code_probe: true` in results — the library never sends those codes, so raw results are record-only and must not drive family reachability or unit-difference decisions.
 - Caps for random/monitor items must be 255 or less (the count field is one byte).
 - The runner reuses `live_profile_probe.py` for framing and payloads; on abnormal ends it retries once, records the error row, and moves on — it never goes silent and never drops an item.
 - Feed `results.json` boundary values into the investigation markdown; every `unverified` row in the markdown should correspond to either a waiver or a bug to fix, not a judgment call.

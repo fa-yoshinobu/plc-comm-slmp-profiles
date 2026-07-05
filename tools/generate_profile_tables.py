@@ -49,9 +49,13 @@ PROFILE_ORDER = [
     "melsec:mx-f",
     "melsec:iq-f",
     "melsec:qcpu",
+    "melsec:qcpu:qj71e71-100",
     "melsec:lcpu",
+    "melsec:lcpu:lj71e71-100",
     "melsec:qnu",
+    "melsec:qnu:qj71e71-100",
     "melsec:qnudv",
+    "melsec:qnudv:qj71e71-100",
 ]
 
 SOURCE_SEMANTICS = {
@@ -60,6 +64,7 @@ SOURCE_SEMANTICS = {
     "spec": "Derived from the specification or from a structural hardware constraint.",
     "inferred": "Inferred from another verified profile or an equivalent command group; not directly live-verified.",
     "manual": "Taken from manual documentation.",
+    "not-adopted": "Recorded in the source definition but intentionally omitted from generated capability data.",
 }
 
 SUPPLEMENTAL_DEVICE_ROWS = {
@@ -251,6 +256,9 @@ def build_profile_summary(capability: dict[str, Any]) -> str:
             [
                 profile_id,
                 profile.get("display_name", "-"),
+                profile.get("scope", "-"),
+                profile.get("role", "connection"),
+                profile.get("base_profile", "-"),
                 profile.get("frame", "-"),
                 profile.get("compat", "-"),
                 subcommands.get("word", "-"),
@@ -267,6 +275,9 @@ def build_profile_summary(capability: dict[str, Any]) -> str:
                 [
                     "Profile",
                     "Display name",
+                    "Scope",
+                    "Role",
+                    "Base profile",
                     "Frame",
                     "Compat",
                     "Word subcmd",
@@ -448,13 +459,14 @@ def build_device_range_blocks(device_ranges: dict[str, Any]) -> str:
             profile_id,
             profile.get("register_start", "-"),
             profile.get("register_count", "-"),
+            profile.get("base_profile", "-"),
         ]
         for profile_id, profile in profiles.items()
     ]
     return "\n\n".join(
         [
             "## Device Range Blocks",
-            md_table(["Profile", "SD register start", "SD register count"], rows),
+            md_table(["Profile", "SD register start", "SD register count", "Base profile"], rows),
         ]
     )
 

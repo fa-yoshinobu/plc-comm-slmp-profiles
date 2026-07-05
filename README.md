@@ -10,7 +10,7 @@ Markdown files are the editable source. JSON files and comparison tables are gen
 
 The maintained capability definitions are in [profile definitions](evidence/profile-definitions/).
 
-Generated capability data is published as [slmp_builtin_ethernet_profiles.json](capability/slmp_builtin_ethernet_profiles.json). It defines frame defaults, compatibility mode, feature states, point limits, write policy, and route policy for CPU built-in Ethernet profiles.
+Generated capability data is published as [slmp_builtin_ethernet_profiles.json](capability/slmp_builtin_ethernet_profiles.json). It defines frame defaults, compatibility mode, feature states, point limits, write policy, route policy, per-profile scope, base-profile links, and base-only roles for CPU built-in Ethernet profiles and verified Ethernet-unit profiles.
 
 In a profile definition limit row, `Weighted max` is an additional weighted-count guard for commands that use weighted point accounting. A blank `Weighted max` means no weighted guard is defined for that limit row; it does not mean an unknown value.
 
@@ -24,23 +24,30 @@ Generated device-range data is published as [slmp_device_range_rules.json](devic
 
 Communication libraries may use device-range data to reject unsupported device families. They should not use device-range upper bounds as transport send guards; applications or live probe tools should decide address-range validity.
 
-## Supported PLC profiles
+## Supported connection profiles
 
 - `melsec:iq-r`
 - `melsec:iq-l`
 - `melsec:mx-r`
 - `melsec:mx-f`
 - `melsec:iq-f`
-- `melsec:qcpu`
+- `melsec:qcpu:qj71e71-100`
 - `melsec:lcpu`
+- `melsec:lcpu:lj71e71-100`
 - `melsec:qnu`
+- `melsec:qnu:qj71e71-100`
 - `melsec:qnudv`
+- `melsec:qnudv:qj71e71-100`
+
+## Base-only profiles
+
+- `melsec:qcpu` exists only as a Q-series base profile for range and address-resolution data. Do not expose it as a connection profile; use `melsec:qcpu:qj71e71-100` for the verified QJ71E71-100 Ethernet-unit route.
 
 ## Port scope
 
-These profiles target CPU built-in Ethernet ports.
+Profile scope is recorded per profile. `builtin-ethernet-port` profiles target CPU built-in Ethernet ports, `ethernet-unit` profiles target verified extension Ethernet modules, and `base-profile` entries are not connection profiles.
 
-Extension Ethernet modules may support additional commands. A built-in Ethernet profile is the conservative baseline: using it against an extension Ethernet module should not enable commands beyond the stricter CPU built-in Ethernet profile, but it may leave module-specific capabilities unused.
+Extension Ethernet modules may support additional commands. Use an `ethernet-unit` profile when live evidence exists for that unit/CPU family pair; otherwise the built-in Ethernet profile remains the conservative baseline.
 
 ## Documentation
 

@@ -13,14 +13,19 @@ CAPABILITY_JSON = ROOT / "capability" / "slmp_builtin_ethernet_profiles.json"
 DEVICE_RANGES_JSON = ROOT / "device-ranges" / "slmp_device_range_rules.json"
 PROFILE_ORDER = [
     "melsec:iq-r",
+    "melsec:iq-r:rj71en71",
     "melsec:iq-l",
     "melsec:mx-r",
     "melsec:mx-f",
     "melsec:iq-f",
     "melsec:qcpu",
+    "melsec:qcpu:qj71e71-100",
     "melsec:lcpu",
+    "melsec:lcpu:lj71e71-100",
     "melsec:qnu",
+    "melsec:qnu:qj71e71-100",
     "melsec:qnudv",
+    "melsec:qnudv:qj71e71-100",
 ]
 
 
@@ -35,7 +40,7 @@ def require(condition: bool, message: str) -> None:
 
 def validate_capability(payload: dict[str, Any]) -> None:
     require(payload.get("schema_version") == 1, "capability schema_version must be 1")
-    require(payload.get("scope") == "builtin-ethernet-port", "unexpected capability scope")
+    require(payload.get("scope") == "slmp-ethernet-port", "unexpected capability scope")
     profiles = payload.get("profiles")
     require(isinstance(profiles, dict), "profiles must be an object")
     require(list(profiles) == PROFILE_ORDER, "profile order changed unexpectedly")
@@ -46,6 +51,18 @@ def validate_capability(payload: dict[str, Any]) -> None:
 
     for profile_id, profile in profiles.items():
         require(profile.get("display_name"), f"{profile_id}: display_name is required")
+        require(
+            profile.get("scope") in {"builtin-ethernet-port", "ethernet-unit", "base-profile"},
+            f"{profile_id}: invalid profile scope",
+        )
+        base = profile.get("base_profile")
+        if base is not None:
+            require(base in profiles, f"{profile_id}: base_profile must reference an existing profile")
+            require(base != profile_id, f"{profile_id}: base_profile cannot reference itself")
+        role = profile.get("role")
+        if role is not None:
+            require(role == "base", f"{profile_id}: invalid role")
+            require(profile.get("scope") == "base-profile", f"{profile_id}: base role requires base-profile scope")
         require(profile.get("frame") in {"3E", "4E"}, f"{profile_id}: invalid frame")
         require(isinstance(profile.get("compat"), str) and profile["compat"], f"{profile_id}: compat required")
         subcommands = profile.get("subcommands")

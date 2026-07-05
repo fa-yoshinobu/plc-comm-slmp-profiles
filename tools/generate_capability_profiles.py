@@ -16,26 +16,53 @@ OUTPUT = ROOT / "capability" / "slmp_builtin_ethernet_profiles.json"
 
 PROFILE_ORDER = [
     "melsec:iq-r",
+    "melsec:iq-r:rj71en71",
     "melsec:iq-l",
     "melsec:mx-r",
     "melsec:mx-f",
     "melsec:iq-f",
     "melsec:qcpu",
+    "melsec:qcpu:qj71e71-100",
     "melsec:lcpu",
+    "melsec:lcpu:lj71e71-100",
     "melsec:qnu",
+    "melsec:qnu:qj71e71-100",
     "melsec:qnudv",
+    "melsec:qnudv:qj71e71-100",
 ]
 
 PROFILE_DISPLAY_NAMES = {
     "melsec:iq-r": "MELSEC iQ-R (built-in Ethernet)",
+    "melsec:iq-r:rj71en71": "MELSEC iQ-R via RJ71EN71 (Ethernet unit)",
     "melsec:iq-l": "MELSEC iQ-L (built-in Ethernet)",
     "melsec:mx-r": "MELSEC MX-R (built-in Ethernet)",
     "melsec:mx-f": "MELSEC MX-F (built-in Ethernet)",
     "melsec:iq-f": "MELSEC iQ-F (built-in Ethernet)",
     "melsec:qcpu": "MELSEC-Q (conservative baseline)",
+    "melsec:qcpu:qj71e71-100": "MELSEC-Q via QJ71E71-100 (Ethernet unit)",
     "melsec:lcpu": "MELSEC-L (built-in Ethernet)",
+    "melsec:lcpu:lj71e71-100": "MELSEC-L via LJ71E71-100 (Ethernet unit)",
     "melsec:qnu": "MELSEC-QnU (built-in Ethernet)",
+    "melsec:qnu:qj71e71-100": "MELSEC QnU via QJ71E71-100 (Ethernet unit)",
     "melsec:qnudv": "MELSEC-QnUDV (built-in Ethernet)",
+    "melsec:qnudv:qj71e71-100": "MELSEC QnUDV via QJ71E71-100 (Ethernet unit)",
+}
+
+PROFILE_SCOPES = {
+    "melsec:iq-r": "builtin-ethernet-port",
+    "melsec:iq-r:rj71en71": "ethernet-unit",
+    "melsec:iq-l": "builtin-ethernet-port",
+    "melsec:mx-r": "builtin-ethernet-port",
+    "melsec:mx-f": "builtin-ethernet-port",
+    "melsec:iq-f": "builtin-ethernet-port",
+    "melsec:qcpu": "base-profile",
+    "melsec:qcpu:qj71e71-100": "ethernet-unit",
+    "melsec:lcpu": "builtin-ethernet-port",
+    "melsec:lcpu:lj71e71-100": "ethernet-unit",
+    "melsec:qnu": "builtin-ethernet-port",
+    "melsec:qnu:qj71e71-100": "ethernet-unit",
+    "melsec:qnudv": "builtin-ethernet-port",
+    "melsec:qnudv:qj71e71-100": "ethernet-unit",
 }
 
 STATE_SEMANTICS = {
@@ -171,7 +198,7 @@ def live_profile(definition: dict[str, Any]) -> dict[str, Any]:
             entry["over_end_code"] = over
         limits[row["Key"]] = entry
 
-    return {
+    profile: dict[str, Any] = {
         "frame": item["frame"],
         "compat": item["compat"],
         "subcommands": subcommands,
@@ -180,6 +207,9 @@ def live_profile(definition: dict[str, Any]) -> dict[str, Any]:
         "limits": limits,
         "write_policy": definition["write_policy"],
     }
+    if "base_profile" in item:
+        profile["base_profile"] = item["base_profile"]
+    return profile
 
 
 def mark_derived(profile: dict[str, Any]) -> None:
@@ -208,6 +238,19 @@ def set_dotted(target: dict[str, Any], dotted_key: str, value: str) -> None:
 def build_profiles(definitions: dict[str, dict[str, Any]]) -> dict[str, Any]:
     built: dict[str, Any] = {}
 
+    def apply_metadata(profile_id: str, profile: dict[str, Any], definition: dict[str, Any]) -> dict[str, Any]:
+        item = definition["item"]
+        profile = {
+            **profile,
+            "scope": item.get("scope", PROFILE_SCOPES[profile_id]),
+            "display_name": PROFILE_DISPLAY_NAMES[profile_id],
+        }
+        if "base_profile" in item:
+            profile["base_profile"] = item["base_profile"]
+        if item.get("role"):
+            profile["role"] = item["role"]
+        return profile
+
     def build(profile_id: str) -> dict[str, Any]:
         if profile_id in built:
             return built[profile_id]
@@ -223,7 +266,7 @@ def build_profiles(definitions: dict[str, dict[str, Any]]) -> dict[str, Any]:
                 set_dotted(profile, key, value)
         else:
             raise ValueError(f"unsupported definition_type {dtype!r} for {profile_id}")
-        profile = {**profile, "display_name": PROFILE_DISPLAY_NAMES[profile_id]}
+        profile = apply_metadata(profile_id, profile, definition)
         built[profile_id] = profile
         return profile
 
@@ -254,10 +297,10 @@ def build_output() -> dict[str, Any]:
     definitions = definition_files()
     return {
         "schema_version": 1,
-        "date": "2026-07-04",
-        "scope": "builtin-ethernet-port",
+        "date": "2026-07-05",
+        "scope": "slmp-ethernet-port",
         "description": (
-            "Canonical PLC model profile definitions for the SLMP library family. "
+            "Canonical PLC model and Ethernet-unit profile definitions for the SLMP library family. "
             "Generated from evidence/profile-definitions."
         ),
         "policy": {

@@ -27,6 +27,11 @@ This repository publishes canonical profile data consumed by implementation repo
 - Data: Recorded LCPU/QnU/QnUDV 0080 direct-device probes returning `C070` as route evidence, not point-limit evidence.
 - Docs: Added extended random limit rows to the live verification checklist template.
 - Tooling: Added raw extended random probes to `live_profile_probe.py`.
+- Data: Added verified Ethernet-unit profiles for `melsec:qcpu:qj71e71-100`, `melsec:lcpu:lj71e71-100`, `melsec:qnu:qj71e71-100`, and `melsec:qnudv:qj71e71-100`.
+- Data: Marked `melsec:qcpu` as a base-only profile and recorded `R120PCPU via RJ71EN71` as verified on `melsec:iq-r` instead of adding a separate RJ71EN71 profile.
+- Data: Removed inferred 0080/0081 extended limit rows from Q/L built-in profiles after live baseline runs returned `C070`.
+- Tooling: Added profile-level `scope`, optional `base_profile`, and `role=base` support to capability generation, validation, schema, and generated comparison tables.
+- Tooling: Added device-range `base_profile` inheritance so Ethernet-unit profiles can reuse the existing CPU-family range models.
 
 ## [1.0.0] - 2026-07-04
 

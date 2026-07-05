@@ -22,7 +22,7 @@ live PLC response.
 | Item | Value |
 | --- | --- |
 | schema_version | 1 |
-| date | 2026-07-03 |
+| date | 2026-07-05 |
 | description | Rules for SLMP device range discovery from SD block reads. Generated from device-ranges/slmp_device_range_rules.md. |
 
 ## Value Kinds
@@ -88,7 +88,7 @@ live PLC response.
 | Item | Value |
 | --- | --- |
 | reason | Some Q-series devices do not have their ranges written into SD registers by the PLC, so SD reads alone cannot determine the range. Find boundaries by probing whether reads succeed. |
-| applies_to | melsec:lcpu, melsec:qcpu, melsec:qnu, melsec:qnudv |
+| applies_to | melsec:lcpu, melsec:lcpu:lj71e71-100, melsec:qcpu, melsec:qcpu:qj71e71-100, melsec:qnu, melsec:qnu:qj71e71-100, melsec:qnudv, melsec:qnudv:qj71e71-100 |
 | max_probe_count | 1048576 |
 | probe_read | Read one word at the target address; treat any SLMP error as unreadable. |
 | source_note | Record probe results in the catalog with source='Runtime access check'. |
@@ -97,23 +97,28 @@ live PLC response.
 
 | Order | Profiles | Family | Method | Parameters | Spec |
 | --- | --- | --- | --- | --- | --- |
-| 1 | melsec:qcpu | Z | single-address-check | check_address=15; readable_count=16; unreadable_count=10 | If Z15 is readable, the point count is 16; otherwise it is 10. |
-| 2 | melsec:lcpu, melsec:qcpu, melsec:qnu, melsec:qnudv | ZR | doubling-then-binary-search | - | If ZR0 is not readable, the point count is 0. If it is readable, start high at 1 and advance with (high*2)+1 until reads fail, capped at max_probe_count-1. Then binary-search low..high and use the maximum readable address plus 1 as the point count. If the capped address is readable, use max_probe_count. |
-| 3 | melsec:lcpu, melsec:qcpu, melsec:qnu, melsec:qnudv | R | derived | source_family=ZR; max_value=32768 | Use min(probed ZR point count, 32768) as the R point count. |
+| 1 | melsec:qcpu, melsec:qcpu:qj71e71-100 | Z | single-address-check | check_address=15; readable_count=16; unreadable_count=10 | If Z15 is readable, the point count is 16; otherwise it is 10. |
+| 2 | melsec:lcpu, melsec:lcpu:lj71e71-100, melsec:qcpu, melsec:qcpu:qj71e71-100, melsec:qnu, melsec:qnu:qj71e71-100, melsec:qnudv, melsec:qnudv:qj71e71-100 | ZR | doubling-then-binary-search | - | If ZR0 is not readable, the point count is 0. If it is readable, start high at 1 and advance with (high*2)+1 until reads fail, capped at max_probe_count-1. Then binary-search low..high and use the maximum readable address plus 1 as the point count. If the capped address is readable, use max_probe_count. |
+| 3 | melsec:lcpu, melsec:lcpu:lj71e71-100, melsec:qcpu, melsec:qcpu:qj71e71-100, melsec:qnu, melsec:qnu:qj71e71-100, melsec:qnudv, melsec:qnudv:qj71e71-100 | R | derived | source_family=ZR; max_value=32768 | Use min(probed ZR point count, 32768) as the R point count. |
 
 ## Profile Blocks
 
-| Profile | Register start | Register count |
-| --- | --- | --- |
-| melsec:iq-r | 260 | 50 |
-| melsec:iq-l | 260 | 50 |
-| melsec:mx-f | 260 | 50 |
-| melsec:mx-r | 260 | 50 |
-| melsec:iq-f | 260 | 46 |
-| melsec:qcpu | 290 | 15 |
-| melsec:lcpu | 286 | 26 |
-| melsec:qnu | 286 | 26 |
-| melsec:qnudv | 286 | 26 |
+| Profile | Register start | Register count | Base profile |
+| --- | --- | --- | --- |
+| melsec:iq-r | 260 | 50 | - |
+| melsec:iq-r:rj71en71 | 260 | 50 | melsec:iq-r |
+| melsec:iq-l | 260 | 50 | - |
+| melsec:mx-f | 260 | 50 | - |
+| melsec:mx-r | 260 | 50 | - |
+| melsec:iq-f | 260 | 46 | - |
+| melsec:qcpu | 290 | 15 | - |
+| melsec:qcpu:qj71e71-100 | 290 | 15 | melsec:qcpu |
+| melsec:lcpu | 286 | 26 | - |
+| melsec:lcpu:lj71e71-100 | 286 | 26 | melsec:lcpu |
+| melsec:qnu | 286 | 26 | - |
+| melsec:qnu:qj71e71-100 | 286 | 26 | melsec:qnu |
+| melsec:qnudv | 286 | 26 | - |
+| melsec:qnudv:qj71e71-100 | 286 | 26 | melsec:qnudv |
 
 ## Rule Matrix
 

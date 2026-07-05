@@ -1,0 +1,536 @@
+{
+  "plan": "evidence\\unit-investigations\\plans\\iq-r_r120pcpu_builtin.json",
+  "profile": {
+    "profile": "melsec:iq-r",
+    "frame": "4E",
+    "compat": "iQ-R",
+    "subcommands": {
+      "bit": "0003",
+      "ext_bit": "0083",
+      "ext_word": "0082",
+      "word": "0002"
+    }
+  },
+  "target": "192.168.250.100:1025",
+  "started_items": 37,
+  "recorded_items": 37,
+  "waived": [],
+  "errors": [],
+  "results": [
+    {
+      "id": "type_name",
+      "type": "type_name",
+      "end_code": "0000",
+      "raw_hex": "523132305043505520202020202020204448",
+      "text": "R120PCPU",
+      "type_code_hex": "4448"
+    },
+    {
+      "id": "direct_read_word",
+      "type": "read_word",
+      "device": "D0",
+      "end_code": "0000"
+    },
+    {
+      "id": "direct_read_bit",
+      "type": "read_bit",
+      "device": "M0",
+      "end_code": "0000"
+    },
+    {
+      "id": "direct_write_word_verify",
+      "type": "write_word_verify",
+      "device": "D1000",
+      "value": 8738,
+      "end_codes": [
+        "0000",
+        "0000"
+      ]
+    },
+    {
+      "id": "direct_write_bit_verify",
+      "type": "write_bit_verify",
+      "device": "M1000",
+      "end_codes": [
+        "0000",
+        "0000",
+        "0000",
+        "0000"
+      ]
+    },
+    {
+      "id": "boundary_direct_read_word",
+      "type": "boundary_direct_read_word",
+      "device": "D0",
+      "status": "limit",
+      "largest_pass": 960,
+      "first_fail": 961,
+      "fail_end": "C051"
+    },
+    {
+      "id": "boundary_direct_write_word",
+      "type": "boundary_direct_write_word",
+      "device": "D1000",
+      "status": "limit",
+      "largest_pass": 960,
+      "first_fail": 961,
+      "fail_end": "C051"
+    },
+    {
+      "id": "boundary_direct_read_bit",
+      "type": "boundary_direct_read_bit",
+      "device": "M0",
+      "status": "limit",
+      "largest_pass": 7168,
+      "first_fail": 7169,
+      "fail_end": "C052"
+    },
+    {
+      "id": "boundary_direct_write_bit",
+      "type": "boundary_direct_write_bit",
+      "device": "M1000",
+      "status": "limit",
+      "largest_pass": 7168,
+      "first_fail": 7169,
+      "fail_end": "C052"
+    },
+    {
+      "id": "boundary_random_read_word",
+      "type": "boundary_random_read_word",
+      "word_device": "D0",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word",
+      "type": "boundary_random_write_word",
+      "word_device": "D1000",
+      "status": "limit",
+      "largest_pass": 80,
+      "first_fail": 81,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word_weighted",
+      "type": "boundary_random_write_word_weighted",
+      "dword_device": "D1000",
+      "status": "limit",
+      "largest_pass": 68,
+      "first_fail": 69,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_bit",
+      "type": "boundary_random_write_bit",
+      "device": "M1000",
+      "status": "limit",
+      "largest_pass": 94,
+      "first_fail": 95,
+      "fail_end": "C053"
+    },
+    {
+      "id": "boundary_random_read_word_ext",
+      "type": "boundary_random_read_word_ext",
+      "word_device": "U5\\G0",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_read_word_ext_jw",
+      "type": "boundary_random_read_word_ext",
+      "word_device": "J1\\W10",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_read_word_ext_u3e0g",
+      "type": "boundary_random_read_word_ext",
+      "word_device": "U3E0\\G0",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_read_word_ext_hg",
+      "type": "boundary_random_read_word_ext",
+      "word_device": "U3E0\\HG0",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word_ext",
+      "type": "boundary_random_write_word_ext",
+      "word_device": "U5\\G0",
+      "status": "limit",
+      "largest_pass": 80,
+      "first_fail": 81,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word_ext_jw",
+      "type": "boundary_random_write_word_ext",
+      "word_device": "J1\\W10",
+      "status": "limit",
+      "largest_pass": 80,
+      "first_fail": 81,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word_ext_u3e0g",
+      "type": "boundary_random_write_word_ext",
+      "word_device": "U3E0\\G0",
+      "status": "limit",
+      "largest_pass": 80,
+      "first_fail": 81,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word_ext_hg",
+      "type": "boundary_random_write_word_ext",
+      "word_device": "U3E0\\HG0",
+      "status": "limit",
+      "largest_pass": 80,
+      "first_fail": 81,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word_weighted_ext",
+      "type": "boundary_random_write_word_weighted_ext",
+      "dword_device": "U5\\G0",
+      "status": "limit",
+      "largest_pass": 68,
+      "first_fail": 69,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word_weighted_ext_jw",
+      "type": "boundary_random_write_word_weighted_ext",
+      "dword_device": "J1\\W10",
+      "status": "limit",
+      "largest_pass": 68,
+      "first_fail": 69,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word_weighted_ext_u3e0g",
+      "type": "boundary_random_write_word_weighted_ext",
+      "dword_device": "U3E0\\G0",
+      "status": "limit",
+      "largest_pass": 68,
+      "first_fail": 69,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_word_weighted_ext_hg",
+      "type": "boundary_random_write_word_weighted_ext",
+      "dword_device": "U3E0\\HG0",
+      "status": "limit",
+      "largest_pass": 68,
+      "first_fail": 69,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_random_write_bit_ext",
+      "type": "boundary_random_write_bit_ext",
+      "device": "J1\\B10",
+      "status": "limit",
+      "largest_pass": 94,
+      "first_fail": 95,
+      "fail_end": "C053"
+    },
+    {
+      "id": "boundary_monitor_register",
+      "type": "boundary_monitor_register",
+      "word_device": "D0",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_monitor_register_ext",
+      "type": "boundary_monitor_register_ext",
+      "word_device": "U5\\G0",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_monitor_register_ext_jw",
+      "type": "boundary_monitor_register_ext",
+      "word_device": "J1\\W10",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_monitor_register_ext_u3e0g",
+      "type": "boundary_monitor_register_ext",
+      "word_device": "U3E0\\G0",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "boundary_monitor_register_ext_hg",
+      "type": "boundary_monitor_register_ext",
+      "word_device": "U3E0\\HG0",
+      "status": "limit",
+      "largest_pass": 96,
+      "first_fail": 97,
+      "fail_end": "C054"
+    },
+    {
+      "id": "monitor_execute",
+      "type": "monitor_execute",
+      "word_device": "D1000",
+      "end_codes": [
+        "0000",
+        "0000"
+      ]
+    },
+    {
+      "id": "block_read",
+      "type": "block_read",
+      "end_code": "0000"
+    },
+    {
+      "id": "block_write",
+      "type": "block_write",
+      "end_code": "0000"
+    },
+    {
+      "id": "ext_read_routes",
+      "type": "ext_read_routes",
+      "routes": {
+        "J\\X": "0000",
+        "J\\Y": "0000",
+        "J\\B": "0000",
+        "J\\W": "0000",
+        "J\\SB": "0000",
+        "J\\SW": "0000",
+        "U\\G": "0000",
+        "U3E0\\G": "0000",
+        "U3E0\\HG": "0000"
+      }
+    },
+    {
+      "id": "family_reachability",
+      "type": "family_reachability",
+      "families": {
+        "X": {
+          "device": "X0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "Y": {
+          "device": "Y0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "M": {
+          "device": "M0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "L": {
+          "device": "L0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "F": {
+          "device": "F0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "V": {
+          "device": "V0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "B": {
+          "device": "B0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "S": {
+          "device": "S0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "SB": {
+          "device": "SB0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "SM": {
+          "device": "SM0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "D": {
+          "device": "D0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "W": {
+          "device": "W0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "SW": {
+          "device": "SW0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "R": {
+          "device": "R0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "ZR": {
+          "device": "ZR0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "RD": {
+          "device": "RD0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "Z": {
+          "device": "Z0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "SD": {
+          "device": "SD0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "TS": {
+          "device": "TS0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "TC": {
+          "device": "TC0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "TN": {
+          "device": "TN0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "STS": {
+          "device": "STS0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "STC": {
+          "device": "STC0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "STN": {
+          "device": "STN0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "CS": {
+          "device": "CS0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "CC": {
+          "device": "CC0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "CN": {
+          "device": "CN0",
+          "access": "word",
+          "end_code": "0000"
+        },
+        "LTN": {
+          "device": "LTN0",
+          "access": "word4",
+          "end_code": "0000",
+          "note": "intended long route: one 4-word unit; LTS/LTC decode from it"
+        },
+        "LSTN": {
+          "device": "LSTN0",
+          "access": "word4",
+          "end_code": "0000",
+          "note": "intended long route: one 4-word unit; LSTS/LSTC decode from it"
+        },
+        "LCN": {
+          "device": "LCN0",
+          "access": "dword_random",
+          "end_code": "0000",
+          "note": "intended long route: random dword read"
+        },
+        "LCS": {
+          "device": "LCS0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "LCC": {
+          "device": "LCC0",
+          "access": "bit",
+          "end_code": "0000"
+        },
+        "LTS": {
+          "device": "LTS0",
+          "access": "bit",
+          "end_code": "4030",
+          "raw_device_code_probe": true
+        },
+        "LTC": {
+          "device": "LTC0",
+          "access": "bit",
+          "end_code": "4030",
+          "raw_device_code_probe": true
+        },
+        "LSTS": {
+          "device": "LSTS0",
+          "access": "bit",
+          "end_code": "4030",
+          "raw_device_code_probe": true
+        },
+        "LSTC": {
+          "device": "LSTC0",
+          "access": "bit",
+          "end_code": "4030",
+          "raw_device_code_probe": true
+        },
+        "LZ": {
+          "device": "LZ0",
+          "access": "dword_random",
+          "end_code": "0000"
+        }
+      }
+    },
+    {
+      "id": "write_policy_s",
+      "type": "write_bit_verify",
+      "device": "S2",
+      "end_codes": [
+        "4030"
+      ]
+    }
+  ]
+}
