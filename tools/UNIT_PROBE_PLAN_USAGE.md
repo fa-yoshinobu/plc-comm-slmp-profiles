@@ -1,0 +1,98 @@
+# Unit Probe Plan Runner Usage
+
+Use `run_unit_probe_plan.py` for unit investigations (extension Ethernet units such as QJ71E71-100). It executes a reviewed plan file end to end and removes operator discretion:
+
+- The plan JSON is the only instruction. Skipping an item at runtime is not possible.
+- Every required item in `unit_probe_plan_required.json` must exist in the plan, or the run is refused before any communication.
+- Writes go only to devices listed in the plan's `write_allow`, within the declared span. A write item with a non-allowlisted target is a validation error, never a silent skip.
+- Limits are found by automatic boundary search (exponential growth, then binary search). Fixed guess counts cannot be substituted for evidence.
+
+Do not run this tool against a production machine or a PLC that controls live equipment. It writes to the allowlisted devices.
+
+## Basic Run
+
+Always dry-run first and review the printed write targets:
+
+```bat
+cd /d D:\APP\plc-comm-slmp-profiles
+python tools\run_unit_probe_plan.py --plan evidence\unit-investigations\plans\qj71e71-100_q12hcpu.json --dry-run
+```
+
+`dry-run OK` means the plan is complete (all required items present) and every write target is allowlisted. Then run for real:
+
+```bat
+python tools\run_unit_probe_plan.py --plan evidence\unit-investigations\plans\qj71e71-100_q12hcpu.json
+```
+
+## Outputs
+
+One run creates `evidence/unit-investigations/plans/runs/{plan_name}_{UTC timestamp}/`:
+
+| File | Content |
+| --- | --- |
+| `attempts.jsonl` | Every request attempt, flushed immediately (audit trail; nothing can be hidden) |
+| `results.json` | Per-item outcome: boundary values with end codes, route/family tables, errors, waivers |
+
+Console shows `[n/total] item_id` progress and each boundary attempt (`count=N -> end_code`), so a stall is always visible.
+
+## Exit Codes
+
+| Code | Meaning |
+| --- | --- |
+| 0 | All items recorded, no errors |
+| 2 | Plan validation failed (missing required item, disallowed write target, cap over field limit). Fix the plan file |
+| 3 | Run finished but some items recorded errors (see `results.json` `errors` list). Re-run after fixing the cause |
+
+## Boundary Search Results
+
+Each `boundary_*` item ends in one of:
+
+- `{"status": "limit", "largest_pass": N, "first_fail": N+1, "fail_end": "XXXX"}` — the measured boundary with the over end code.
+- `{"status": "limit", "largest_pass": cap, "no_fail_up_to_cap": cap}` — no failure up to the cap; raise `cap` in the plan if a boundary is expected.
+- `{"status": "fail", "first_fail": 1, "fail_end": "XXXX"}` — the feature/route failed at 1 point (family/route evidence, not a limit).
+- `{"status": "error", "at_count": N}` — communication error even after one retry.
+
+Bit write probes reset the tested bits OFF after each successful attempt. Numeric write values are test values and are not restored.
+
+## Writing A Plan For A New Unit
+
+1. Copy an existing plan from `evidence/unit-investigations/plans/`.
+2. Update `profile.base` (the built-in profile of the connected CPU), `frame`, `compat`, and the connection block.
+3. Update `write_allow` to the devices the user has designated as writable, with spans at least `cap + 1` for boundary items. Input-like routes (`J..\X`, `J..\Y`) must not be added.
+4. Update item params: configured `J`/`U\G` targets, working word/bit areas, caps.
+5. `--dry-run` until validation passes. Validation errors list exactly what is missing.
+
+Required coverage lives in `unit_probe_plan_required.json` (25 items: type name, direct/random/block/monitor features, all boundary rows including the ext write rows, qualified routes, all device families, `S` write policy). Extra items beyond the manifest are allowed and run as-is (for example, probing both `U\G` and `J\W` targets for the same ext row).
+
+## Waivers
+
+If an item is genuinely impossible on a given rig (for example, no `J` route is configured), replace its body with an explicit reviewed reason **in the plan file**:
+
+```json
+{"id": "boundary_random_write_bit_ext", "waiver": "No J link route is configured on this test rig (user decision 2026-07-05)."}
+```
+
+Waived items appear in `results.json` under `waived`. A waiver is a user decision recorded in a reviewed file; deciding at runtime is not supported on purpose.
+
+## Standalone Executables
+
+To hand the sweep to someone who does not have Python or this repository:
+
+```bat
+tools\build_unit_probe_exe.bat
+```
+
+This builds two single-file executables in `dist\` (canonical JSON and the required-items manifest are bundled inside):
+
+| Executable | Purpose |
+| --- | --- |
+| `slmp-unit-probe-plan.exe` | Same as `run_unit_probe_plan.py`: `slmp-unit-probe-plan.exe --plan <plan.json> [--dry-run]` |
+| `slmp-live-probe.exe` | Same as `live_profile_probe.py` for single ad-hoc requests |
+
+Hand off the executable together with a **reviewed plan JSON** and this document. The bundled JSON matches the repository state at build time; rebuild after canonical JSON changes.
+
+## Notes
+
+- Caps for random/monitor items must be 255 or less (the count field is one byte).
+- The runner reuses `live_profile_probe.py` for framing and payloads; on abnormal ends it retries once, records the error row, and moves on — it never goes silent and never drops an item.
+- Feed `results.json` boundary values into the investigation markdown; every `unverified` row in the markdown should correspond to either a waiver or a bug to fix, not a judgment call.

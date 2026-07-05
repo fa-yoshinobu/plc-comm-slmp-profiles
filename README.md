@@ -73,21 +73,19 @@ python tools/generate_live_verification_draft.py --profile melsec:iq-f --plc-mod
 
 The generated file is only a checklist draft. Keep untested rows as `unverified` until a live probe is run.
 
-To collect field evidence from a PLC that the maintainer does not have:
+To probe a live PLC directly (single raw SLMP requests, one JSON line per call):
 
 ```powershell
-python tools/collect_live_plc_profile.py --profile melsec:iq-f --host 192.168.250.100 --plc-model FX5U-32MR/DS
+python tools/live_profile_probe.py --profile melsec:qnu --frame 4E --compat Q/L read-word --device D0
 ```
 
-This collector writes to the configured test devices by default so that write policy and basic write behavior are recorded. Numeric write probes use random values and are not restored. Bit probes are reset to OFF after the check. Use `--skip-writes` only when a read-only collection is intentionally required.
+To run a complete unit investigation sweep from a reviewed plan file (required coverage enforced, writes restricted to the plan's allowlist, limits found by automatic boundary search):
 
-For a single-file Windows executable, bundle this collector together with `capability/slmp_builtin_ethernet_profiles.json` and `device-ranges/slmp_device_range_rules.json`; the executable must use the same JSON data version as this repository tag.
-
-```bat
-tools\build_profile_collector_exe.bat
+```powershell
+python tools/run_unit_probe_plan.py --plan evidence/unit-investigations/plans/qj71e71-100_q12hcpu.json --dry-run
 ```
 
-Hand off [PROFILE_COLLECTOR_USAGE.md](tools/PROFILE_COLLECTOR_USAGE.md) with the executable when asking someone else to run the collector.
+See [UNIT_PROBE_PLAN_USAGE.md](tools/UNIT_PROBE_PLAN_USAGE.md) for details.
 
 ## Downstream use
 

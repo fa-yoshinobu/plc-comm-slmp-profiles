@@ -17,7 +17,13 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[1]
+def _data_root() -> Path:
+    if getattr(sys, "frozen", False):  # bundled single-file executable
+        return Path(getattr(sys, "_MEIPASS"))
+    return Path(__file__).resolve().parents[1]
+
+
+ROOT = _data_root()
 CAPABILITY_JSON = ROOT / "capability" / "slmp_builtin_ethernet_profiles.json"
 
 
