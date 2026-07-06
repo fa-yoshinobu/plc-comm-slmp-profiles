@@ -136,7 +136,7 @@ def audit_update_script(audit: Audit, source_root: Path, repo: str, script: Path
     audit.check(path.is_file(), f"{repo}: missing update script {script}")
     if path.is_file():
         text = read_text(path)
-        audit.check('$Ref = "v1.2.1"' in text, f"{repo}: update script default ref must be v1.2.1")
+        audit.check('$Ref = "v1.2.2"' in text, f"{repo}: update script default ref must be v1.2.2")
 
 
 def audit_profile_doc(audit: Audit, source_root: Path, repo: str, doc: Path) -> None:
