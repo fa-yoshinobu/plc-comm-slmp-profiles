@@ -6,6 +6,12 @@ Generated user-facing reference. Source: `capability/slmp_builtin_ethernet_profi
 
 Capability schema 1, capability date 2026-07-06, scope `slmp-ethernet-port`, default strict mode `True`. Device-range schema 1, device-range date 2026-07-05.
 
+## Purpose
+
+Profile parameters document selectable profile IDs, feature decisions, point limits, write policy, and device availability for user manuals and profile-selection tools.
+
+They do not guarantee that every address or configuration-dependent route will work on a particular PLC installation; use live PLC responses for runtime truth.
+
 ## Profile Summary
 
 | Profile | Display name | Scope | Role | Base profile | Frame | Compat | Word subcmd | Bit subcmd | Ext word | Ext bit | Verified models |

@@ -4,6 +4,8 @@
 
 Generated user-facing reference. Source: `device-ranges/slmp_device_range_rules.json`.
 
+Device-range schema 1, device-range date 2026-07-05.
+
 ## Purpose
 
 Device range rules are not send/receive address guards for communication libraries.
@@ -62,4 +64,12 @@ When an exact range is configuration-dependent, prefer a live probe or the PLC r
 | RD | word | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | dword: SD308 | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported | unsupported |
 | SM | bit | fixed 4096 | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 10000 | fixed 1024 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 |
 | SD | word | fixed 4096 | fixed 4096 | fixed 4096 | fixed 4496 | fixed 10000 | fixed 12000 | fixed 1024 | fixed 1024 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 | fixed 2048 |
+
+## Appendix: How To Read Cells
+
+A `-` cell means no catalog rule is defined for that profile and device family.
+
+An `unsupported` cell means the profile explicitly records that the device family is not available.
+
+A `probe` suffix means the value is retained as probe-oriented catalog data rather than a guaranteed static range.
 

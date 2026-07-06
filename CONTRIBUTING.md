@@ -33,3 +33,6 @@ Keep user-facing library docs predictable. Shared setup, troubleshooting,
 range tables, and common protocol notes belong in `plc-comm-docs-site`; this
 repository owns canonical data, evidence, and generated comparison tables.
 
+Generated user-facing profile tables follow the shared style in
+`docs/tables_style.md`. Keep generator changes in
+`tools/generate_profile_tables.py`; do not hand-edit files under `tables/`.

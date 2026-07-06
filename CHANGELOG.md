@@ -16,6 +16,7 @@ This repository publishes canonical profile data consumed by implementation repo
 
 ### Changed
 
+- Docs: Added the shared generated profile-table style guide and regenerated SLMP tables with explicit purpose and cell-reading sections.
 - Data: Added inferred 0080/0081 extended random and monitor limit keys to the Q/L built-in/base profiles, and inferred the LCPU LJ71E71-100 extended random bit-write limit for key-set parity.
 - Data: Kept iQ-F monitor limit keys as `not-adopted` placeholders so all 14 capability profiles expose the same limit-key set without adopting monitor support.
 - Data: Recorded RJ71EN71 iQ-R live evidence for 0082/0083 extended random read/write routes used by the API parity work.
