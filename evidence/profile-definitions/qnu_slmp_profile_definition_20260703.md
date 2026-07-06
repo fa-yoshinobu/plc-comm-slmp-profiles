@@ -41,10 +41,10 @@
 | random_write_word | 160 | 1920 | C054 | live |
 | random_write_bit | 188 |  | C053 | live |
 | monitor_register_word | 192 |  | C054 | live |
-| random_read_word_ext |  |  |  | not-adopted |
-| random_write_word_ext |  |  |  | not-adopted |
-| random_write_bit_ext |  |  |  | not-adopted |
-| monitor_register_word_ext |  |  |  | not-adopted |
+| random_read_word_ext | 192 |  | C054 | inferred |
+| random_write_word_ext | 160 | 1920 | 4080 | inferred |
+| random_write_bit_ext | 188 |  | C053 | inferred |
+| monitor_register_word_ext | 192 |  | C054 | inferred |
 
 ## Write Policy
 

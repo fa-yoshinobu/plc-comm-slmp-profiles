@@ -28,6 +28,23 @@ PROFILE_ORDER = [
     "melsec:qnudv:qj71e71-100",
 ]
 
+BASE_LIMIT_KEYS = {
+    "direct_word_read",
+    "direct_word_write",
+    "direct_bit_read",
+    "direct_bit_write",
+    "random_read_word",
+    "random_write_word",
+    "random_write_bit",
+    "random_read_word_ext",
+    "random_write_word_ext",
+    "random_write_bit_ext",
+}
+MONITOR_LIMIT_KEYS = {
+    "monitor_register_word",
+    "monitor_register_word_ext",
+}
+
 
 def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
@@ -76,6 +93,14 @@ def validate_capability(payload: dict[str, Any]) -> None:
             require(isinstance(feature.get("source"), str) and feature["source"], f"{profile_id}/{key}: source")
         limits = profile.get("limits")
         require(isinstance(limits, dict), f"{profile_id}: limits required")
+        expected_limit_keys = set(BASE_LIMIT_KEYS)
+        expected_limit_keys.update(MONITOR_LIMIT_KEYS)
+        require(
+            set(limits) == expected_limit_keys,
+            f"{profile_id}: limits keys must match expected set; "
+            f"missing={sorted(expected_limit_keys - set(limits))}, "
+            f"extra={sorted(set(limits) - expected_limit_keys)}",
+        )
         for key, limit in limits.items():
             require(isinstance(limit.get("source"), str) and limit["source"], f"{profile_id}/{key}: limit source")
             if "max" in limit:

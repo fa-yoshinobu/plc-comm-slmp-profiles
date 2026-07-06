@@ -65,7 +65,7 @@ SOURCE_SEMANTICS = {
     "spec": "Derived from the specification or from a structural hardware constraint.",
     "inferred": "Inferred from another verified profile or an equivalent command group; not directly live-verified.",
     "manual": "Taken from manual documentation.",
-    "not-adopted": "Recorded in the source definition but intentionally omitted from generated capability data.",
+    "not-adopted": "Recorded to keep the profile schema uniform even though the feature is not adopted for normal use.",
 }
 
 SUPPLEMENTAL_DEVICE_ROWS = {

@@ -62,7 +62,7 @@ Schema note: `schema_version` remains 1. Profile-level `scope`, optional `base_p
 | monitor_register_word | 192 |  | C054 | live |
 | random_read_word_ext | 192 |  | C054 | live |
 | random_write_word_ext | 160 | 1920 | 4080 | live |
-| random_write_bit_ext |  |  |  | not-adopted |
+| random_write_bit_ext | 188 |  | C053 | inferred |
 | monitor_register_word_ext | 192 |  | C054 | live |
 
 ## Write Policy

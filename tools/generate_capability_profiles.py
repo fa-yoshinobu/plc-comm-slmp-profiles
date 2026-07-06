@@ -231,6 +231,11 @@ def set_dotted(target: dict[str, Any], dotted_key: str, value: str) -> None:
     final = parts[-1]
     if final == "verified_models":
         current[final] = parse_models(value)
+    elif final in {"max", "weighted_max"}:
+        parsed = parse_optional_int(value)
+        if parsed is None:
+            raise ValueError(f"{dotted_key}: integer override value is required")
+        current[final] = parsed
     else:
         current[final] = value
 
@@ -297,7 +302,7 @@ def build_output() -> dict[str, Any]:
     definitions = definition_files()
     return {
         "schema_version": 1,
-        "date": "2026-07-05",
+        "date": "2026-07-06",
         "scope": "slmp-ethernet-port",
         "description": (
             "Canonical PLC model and Ethernet-unit profile definitions for the SLMP library family. "

@@ -132,6 +132,9 @@ def check_limit_against_profile(
     label: str,
 ) -> None:
     limit = profile["limits"][limit_name]
+    if limit.get("source") != "live":
+        audit.check(limit.get("source") == "inferred", f"{label}: {limit_name} must be live or inferred")
+        return
     check_boundary(audit, result, result_id, limit["max"], limit["over_end_code"], label)
 
 
