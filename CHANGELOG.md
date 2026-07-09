@@ -16,6 +16,10 @@ This repository publishes canonical profile data consumed by implementation repo
 
 ### Changed
 
+- Data: Renamed the canonical capability file from `slmp_builtin_ethernet_profiles.json` to `slmp_ethernet_profiles.json` to cover both built-in Ethernet and verified Ethernet-unit profiles.
+- Data: Pruned obsolete live-verification, downstream-read, retry, and timestamped run logs; current profile evidence now uses stable plan JSON, stable result JSON, and generated same-name Markdown summaries.
+- Data: Updated the LJ71E71-100/L02SCPU plan and result evidence with the latest `U5\G100` and `J2` route measurements while keeping the final `melsec:lcpu:lj71e71-100` profile values unchanged.
+- Tooling: Updated probe-plan output to write stable `plans/results/{plan}.json` plus generated `{plan}.md`, added summary regeneration, and removed ad-hoc Markdown evidence generation.
 - Docs: Added the shared generated profile-table style guide and regenerated SLMP tables with explicit purpose and cell-reading sections.
 - Data: Added inferred 0080/0081 extended random and monitor limit keys to the Q/L built-in/base profiles, and inferred the LCPU LJ71E71-100 extended random bit-write limit for key-set parity.
 - Data: Kept iQ-F monitor limit keys as `not-adopted` placeholders so all 14 capability profiles expose the same limit-key set without adopting monitor support.
