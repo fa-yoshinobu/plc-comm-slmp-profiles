@@ -14,35 +14,60 @@ This repository publishes canonical profile data consumed by implementation repo
 
 ## [Unreleased]
 
+### Fixed
+
+- Tooling: Reject duplicate JSON object keys during profile validation.
+
+## [1.2.3] - 2026-07-06
+
 ### Changed
 
-- Data: Renamed the canonical capability file from `slmp_builtin_ethernet_profiles.json` to `slmp_ethernet_profiles.json` to cover both built-in Ethernet and verified Ethernet-unit profiles.
-- Data: Pruned obsolete live-verification, downstream-read, retry, and timestamped run logs; current profile evidence now uses stable plan JSON, stable result JSON, and generated same-name Markdown summaries.
-- Data: Updated the LJ71E71-100/L02SCPU plan and result evidence with the latest `U5\G100` and `J2` route measurements while keeping the final `melsec:lcpu:lj71e71-100` profile values unchanged.
-- Tooling: Updated probe-plan output to write stable `plans/results/{plan}.json` plus generated `{plan}.md`, added summary regeneration, and removed ad-hoc Markdown evidence generation.
-- Docs: Added the shared generated profile-table style guide and regenerated SLMP tables with explicit purpose and cell-reading sections.
-- Data: Added inferred 0080/0081 extended random and monitor limit keys to the Q/L built-in/base profiles, and inferred the LCPU LJ71E71-100 extended random bit-write limit for key-set parity.
-- Data: Kept iQ-F monitor limit keys as `not-adopted` placeholders so all 14 capability profiles expose the same limit-key set without adopting monitor support.
-- Data: Recorded RJ71EN71 iQ-R live evidence for 0082/0083 extended random read/write routes used by the API parity work.
-- Tooling: Added validation that all capability profiles keep a uniform limit-key set.
-- Data: Shortened SLMP `display_name` values to the `<series> (<route>)` UI label form for the `v1.2.1` data release.
-- Docs: Regenerated SLMP profile tables with the shortened display names and the RJ71EN71 profile row included in table order.
-- Data: Updated SLMP `display_name` values to match the approved profile naming table for the `v1.1.2` data release.
-- Docs: Split the generated SLMP profile comparison into user-facing profile parameter and device-range tables without changing the canonical JSON data.
-- Tooling: Added a live verification draft generator that pre-fills checklist rows from the canonical capability and device-range JSON files.
-- Tooling: Added a field collection tool for gathering profile evidence from PLCs that maintainers do not have, including write probes by default.
-- Docs: Added hand-off usage instructions for the SLMP profile collector executable.
-- Data: Added `display_name` to each built-in Ethernet capability profile.
-- Tooling: Added JSON validation and schema files for profile maintenance.
-- Data: Added iQ-R/iQ-L live evidence for 0082/0083 extended random and monitor point limits.
-- Data: Recorded LCPU/QnU/QnUDV 0080 direct-device probes returning `C070` as route evidence, not point-limit evidence.
-- Docs: Added extended random limit rows to the live verification checklist template.
-- Tooling: Added raw extended random probes to `live_profile_probe.py`.
+- Docs: Documented the shared generated profile-table style and regenerated the SLMP tables with explicit purpose and cell-reading sections.
+
+## [1.2.2] - 2026-07-06
+
+### Changed
+
+- Data: Added inferred 0080/0081 extended random and monitor limit keys to the Q/L built-in/base profiles, while keeping iQ-F monitor support not adopted.
+- Data: Recorded RJ71EN71 iQ-R live evidence for the 0082/0083 extended random routes used by API parity work.
+- Tooling: Added validation that capability profiles keep a uniform limit-key set.
+- Data: Pruned superseded evidence and corrected stale rollout references without changing the published profile decisions.
+
+## [1.2.1] - 2026-07-05
+
+### Changed
+
+- Data: Shortened SLMP `display_name` values to the `<series> (<route>)` UI label form.
+- Docs: Regenerated profile tables with the shortened display names and the RJ71EN71 row in table order.
+- Tooling: Added a live verification draft generator and stable plan/result summary generation.
+- Tooling: Added a profile field-collection tool with write probes enabled by default and documented collector hand-off usage.
+
+## [1.2.0] - 2026-07-05
+
+### Added
+
 - Data: Added verified Ethernet-unit profiles for `melsec:qcpu:qj71e71-100`, `melsec:lcpu:lj71e71-100`, `melsec:qnu:qj71e71-100`, and `melsec:qnudv:qj71e71-100`.
-- Data: Marked `melsec:qcpu` as a base-only profile and recorded `R120PCPU via RJ71EN71` as verified on `melsec:iq-r` instead of adding a separate RJ71EN71 profile.
-- Data: Removed inferred 0080/0081 extended limit rows from Q/L built-in profiles after live baseline runs returned `C070`.
-- Tooling: Added profile-level `scope`, optional `base_profile`, and `role=base` support to capability generation, validation, schema, and generated comparison tables.
-- Tooling: Added device-range `base_profile` inheritance so Ethernet-unit profiles can reuse the existing CPU-family range models.
+
+## [1.1.2] - 2026-07-05
+
+### Changed
+
+- Data: Updated SLMP `display_name` values to match the approved profile naming table.
+- Docs: Split the generated profile comparison into profile-parameter and device-range tables without changing canonical JSON data.
+
+## [1.1.1] - 2026-07-05
+
+### Added
+
+- Data: Added `display_name` to each built-in Ethernet capability profile.
+
+## [1.1.0] - 2026-07-04
+
+### Added
+
+- Data: Added iQ-R/iQ-L live evidence for extended random and monitor point limits and recorded route-specific `C070` results for Q/L families.
+- Tooling: Added profile JSON validation, schemas, raw extended-random probes, and profile-level scope/base-profile support.
+- Data: Marked `melsec:qcpu` as base-only and added device-range base-profile inheritance for Ethernet-unit profiles.
 
 ## [1.0.0] - 2026-07-04
 
