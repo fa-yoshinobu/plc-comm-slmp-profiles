@@ -108,7 +108,7 @@ def audit_profile_definition_files(audit: Audit, profiles_repo: Path) -> None:
         audit.check(path.is_file(), f"missing profile evidence file: {path}")
         if path.is_file():
             text = read_text(path)
-            audit.check("|" in text and ("Decision" in text or "判定" in text), f"{name} must include a decision table")
+            audit.check("|" in text and "Decision" in text, f"{name} must include a decision table")
 
 
 def audit_downstream_fixture(audit: Audit, source_root: Path, repo: str, fixture: Path) -> None:
