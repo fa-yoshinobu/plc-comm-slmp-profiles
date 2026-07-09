@@ -26,14 +26,26 @@ python tools\run_unit_probe_plan.py --plan evidence\unit-investigations\plans\qj
 
 ## Outputs
 
-One run creates `evidence/unit-investigations/plans/runs/{plan_name}_{UTC timestamp}/`:
+One run writes two stable files under `evidence/unit-investigations/plans/results/`.
 
 | File | Content |
 | --- | --- |
-| `attempts.jsonl` | Every request attempt, flushed immediately (audit trail; nothing can be hidden) |
-| `results.json` | Per-item outcome: boundary values with end codes, route/family tables, errors, waivers |
+| `{plan_name}.json` | Per-item outcome: boundary values with end codes, route/family tables, errors, waivers |
+| `{plan_name}.md` | Generated human-readable summary of the JSON. Do not edit by hand |
 
-Console shows `[n/total] item_id` progress and each boundary attempt (`count=N -> end_code`), so a stall is always visible.
+Console shows `[n/total] item_id` progress and each boundary attempt (`count=N -> end_code`), so a stall is always visible without retaining a separate attempt log.
+
+To refresh summaries from existing JSON files without PLC communication:
+
+```bat
+python tools\generate_unit_probe_summaries.py
+```
+
+## Raw Probe Escalation
+
+`live_profile_probe.py` is for discovery when the plan runner does not yet know how to ask a question. It writes no evidence files; treat its stdout JSON as temporary.
+
+If that result affects a maintained profile, do not save a standalone MD/log. Add or adjust a structured item in `run_unit_probe_plan.py`, put the item in the reviewed plan JSON, rerun the plan, and keep the updated `plans/results/{plan_name}.json` plus generated `{plan_name}.md`. Point the profile definition's `source_evidence` row at the JSON. If the result does not affect the profile, discard it.
 
 ## Exit Codes
 
@@ -95,5 +107,5 @@ Hand off the executable together with a **reviewed plan JSON** and this document
 
 - Long timer/counter families are probed by their **intended library routes**: `LTN`/`LSTN` as one 4-word unit (contact/coil bits decode from it), `LCN` and `LZ` by random dword read, `LCS`/`LCC` by direct bit read. `LTS`/`LTC`/`LSTS`/`LSTC` raw device codes are also probed but marked `raw_device_code_probe: true` in results — the library never sends those codes, so raw results are record-only and must not drive family reachability or unit-difference decisions.
 - Caps for random/monitor items must be 255 or less (the count field is one byte).
-- The runner reuses `live_profile_probe.py` for framing and payloads; on abnormal ends it retries once, records the error row, and moves on — it never goes silent and never drops an item.
-- Feed `results.json` boundary values into the investigation markdown; every `unverified` row in the markdown should correspond to either a waiver or a bug to fix, not a judgment call.
+- The runner reuses `live_profile_probe.py` for framing and payloads; on abnormal ends it retries once, records the item error in the result file, and moves on — it never goes silent and never drops an item.
+- Feed the saved result JSON boundary values into the profile definition. The profile definition is the maintained decision summary; the result JSON is the machine-checkable evidence.

@@ -12,7 +12,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFINITION_DIR = ROOT / "evidence" / "profile-definitions"
-OUTPUT = ROOT / "capability" / "slmp_builtin_ethernet_profiles.json"
+OUTPUT = ROOT / "capability" / "slmp_ethernet_profiles.json"
 
 PROFILE_ORDER = [
     "melsec:iq-r",
@@ -282,7 +282,7 @@ def build_profiles(definitions: dict[str, dict[str, Any]]) -> dict[str, Any]:
 
 def definition_files() -> dict[str, dict[str, Any]]:
     definitions: dict[str, dict[str, Any]] = {}
-    for path in sorted(DEFINITION_DIR.glob("*_profile_definition_*.md")):
+    for path in sorted(DEFINITION_DIR.glob("*_profile_definition*.md")):
         definition = parse_definition(path)
         profile = definition["profile"]
         if profile in definitions:

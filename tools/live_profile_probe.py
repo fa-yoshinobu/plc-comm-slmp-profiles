@@ -3,7 +3,9 @@
 
 This tool is intentionally small and transport-level. It reads the canonical
 profile JSON for frame/compat/subcommand choices, sends raw SLMP requests, and
-prints concise JSON results. It does not apply client-library guards.
+prints concise JSON results. It does not apply client-library guards and
+does not write evidence files. If a one-off result matters for a maintained
+profile, add the check to run_unit_probe_plan.py and the reviewed plan JSON.
 """
 
 from __future__ import annotations
@@ -24,7 +26,7 @@ def _data_root() -> Path:
 
 
 ROOT = _data_root()
-CAPABILITY_JSON = ROOT / "capability" / "slmp_builtin_ethernet_profiles.json"
+CAPABILITY_JSON = ROOT / "capability" / "slmp_ethernet_profiles.json"
 
 
 DEVICE_CODES: dict[str, tuple[int, int]] = {

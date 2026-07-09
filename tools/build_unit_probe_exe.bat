@@ -5,14 +5,14 @@ cd /d "%~dp0.."
 
 python -m PyInstaller --onefile --clean ^
   --name slmp-unit-probe-plan ^
-  --add-data "capability\slmp_builtin_ethernet_profiles.json;capability" ^
+  --add-data "capability\slmp_ethernet_profiles.json;capability" ^
   --add-data "tools\unit_probe_plan_required.json;tools" ^
   tools\run_unit_probe_plan.py
 if errorlevel 1 exit /b 1
 
 python -m PyInstaller --onefile --clean ^
   --name slmp-live-probe ^
-  --add-data "capability\slmp_builtin_ethernet_profiles.json;capability" ^
+  --add-data "capability\slmp_ethernet_profiles.json;capability" ^
   tools\live_profile_probe.py
 if errorlevel 1 exit /b 1
 
