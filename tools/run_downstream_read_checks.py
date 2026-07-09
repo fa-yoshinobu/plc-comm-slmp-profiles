@@ -15,7 +15,6 @@ import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass
-from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -39,17 +38,6 @@ class CheckCommand:
     workdir: Path
 
 
-@dataclass(frozen=True)
-class CommandResult:
-    name: str
-    repo: str
-    command: list[str]
-    workdir: Path
-    exit_code: int
-    stdout: str
-    stderr: str
-
-
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Plan or run downstream unit-profile read-only checks.")
     parser.add_argument("--source-root", type=Path, default=DEFAULT_SOURCE_ROOT)
@@ -64,11 +52,6 @@ def parse_args() -> argparse.Namespace:
         help="Required with --execute after the user has approved this live PLC batch.",
     )
     parser.add_argument("--cpp-compiler", default="g++")
-    parser.add_argument(
-        "--record-json",
-        type=Path,
-        help="Write a JSON result record after approved --execute mode completes.",
-    )
     return parser.parse_args()
 
 
@@ -231,50 +214,8 @@ def print_plan(args: argparse.Namespace, commands: list[CheckCommand]) -> None:
         print("")
 
 
-def result_payload(args: argparse.Namespace, commands: list[CheckCommand], results: list[CommandResult]) -> dict:
-    passed = [item for item in results if item.exit_code == 0]
-    failed = [item for item in results if item.exit_code != 0]
-    return {
-        "schema": "downstream-unit-profile-read-checks/v1",
-        "created_utc": datetime.now(UTC).isoformat(),
-        "target": UNIT_PROFILES[args.profile],
-        "profile": args.profile,
-        "endpoint": {"host": args.host, "port": args.port, "transport": "tcp"},
-        "read": {"device": args.device, "points": 1, "unit": "word"},
-        "intent": "read-only downstream implementation acceptance",
-        "approved_live_ok": bool(args.approved_live_ok),
-        "dry_run": False,
-        "summary": {
-            "commands": len(commands),
-            "passed": len(passed),
-            "failed": len(failed),
-            "status": "pass" if not failed and len(results) == len(commands) else "fail",
-        },
-        "results": [
-            {
-                "name": item.name,
-                "repo": item.repo,
-                "cwd": str(item.workdir),
-                "command": item.command,
-                "exit_code": item.exit_code,
-                "status": "pass" if item.exit_code == 0 else "fail",
-                "stdout": item.stdout,
-                "stderr": item.stderr,
-            }
-            for item in results
-        ],
-    }
-
-
-def write_result_record(path: Path, payload: dict) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"result record: {path}")
-
-
 def run_commands(args: argparse.Namespace, commands: list[CheckCommand]) -> int:
     failures = 0
-    results: list[CommandResult] = []
     for item in commands:
         print(f"== {item.name} ==")
         print(f"cwd: {item.workdir}")
@@ -284,24 +225,11 @@ def run_commands(args: argparse.Namespace, commands: list[CheckCommand]) -> int:
             print(completed.stdout, end="" if completed.stdout.endswith("\n") else "\n")
         if completed.stderr:
             print(completed.stderr, end="" if completed.stderr.endswith("\n") else "\n", file=sys.stderr)
-        results.append(
-            CommandResult(
-                name=item.name,
-                repo=item.repo,
-                command=item.command,
-                workdir=item.workdir,
-                exit_code=completed.returncode,
-                stdout=completed.stdout,
-                stderr=completed.stderr,
-            )
-        )
         if completed.returncode != 0:
             failures += 1
             print(f"{item.name}: FAIL exit={completed.returncode}", file=sys.stderr)
         else:
             print(f"{item.name}: PASS")
-    if args.record_json is not None:
-        write_result_record(args.record_json.resolve(), result_payload(args, commands, results))
     return 0 if failures == 0 else 1
 
 

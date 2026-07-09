@@ -7,6 +7,7 @@ This reads existing evidence files only. It never opens a PLC connection.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -14,62 +15,62 @@ from typing import Any
 
 
 REPO = Path(__file__).resolve().parents[1]
-RUNS = REPO / "evidence/unit-investigations/plans/runs"
+RESULTS = REPO / "evidence/unit-investigations/plans/results"
 DEFINITIONS = REPO / "evidence/profile-definitions"
-CAPABILITY_JSON = REPO / "capability/slmp_builtin_ethernet_profiles.json"
+CAPABILITY_JSON = REPO / "capability/slmp_ethernet_profiles.json"
 
 
 @dataclass(frozen=True)
 class UnitEvidence:
     canonical_profile: str
     base_profile: str
-    run_dir: str
+    result_file: str
     definition_file: str
     expected_model: str
     expect_qj_link_direct: bool = False
-    expect_lj_link_direct_config_absent: bool = False
+    expect_lj_link_direct_partial: bool = False
 
 
 UNIT_EVIDENCE = [
     UnitEvidence(
         canonical_profile="melsec:qcpu:qj71e71-100",
         base_profile="melsec:qcpu",
-        run_dir="qj71e71-100_q12hcpu_20260705_012948",
-        definition_file="qcpu_qj71e71-100_slmp_profile_definition_20260705.md",
+        result_file="qj71e71-100_q12hcpu.json",
+        definition_file="qcpu_qj71e71-100_profile_definition.md",
         expected_model="Q12HCPU via QJ71E71-100",
         expect_qj_link_direct=True,
     ),
     UnitEvidence(
         canonical_profile="melsec:qnu:qj71e71-100",
         base_profile="melsec:qnu",
-        run_dir="qj71e71-100_q26udehcpu_20260705_013641",
-        definition_file="qnu_qj71e71-100_slmp_profile_definition_20260705.md",
+        result_file="qj71e71-100_q26udehcpu.json",
+        definition_file="qnu_qj71e71-100_profile_definition.md",
         expected_model="Q26UDEHCPU via QJ71E71-100",
         expect_qj_link_direct=True,
     ),
     UnitEvidence(
         canonical_profile="melsec:qnudv:qj71e71-100",
         base_profile="melsec:qnudv",
-        run_dir="qj71e71-100_q06udvcpu_20260705_012302",
-        definition_file="qnudv_qj71e71-100_slmp_profile_definition_20260705.md",
+        result_file="qj71e71-100_q06udvcpu.json",
+        definition_file="qnudv_qj71e71-100_profile_definition.md",
         expected_model="Q06UDVCPU via QJ71E71-100",
         expect_qj_link_direct=True,
     ),
     UnitEvidence(
         canonical_profile="melsec:lcpu:lj71e71-100",
         base_profile="melsec:lcpu",
-        run_dir="lj71e71-100_l02scpu_20260705_015031",
-        definition_file="lcpu_lj71e71-100_slmp_profile_definition_20260705.md",
+        result_file="lj71e71-100_l02scpu.json",
+        definition_file="lcpu_lj71e71-100_profile_definition.md",
         expected_model="L02SCPU via LJ71E71-100",
-        expect_lj_link_direct_config_absent=True,
+        expect_lj_link_direct_partial=True,
     ),
 ]
 
 RJ_PROFILE = UnitEvidence(
     canonical_profile="melsec:iq-r:rj71en71",
     base_profile="melsec:iq-r",
-    run_dir="rj71en71_r120pcpu_20260705_022520",
-    definition_file="iq-r_rj71en71_slmp_profile_definition_20260705.md",
+    result_file="rj71en71_r120pcpu.json",
+    definition_file="iq-r_rj71en71_profile_definition.md",
     expected_model="R120PCPU via RJ71EN71",
 )
 
@@ -89,8 +90,29 @@ def read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def load_result(run_dir: str) -> dict[str, Any]:
-    return read_json(RUNS / run_dir / "results.json")
+def load_result(result_file: str) -> dict[str, Any]:
+    return read_json(RESULTS / result_file)
+
+
+def check_profile_definition_source_links(audit: Audit) -> None:
+    for path in sorted(DEFINITIONS.glob("*_profile_definition*.md")):
+        text = path.read_text(encoding="utf-8")
+        dtype = re.search(r"\|\s*definition_type\s*\|\s*`?([^`|]+)`?\s*\|", text)
+        source = re.search(r"\|\s*source_evidence\s*\|\s*`([^`]+)`\s*\|", text)
+        if dtype and dtype.group(1).strip() == "live":
+            audit.check(source is not None, f"{path.name}: live definition must have source_evidence")
+        if source is None:
+            continue
+        source_path = source.group(1)
+        audit.check(
+            source_path.startswith("evidence/unit-investigations/plans/results/"),
+            f"{path.name}: source_evidence must point to plans/results",
+        )
+        audit.check(source_path.endswith(".json"), f"{path.name}: source_evidence must point to result JSON")
+        audit.check(not re.search(r"20\d{6}", Path(source_path).name), f"{path.name}: source_evidence filename must not contain a date")
+        json_path = REPO / source_path
+        audit.check(json_path.is_file(), f"{path.name}: missing source_evidence JSON {source_path}")
+        audit.check(json_path.with_suffix(".md").is_file(), f"{path.name}: missing generated summary MD for {source_path}")
 
 
 def result_by_id(result: dict[str, Any], item_id: str) -> dict[str, Any]:
@@ -140,7 +162,7 @@ def check_limit_against_profile(
 
 def check_unit_profile(audit: Audit, canonical: dict[str, Any], unit: UnitEvidence) -> None:
     label = unit.canonical_profile
-    result = load_result(unit.run_dir)
+    result = load_result(unit.result_file)
     profile = canonical["profiles"][unit.canonical_profile]
 
     check_common_result_health(audit, result, label)
@@ -166,7 +188,13 @@ def check_unit_profile(audit: Audit, canonical: dict[str, Any], unit: UnitEviden
         audit.check(unit.canonical_profile in definition, f"{label}: definition missing canonical profile")
         audit.check(unit.expected_model in definition, f"{label}: definition missing verified model")
         audit.check("4E + Q/L works" in definition, f"{label}: definition missing frame decision")
-        audit.check("source_evidence" in definition, f"{label}: definition missing source_evidence")
+        audit.check(
+            f"evidence/unit-investigations/plans/results/{unit.result_file}" in definition,
+            f"{label}: source_evidence must point to the canonical result JSON",
+        )
+        if unit.expect_lj_link_direct_partial:
+            audit.check("J2\\W100" in definition, f"{label}: definition must mention latest J\\W target")
+            audit.check("J2\\B10" in definition and "4031" in definition, f"{label}: definition must record J\\B NG")
 
     audit.check(result_by_id(result, "type_name").get("end_code") == "0000", f"{label}: type_name must pass")
     audit.check(result_by_id(result, "block_read").get("end_code") == "0000", f"{label}: block_read must pass")
@@ -190,14 +218,24 @@ def check_unit_profile(audit: Audit, canonical: dict[str, Any], unit: UnitEviden
     if unit.expect_qj_link_direct:
         for route in ["J\\X", "J\\Y", "J\\B", "J\\W", "J\\SB", "J\\SW"]:
             audit.check(routes.get(route) == "0000", f"{label}: {route} route must pass on measured QJ setup")
-    if unit.expect_lj_link_direct_config_absent:
-        for route in ["J\\X", "J\\Y", "J\\B", "J\\W", "J\\SB", "J\\SW"]:
-            audit.check(routes.get(route) not in (None, "0000"), f"{label}: {route} route must remain config-dependent")
+    if unit.expect_lj_link_direct_partial:
+        for route in ["J\\X", "J\\Y", "J\\W", "J\\SB", "J\\SW"]:
+            audit.check(routes.get(route) == "0000", f"{label}: {route} route must pass on measured LJ setup")
+        audit.check(routes.get("J\\B") not in (None, "0000"), f"{label}: J\\B route must remain non-positive")
+        jw_read = result_by_id(result, "boundary_random_read_word_ext_jw")
+        jw_write = result_by_id(result, "boundary_random_write_word_ext_jw")
+        jw_weighted = result_by_id(result, "boundary_random_write_word_weighted_ext_jw")
+        audit.check(jw_read.get("status") == "limit" and jw_read.get("largest_pass") == 192, f"{label}: J\\W read ext limit mismatch")
+        audit.check(jw_write.get("status") == "limit" and jw_write.get("largest_pass") == 160, f"{label}: J\\W write ext limit mismatch")
+        audit.check(
+            jw_weighted.get("status") == "limit" and jw_weighted.get("largest_pass") == 137,
+            f"{label}: J\\W weighted ext limit mismatch",
+        )
 
 
 def check_rj_unit_profile(audit: Audit, canonical: dict[str, Any]) -> None:
     label = RJ_PROFILE.canonical_profile
-    result = load_result("rj71en71_r120pcpu_20260705_022520")
+    result = load_result(RJ_PROFILE.result_file)
     iqr = canonical["profiles"]["melsec:iq-r"]
     profile = canonical["profiles"][RJ_PROFILE.canonical_profile]
 
@@ -219,14 +257,10 @@ def check_rj_unit_profile(audit: Audit, canonical: dict[str, Any]) -> None:
         audit.check(RJ_PROFILE.canonical_profile in definition, f"{label}: definition missing canonical profile")
         audit.check(RJ_PROFILE.expected_model in definition, f"{label}: definition missing verified model")
         audit.check("Add alias unit profile" in definition, f"{label}: definition missing alias decision")
-        audit.check("source_evidence" in definition, f"{label}: definition missing source_evidence")
-
-    decision_path = DEFINITIONS / "rj71en71_slmp_unit_profile_decision_20260705.md"
-    audit.check(decision_path.is_file(), f"{label}: missing superseded decision file")
-    if decision_path.is_file():
-        decision = decision_path.read_text(encoding="utf-8")
-        audit.check("superseded" in decision.lower(), f"{label}: decision must be marked superseded")
-        audit.check("melsec:iq-r:rj71en71" in decision, f"{label}: decision missing new canonical profile")
+        audit.check(
+            f"evidence/unit-investigations/plans/results/{RJ_PROFILE.result_file}" in definition,
+            f"{label}: source_evidence must point to the canonical result JSON",
+        )
 
     type_name = result_by_id(result, "type_name")
     audit.check(type_name.get("end_code") == "0000", f"{label}: type_name must pass")
@@ -257,6 +291,7 @@ def main() -> int:
     canonical = read_json(CAPABILITY_JSON)
     audit = Audit()
 
+    check_profile_definition_source_links(audit)
     for unit in UNIT_EVIDENCE:
         check_unit_profile(audit, canonical, unit)
     check_rj_unit_profile(audit, canonical)

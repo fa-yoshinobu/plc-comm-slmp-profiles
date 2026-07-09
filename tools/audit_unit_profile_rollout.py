@@ -32,11 +32,11 @@ PROFILE_DOCS = {
 }
 
 FIXTURES = {
-    "plc-comm-slmp-dotnet": Path("tests/PlcComm.Slmp.Tests/fixtures/slmp_builtin_ethernet_profiles.json"),
-    "plc-comm-slmp-python": Path("tests/fixtures/slmp_builtin_ethernet_profiles.json"),
-    "plc-comm-slmp-rust": Path("tests/fixtures/slmp_builtin_ethernet_profiles.json"),
-    "node-red-contrib-plc-comm-slmp": Path("test/fixtures/slmp_builtin_ethernet_profiles.json"),
-    "plc-comm-slmp-cpp-minimal": Path("tests/fixtures/slmp_builtin_ethernet_profiles.json"),
+    "plc-comm-slmp-dotnet": Path("tests/PlcComm.Slmp.Tests/fixtures/slmp_ethernet_profiles.json"),
+    "plc-comm-slmp-python": Path("tests/fixtures/slmp_ethernet_profiles.json"),
+    "plc-comm-slmp-rust": Path("tests/fixtures/slmp_ethernet_profiles.json"),
+    "node-red-contrib-plc-comm-slmp": Path("test/fixtures/slmp_ethernet_profiles.json"),
+    "plc-comm-slmp-cpp-minimal": Path("tests/fixtures/slmp_ethernet_profiles.json"),
 }
 
 UPDATE_SCRIPTS = {
@@ -72,7 +72,7 @@ def read_json(path: Path) -> dict:
 
 
 def audit_profile_json(audit: Audit, profiles_repo: Path) -> None:
-    data = read_json(profiles_repo / "capability/slmp_builtin_ethernet_profiles.json")
+    data = read_json(profiles_repo / "capability/slmp_ethernet_profiles.json")
     profiles = data["profiles"]
     evidence_files = data.get("evidence_files", {})
 
@@ -96,11 +96,11 @@ def audit_profile_json(audit: Audit, profiles_repo: Path) -> None:
 
 def audit_profile_definition_files(audit: Audit, profiles_repo: Path) -> None:
     required = [
-        "iq-r_rj71en71_slmp_profile_definition_20260705.md",
-        "qcpu_qj71e71-100_slmp_profile_definition_20260705.md",
-        "qnu_qj71e71-100_slmp_profile_definition_20260705.md",
-        "qnudv_qj71e71-100_slmp_profile_definition_20260705.md",
-        "lcpu_lj71e71-100_slmp_profile_definition_20260705.md",
+        "iq-r_rj71en71_profile_definition.md",
+        "qcpu_qj71e71-100_profile_definition.md",
+        "qnu_qj71e71-100_profile_definition.md",
+        "qnudv_qj71e71-100_profile_definition.md",
+        "lcpu_lj71e71-100_profile_definition.md",
     ]
     definitions = profiles_repo / "evidence/profile-definitions"
     for name in required:
@@ -136,7 +136,7 @@ def audit_update_script(audit: Audit, source_root: Path, repo: str, script: Path
     audit.check(path.is_file(), f"{repo}: missing update script {script}")
     if path.is_file():
         text = read_text(path)
-        audit.check('$Ref = "v1.2.2"' in text, f"{repo}: update script default ref must be v1.2.2")
+        audit.check('$Ref = "main"' in text, f"{repo}: update script default ref must be main")
 
 
 def audit_profile_doc(audit: Audit, source_root: Path, repo: str, doc: Path) -> None:
@@ -201,17 +201,7 @@ def audit_docs_site(audit: Audit, source_root: Path) -> None:
         audit.check("4E" in text and "Q/L" in text, "docs-site LJ page must mention 4E and Q/L")
 
 
-def audit_downstream_template(audit: Audit, profiles_repo: Path) -> None:
-    path = profiles_repo / "evidence/unit-investigations/downstream_unit_profile_read_checks_20260705.md"
-    audit.check(path.is_file(), "missing downstream live-read acceptance template")
-    if not path.is_file():
-        return
-    text = read_text(path)
-    for profile_id in UNIT_PROFILES:
-        audit.check(profile_id in text, f"downstream template missing {profile_id}")
-    audit.check("--execute --approved-live-ok" in text, "downstream template must document explicit live gate")
-    audit.check("pending" in text, "downstream template must leave live implementation rows pending")
-
+def audit_downstream_tools(audit: Audit, profiles_repo: Path) -> None:
     planner = profiles_repo / "tools/run_downstream_read_checks.py"
     audit.check(planner.is_file(), "missing downstream planner tool")
     if planner.is_file():
@@ -220,14 +210,6 @@ def audit_downstream_template(audit: Audit, profiles_repo: Path) -> None:
             audit.check(profile_id in planner_text, f"downstream planner missing {profile_id}")
         audit.check("--approved-live-ok" in planner_text, "planner must require approved live OK flag")
         audit.check("dry-run only" in planner_text, "planner must default to dry-run messaging")
-        audit.check("--record-json" in planner_text, "planner must support live result JSON records")
-
-    record_auditor = profiles_repo / "tools/audit_downstream_read_records.py"
-    audit.check(record_auditor.is_file(), "missing downstream result-record audit tool")
-    if record_auditor.is_file():
-        auditor_text = read_text(record_auditor)
-        for profile_id in UNIT_PROFILES:
-            audit.check(profile_id in auditor_text, f"downstream record auditor missing {profile_id}")
 
 
 def parse_args() -> argparse.Namespace:
@@ -245,7 +227,7 @@ def main() -> int:
 
     audit_profile_json(audit, profiles_repo)
     audit_profile_definition_files(audit, profiles_repo)
-    audit_downstream_template(audit, profiles_repo)
+    audit_downstream_tools(audit, profiles_repo)
     for repo, fixture in FIXTURES.items():
         audit_downstream_fixture(audit, source_root, repo, fixture)
     for repo, script in UPDATE_SCRIPTS.items():

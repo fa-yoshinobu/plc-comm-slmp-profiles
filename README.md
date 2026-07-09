@@ -4,13 +4,13 @@
 
 Canonical MELSEC SLMP profile data shared by the `plc-comm-slmp-*` libraries.
 
-Markdown files are the editable source. JSON files and comparison tables are generated artifacts. Downstream libraries should import a fixed tag from this repository.
+Profile definition Markdown files are the editable source. Capability JSON files, comparison tables, and unit-probe summary Markdown files are generated artifacts. Downstream libraries should import a fixed tag from this repository.
 
 ## Profile data
 
 The maintained capability definitions are in [profile definitions](evidence/profile-definitions/).
 
-Generated capability data is published as [slmp_builtin_ethernet_profiles.json](capability/slmp_builtin_ethernet_profiles.json). It defines frame defaults, compatibility mode, feature states, point limits, write policy, route policy, per-profile scope, base-profile links, and base-only roles for CPU built-in Ethernet profiles and verified Ethernet-unit profiles.
+Generated capability data is published as [slmp_ethernet_profiles.json](capability/slmp_ethernet_profiles.json). It defines frame defaults, compatibility mode, feature states, point limits, write policy, route policy, per-profile scope, base-profile links, and base-only roles for CPU built-in Ethernet profiles and verified Ethernet-unit profiles.
 
 In a profile definition limit row, `Weighted max` is an additional weighted-count guard for commands that use weighted point accounting. A blank `Weighted max` means no weighted guard is defined for that limit row; it does not mean an unknown value.
 
@@ -58,7 +58,7 @@ Extension Ethernet modules may support additional commands. Use an `ethernet-uni
 | [Device ranges](tables/slmp_device_ranges.md) | Check SD-derived range rules, fixed ranges, probe markers, and unsupported device families. |
 | [Profile definitions](evidence/profile-definitions/) | Edit capability profile source data. |
 | [Device range source](device-ranges/slmp_device_range_rules.md) | Edit device-range source data. |
-| [Live evidence](evidence/) | Check live verification decisions used by the profile definitions. |
+| [Unit probe results](evidence/unit-investigations/plans/results/) | Check the machine-readable JSON evidence and generated MD summaries named by profile definitions. |
 
 ## Generate
 
@@ -68,23 +68,18 @@ Do not edit generated JSON or table files by hand.
 python tools/generate_capability_profiles.py
 python tools/generate_device_range_rules.py
 python tools/generate_profile_tables.py
+python tools/generate_unit_probe_summaries.py
 ```
 
 Run the relevant generator after changing its Markdown source. Run the table generator after either JSON file changes.
-
-To start a live PLC verification record from the canonical JSON values:
-
-```powershell
-python tools/generate_live_verification_draft.py --profile melsec:iq-f --plc-model FX5U-32MR/DS
-```
-
-The generated file is only a checklist draft. Keep untested rows as `unverified` until a live probe is run.
 
 To probe a live PLC directly (single raw SLMP requests, one JSON line per call):
 
 ```powershell
 python tools/live_profile_probe.py --profile melsec:qnu --frame 4E --compat Q/L read-word --device D0
 ```
+
+Use direct raw probes only to discover a missing check. If the result affects a maintained profile, add the check to `run_unit_probe_plan.py` and the reviewed plan JSON, rerun the plan, and keep only the generated `plans/results/{plan_name}.json` evidence plus its same-name MD summary.
 
 To run a complete unit investigation sweep from a reviewed plan file (required coverage enforced, writes restricted to the plan's allowlist, limits found by automatic boundary search):
 

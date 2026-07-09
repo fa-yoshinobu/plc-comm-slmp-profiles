@@ -9,7 +9,7 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[1]
-CAPABILITY_JSON = ROOT / "capability" / "slmp_builtin_ethernet_profiles.json"
+CAPABILITY_JSON = ROOT / "capability" / "slmp_ethernet_profiles.json"
 DEVICE_RANGES_JSON = ROOT / "device-ranges" / "slmp_device_range_rules.json"
 PROFILE_ORDER = [
     "melsec:iq-r",
