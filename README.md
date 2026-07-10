@@ -4,7 +4,7 @@
 
 Canonical MELSEC SLMP profile data shared by the `plc-comm-slmp-*` libraries.
 
-Profile definition Markdown files are the editable source. Capability JSON files, comparison tables, and unit-probe summary Markdown files are generated artifacts. Downstream libraries should import a fixed tag from this repository.
+Profile definition Markdown files are the editable source. Capability JSON files, comparison tables, and unit-probe summary Markdown files are generated artifacts. Downstream libraries must import an immutable tag or full commit SHA from this repository, never a moving branch.
 
 ## Profile data
 

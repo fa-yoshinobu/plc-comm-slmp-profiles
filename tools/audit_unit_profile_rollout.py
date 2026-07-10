@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import subprocess
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -23,6 +24,8 @@ UNIT_PROFILES = {
     "melsec:lcpu:lj71e71-100": "melsec:lcpu",
 }
 
+PINNED_PROFILES_REF = "e7e8f071ff1819a6b088b6a793e6f08029c54e38"
+
 PROFILE_DOCS = {
     "plc-comm-slmp-dotnet": Path("docsrc/user/PROFILES.md"),
     "plc-comm-slmp-python": Path("docsrc/user/PROFILES.md"),
@@ -32,7 +35,9 @@ PROFILE_DOCS = {
 }
 
 FIXTURES = {
-    "plc-comm-slmp-dotnet": Path("tests/PlcComm.Slmp.Tests/fixtures/slmp_ethernet_profiles.json"),
+    "plc-comm-slmp-dotnet": Path(
+        "tests/PlcComm.Slmp.Tests/fixtures/slmp_ethernet_profiles.json"
+    ),
     "plc-comm-slmp-python": Path("tests/fixtures/slmp_ethernet_profiles.json"),
     "plc-comm-slmp-rust": Path("tests/fixtures/slmp_ethernet_profiles.json"),
     "node-red-contrib-plc-comm-slmp": Path("test/fixtures/slmp_ethernet_profiles.json"),
@@ -78,20 +83,38 @@ def audit_profile_json(audit: Audit, profiles_repo: Path) -> None:
 
     qcpu = profiles.get("melsec:qcpu", {})
     audit.check(qcpu.get("role") == "base", "melsec:qcpu must be role=base")
-    audit.check(qcpu.get("scope") == "base-profile", "melsec:qcpu must be scope=base-profile")
+    audit.check(
+        qcpu.get("scope") == "base-profile", "melsec:qcpu must be scope=base-profile"
+    )
 
     for profile_id, base_profile in UNIT_PROFILES.items():
         profile = profiles.get(profile_id)
-        audit.check(profile is not None, f"{profile_id} must exist in canonical profile JSON")
+        audit.check(
+            profile is not None, f"{profile_id} must exist in canonical profile JSON"
+        )
         if profile is None:
             continue
-        audit.check(profile.get("base_profile") == base_profile, f"{profile_id} must inherit from {base_profile}")
-        audit.check(profile.get("scope") == "ethernet-unit", f"{profile_id} must be scope=ethernet-unit")
+        audit.check(
+            profile.get("base_profile") == base_profile,
+            f"{profile_id} must inherit from {base_profile}",
+        )
+        audit.check(
+            profile.get("scope") == "ethernet-unit",
+            f"{profile_id} must be scope=ethernet-unit",
+        )
         audit.check(profile.get("frame") == "4E", f"{profile_id} must use 4E frame")
         expected_compat = "iQ-R" if profile_id == "melsec:iq-r:rj71en71" else "Q/L"
-        audit.check(profile.get("compat") == expected_compat, f"{profile_id} must use {expected_compat} compatibility")
-        audit.check(profile.get("role") is None, f"{profile_id} must be selectable, not role=base")
-        audit.check(profile_id in evidence_files, f"evidence_files must include {profile_id}")
+        audit.check(
+            profile.get("compat") == expected_compat,
+            f"{profile_id} must use {expected_compat} compatibility",
+        )
+        audit.check(
+            profile.get("role") is None,
+            f"{profile_id} must be selectable, not role=base",
+        )
+        audit.check(
+            profile_id in evidence_files, f"evidence_files must include {profile_id}"
+        )
 
 
 def audit_profile_definition_files(audit: Audit, profiles_repo: Path) -> None:
@@ -108,35 +131,58 @@ def audit_profile_definition_files(audit: Audit, profiles_repo: Path) -> None:
         audit.check(path.is_file(), f"missing profile evidence file: {path}")
         if path.is_file():
             text = read_text(path)
-            audit.check("|" in text and "Decision" in text, f"{name} must include a decision table")
+            audit.check(
+                "|" in text and "Decision" in text,
+                f"{name} must include a decision table",
+            )
 
 
-def audit_downstream_fixture(audit: Audit, source_root: Path, repo: str, fixture: Path) -> None:
+def audit_downstream_fixture(
+    audit: Audit, source_root: Path, repo: str, fixture: Path
+) -> None:
     path = source_root / repo / fixture
     audit.check(path.is_file(), f"{repo}: missing fixture {fixture}")
     if not path.is_file():
         return
     profiles = read_json(path)["profiles"]
     qcpu = profiles.get("melsec:qcpu", {})
-    audit.check(qcpu.get("role") == "base", f"{repo}: fixture melsec:qcpu must be role=base")
-    audit.check(qcpu.get("scope") == "base-profile", f"{repo}: fixture melsec:qcpu must be base-profile")
+    audit.check(
+        qcpu.get("role") == "base", f"{repo}: fixture melsec:qcpu must be role=base"
+    )
+    audit.check(
+        qcpu.get("scope") == "base-profile",
+        f"{repo}: fixture melsec:qcpu must be base-profile",
+    )
     for profile_id, base_profile in UNIT_PROFILES.items():
         profile = profiles.get(profile_id)
         audit.check(profile is not None, f"{repo}: fixture missing {profile_id}")
         if profile is None:
             continue
-        audit.check(profile.get("base_profile") == base_profile, f"{repo}: {profile_id} fixture base mismatch")
-        audit.check(profile.get("frame") == "4E", f"{repo}: {profile_id} fixture frame mismatch")
+        audit.check(
+            profile.get("base_profile") == base_profile,
+            f"{repo}: {profile_id} fixture base mismatch",
+        )
+        audit.check(
+            profile.get("frame") == "4E", f"{repo}: {profile_id} fixture frame mismatch"
+        )
         expected_compat = "iQ-R" if profile_id == "melsec:iq-r:rj71en71" else "Q/L"
-        audit.check(profile.get("compat") == expected_compat, f"{repo}: {profile_id} fixture compat mismatch")
+        audit.check(
+            profile.get("compat") == expected_compat,
+            f"{repo}: {profile_id} fixture compat mismatch",
+        )
 
 
-def audit_update_script(audit: Audit, source_root: Path, repo: str, script: Path) -> None:
+def audit_update_script(
+    audit: Audit, source_root: Path, repo: str, script: Path
+) -> None:
     path = source_root / repo / script
     audit.check(path.is_file(), f"{repo}: missing update script {script}")
     if path.is_file():
         text = read_text(path)
-        audit.check('$Ref = "main"' in text, f"{repo}: update script default ref must be main")
+        audit.check(
+            f'$Ref = "{PINNED_PROFILES_REF}"' in text,
+            f"{repo}: update script default ref must pin immutable profile commit {PINNED_PROFILES_REF}",
+        )
 
 
 def audit_profile_doc(audit: Audit, source_root: Path, repo: str, doc: Path) -> None:
@@ -151,12 +197,19 @@ def audit_profile_doc(audit: Audit, source_root: Path, repo: str, doc: Path) -> 
         re.search(r"^\| `melsec:qcpu` \|", text, flags=re.MULTILINE) is None,
         f"{repo}: user profile table must not list melsec:qcpu as selectable",
     )
-    audit.check("base-only" in text and "melsec:qcpu:qj71e71-100" in text, f"{repo}: doc must explain qcpu successor")
+    audit.check(
+        "base-only" in text and "melsec:qcpu:qj71e71-100" in text,
+        f"{repo}: doc must explain qcpu successor",
+    )
 
 
 def audit_node_red_options(audit: Audit, source_root: Path) -> None:
     repo = source_root / "node-red-contrib-plc-comm-slmp"
-    for name in ["nodes/slmp-connection.html", "nodes/slmp-read.html", "nodes/slmp-write.html"]:
+    for name in [
+        "nodes/slmp-connection.html",
+        "nodes/slmp-read.html",
+        "nodes/slmp-write.html",
+    ]:
         path = repo / name
         audit.check(path.is_file(), f"node-red: missing {name}")
         if not path.is_file():
@@ -166,11 +219,57 @@ def audit_node_red_options(audit: Audit, source_root: Path) -> None:
             '<option value="melsec:qcpu"' not in text,
             f"node-red: {name} must not expose melsec:qcpu as an option",
         )
-    connection = read_text(repo / "nodes/slmp-connection.html")
+    probe = r"""
+const runtime = require("./lib/slmp").availablePlcProfiles();
+const routes = new Map();
+const RED = {
+  auth: { needsPermission: () => (_request, _response, next) => next() },
+  httpAdmin: { get: (path, ...handlers) => routes.set(path, handlers.at(-1)) },
+  nodes: { registerType: () => undefined },
+};
+require("./nodes/slmp-connection")(RED);
+const handler = routes.get("/plc-comm/slmp/profiles");
+if (typeof handler !== "function") throw new Error("profile admin endpoint was not registered");
+let responsePayload;
+handler({}, { json: (payload) => { responsePayload = payload; } });
+process.stdout.write(JSON.stringify({
+  runtime,
+  admin: responsePayload.map((entry) => entry.name),
+}));
+"""
+    try:
+        completed = subprocess.run(
+            ["node", "-e", probe],
+            cwd=repo,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        payload = json.loads(completed.stdout)
+    except (
+        FileNotFoundError,
+        subprocess.CalledProcessError,
+        json.JSONDecodeError,
+        KeyError,
+        TypeError,
+    ) as exc:
+        audit.check(False, f"node-red: dynamic profile API probe failed: {exc}")
+        return
+
+    runtime_profiles = payload.get("runtime", [])
+    admin_profiles = payload.get("admin", [])
+    audit.check(
+        admin_profiles == runtime_profiles,
+        "node-red: admin profile endpoint must mirror availablePlcProfiles()",
+    )
+    audit.check(
+        "melsec:qcpu" not in runtime_profiles,
+        "node-red: base-only melsec:qcpu must not be selectable",
+    )
     for profile_id in UNIT_PROFILES:
         audit.check(
-            f'<option value="{profile_id}"' in connection,
-            f"node-red: connection dropdown missing {profile_id}",
+            profile_id in runtime_profiles,
+            f"node-red: runtime profile API missing {profile_id}",
         )
 
 
@@ -184,8 +283,13 @@ def audit_docs_site(audit: Audit, source_root: Path) -> None:
     audit.check(lj.is_file(), "docs-site: missing LJ71E71-100 setup page")
     if rj.is_file():
         text = read_text(rj)
-        audit.check("melsec:iq-r:rj71en71" in text, "docs-site RJ page missing unit profile")
-        audit.check("4E" in text and "iQ-R" in text, "docs-site RJ page must mention 4E and iQ-R")
+        audit.check(
+            "melsec:iq-r:rj71en71" in text, "docs-site RJ page missing unit profile"
+        )
+        audit.check(
+            "4E" in text and "iQ-R" in text,
+            "docs-site RJ page must mention 4E and iQ-R",
+        )
     if qj.is_file():
         text = read_text(qj)
         for profile_id in [
@@ -194,11 +298,17 @@ def audit_docs_site(audit: Audit, source_root: Path) -> None:
             "melsec:qnudv:qj71e71-100",
         ]:
             audit.check(profile_id in text, f"docs-site QJ page missing {profile_id}")
-        audit.check("4E" in text and "Q/L" in text, "docs-site QJ page must mention 4E and Q/L")
+        audit.check(
+            "4E" in text and "Q/L" in text, "docs-site QJ page must mention 4E and Q/L"
+        )
     if lj.is_file():
         text = read_text(lj)
-        audit.check("melsec:lcpu:lj71e71-100" in text, "docs-site LJ page missing unit profile")
-        audit.check("4E" in text and "Q/L" in text, "docs-site LJ page must mention 4E and Q/L")
+        audit.check(
+            "melsec:lcpu:lj71e71-100" in text, "docs-site LJ page missing unit profile"
+        )
+        audit.check(
+            "4E" in text and "Q/L" in text, "docs-site LJ page must mention 4E and Q/L"
+        )
 
 
 def audit_downstream_tools(audit: Audit, profiles_repo: Path) -> None:
@@ -207,13 +317,22 @@ def audit_downstream_tools(audit: Audit, profiles_repo: Path) -> None:
     if planner.is_file():
         planner_text = read_text(planner)
         for profile_id in UNIT_PROFILES:
-            audit.check(profile_id in planner_text, f"downstream planner missing {profile_id}")
-        audit.check("--approved-live-ok" in planner_text, "planner must require approved live OK flag")
-        audit.check("dry-run only" in planner_text, "planner must default to dry-run messaging")
+            audit.check(
+                profile_id in planner_text, f"downstream planner missing {profile_id}"
+            )
+        audit.check(
+            "--approved-live-ok" in planner_text,
+            "planner must require approved live OK flag",
+        )
+        audit.check(
+            "dry-run only" in planner_text, "planner must default to dry-run messaging"
+        )
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Audit non-live unit-profile rollout invariants.")
+    parser = argparse.ArgumentParser(
+        description="Audit non-live unit-profile rollout invariants."
+    )
     parser.add_argument("--source-root", type=Path, default=DEFAULT_SOURCE_ROOT)
     parser.add_argument("--profiles-repo", type=Path, default=PROFILES_REPO)
     return parser.parse_args()
@@ -240,7 +359,10 @@ def main() -> int:
     if audit.failures:
         for failure in audit.failures:
             print(f"FAIL: {failure}", file=sys.stderr)
-        print(f"unit-profile-rollout-audit-failed checks={audit.checks} failures={len(audit.failures)}", file=sys.stderr)
+        print(
+            f"unit-profile-rollout-audit-failed checks={audit.checks} failures={len(audit.failures)}",
+            file=sys.stderr,
+        )
         return 1
 
     print(f"unit-profile-rollout-audit-ok checks={audit.checks}")

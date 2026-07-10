@@ -14,6 +14,11 @@ This repository publishes canonical profile data consumed by implementation repo
 
 ## [Unreleased]
 
+### Changed
+
+- Data: Renamed the public capability JSON from `slmp_builtin_ethernet_profiles.json` to `slmp_ethernet_profiles.json` because it now includes built-in and verified Ethernet-unit profiles.
+- Tooling: Changed downstream import defaults from the moving `main` branch to immutable profile commit `e7e8f071ff1819a6b088b6a793e6f08029c54e38` and changed the Node-RED rollout audit to verify its runtime/admin profile API.
+
 ### Fixed
 
 - Tooling: Reject duplicate JSON object keys during profile validation.
