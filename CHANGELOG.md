@@ -14,6 +14,12 @@ This repository publishes canonical profile data consumed by implementation repo
 
 ## [Unreleased]
 
+## [2.0.1] - 2026-07-13
+
+### Fixed
+
+- Tooling: Changed the downstream rollout audit to require the published `v2.0.0` data tag instead of the pre-release source commit and to validate the Node-RED descriptor endpoint's connectable/base split.
+
 ## [2.0.0] - 2026-07-13
 
 ### Changed
