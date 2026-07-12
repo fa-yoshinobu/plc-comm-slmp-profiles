@@ -24,7 +24,7 @@ UNIT_PROFILES = {
     "melsec:lcpu:lj71e71-100": "melsec:lcpu",
 }
 
-PINNED_PROFILES_REF = "e7e8f071ff1819a6b088b6a793e6f08029c54e38"
+PINNED_PROFILES_REF = "v2.0.0"
 
 PROFILE_DOCS = {
     "plc-comm-slmp-dotnet": Path("docsrc/user/PROFILES.md"),
@@ -181,7 +181,7 @@ def audit_update_script(
         text = read_text(path)
         audit.check(
             f'$Ref = "{PINNED_PROFILES_REF}"' in text,
-            f"{repo}: update script default ref must pin immutable profile commit {PINNED_PROFILES_REF}",
+            f"{repo}: update script default ref must pin published profile tag {PINNED_PROFILES_REF}",
         )
 
 
@@ -234,7 +234,12 @@ let responsePayload;
 handler({}, { json: (payload) => { responsePayload = payload; } });
 process.stdout.write(JSON.stringify({
   runtime,
-  admin: responsePayload.map((entry) => entry.name),
+  adminConnectable: responsePayload
+    .filter((entry) => entry.connectable)
+    .map((entry) => entry.canonicalName),
+  adminBase: responsePayload
+    .filter((entry) => !entry.connectable)
+    .map((entry) => entry.canonicalName),
 }));
 """
     try:
@@ -257,14 +262,19 @@ process.stdout.write(JSON.stringify({
         return
 
     runtime_profiles = payload.get("runtime", [])
-    admin_profiles = payload.get("admin", [])
+    admin_profiles = payload.get("adminConnectable", [])
+    admin_base_profiles = payload.get("adminBase", [])
     audit.check(
-        admin_profiles == runtime_profiles,
-        "node-red: admin profile endpoint must mirror availablePlcProfiles()",
+        sorted(admin_profiles) == sorted(runtime_profiles),
+        "node-red: admin profile endpoint and availablePlcProfiles() must expose the same selectable IDs",
     )
     audit.check(
         "melsec:qcpu" not in runtime_profiles,
         "node-red: base-only melsec:qcpu must not be selectable",
+    )
+    audit.check(
+        "melsec:qcpu" in admin_base_profiles,
+        "node-red: admin profile endpoint must describe base-only melsec:qcpu as non-connectable",
     )
     for profile_id in UNIT_PROFILES:
         audit.check(
