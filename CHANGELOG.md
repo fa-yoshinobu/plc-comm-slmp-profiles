@@ -14,6 +14,8 @@ This repository publishes canonical profile data consumed by implementation repo
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-07-13
+
 ### Changed
 
 - Data: Renamed the public capability JSON from `slmp_builtin_ethernet_profiles.json` to `slmp_ethernet_profiles.json` because it now includes built-in and verified Ethernet-unit profiles.
