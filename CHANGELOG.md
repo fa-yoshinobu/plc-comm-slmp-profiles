@@ -14,6 +14,18 @@ This repository publishes canonical profile data consumed by implementation repo
 
 ## [Unreleased]
 
+### Added
+
+- Data: Added the live-verified `melsec:mx-r:rj71en71` Ethernet-unit profile for MXR300-32 + RJ71EN71. It inherits the identical measured MX-R contract while keeping the connection path selectable.
+
+### Changed
+
+- Data: Live-verified `melsec:mx-r` on MXR300-32 built-in Ethernet, including direct, random, block, monitor, qualified-route, device-family, and point-limit evidence.
+
+### Fixed
+
+- Tooling: Made live-probe JSON output safe on CP932 consoles and separated the 16-byte PLC model name from the binary type code.
+
 ## [2.0.1] - 2026-07-13
 
 ### Fixed

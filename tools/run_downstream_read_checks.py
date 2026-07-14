@@ -23,6 +23,7 @@ DEFAULT_SOURCE_ROOT = TOOLS_DIR.parents[1]
 
 UNIT_PROFILES = {
     "melsec:iq-r:rj71en71": "R120PCPU + RJ71EN71",
+    "melsec:mx-r:rj71en71": "MXR300-32 + RJ71EN71",
     "melsec:qcpu:qj71e71-100": "Q12HCPU + QJ71E71-100",
     "melsec:qnu:qj71e71-100": "Q26UDEHCPU + QJ71E71-100",
     "melsec:qnudv:qj71e71-100": "Q06UDVCPU + QJ71E71-100",

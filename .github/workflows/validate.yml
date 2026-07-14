@@ -15,6 +15,12 @@ jobs:
       - run: python tools/generate_capability_profiles.py
       - run: python tools/generate_device_range_rules.py
       - run: python tools/generate_profile_tables.py
+      - run: python tools/generate_unit_probe_summaries.py
       - run: python tools/validate_profiles.py
+      - run: python tools/audit_unit_profile_source_evidence.py
+      - run: |
+          for plan in evidence/unit-investigations/plans/*.json; do
+            python tools/run_unit_probe_plan.py --plan "$plan" --dry-run
+          done
+      - run: python -m unittest discover -s tools -p "test_*.py"
       - run: git diff --exit-code
-

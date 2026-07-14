@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import copy
 import json
-import re
 from pathlib import Path
 from typing import Any
 
@@ -19,6 +18,7 @@ PROFILE_ORDER = [
     "melsec:iq-r:rj71en71",
     "melsec:iq-l",
     "melsec:mx-r",
+    "melsec:mx-r:rj71en71",
     "melsec:mx-f",
     "melsec:iq-f",
     "melsec:qcpu",
@@ -36,6 +36,7 @@ PROFILE_DISPLAY_NAMES = {
     "melsec:iq-r:rj71en71": "MELSEC iQ-R (RJ71EN71)",
     "melsec:iq-l": "MELSEC iQ-L (built-in)",
     "melsec:mx-r": "MELSEC MX-R (built-in)",
+    "melsec:mx-r:rj71en71": "MELSEC MX-R (RJ71EN71)",
     "melsec:mx-f": "MELSEC MX-F (built-in)",
     "melsec:iq-f": "MELSEC iQ-F (built-in)",
     "melsec:qcpu": "MELSEC-Q (base profile)",
@@ -53,6 +54,7 @@ PROFILE_SCOPES = {
     "melsec:iq-r:rj71en71": "ethernet-unit",
     "melsec:iq-l": "builtin-ethernet-port",
     "melsec:mx-r": "builtin-ethernet-port",
+    "melsec:mx-r:rj71en71": "ethernet-unit",
     "melsec:mx-f": "builtin-ethernet-port",
     "melsec:iq-f": "builtin-ethernet-port",
     "melsec:qcpu": "base-profile",
@@ -302,7 +304,7 @@ def build_output() -> dict[str, Any]:
     definitions = definition_files()
     return {
         "schema_version": 1,
-        "date": "2026-07-06",
+        "date": "2026-07-14",
         "scope": "slmp-ethernet-port",
         "description": (
             "Canonical PLC model and Ethernet-unit profile definitions for the SLMP library family. "
