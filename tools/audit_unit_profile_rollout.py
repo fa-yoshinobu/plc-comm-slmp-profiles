@@ -18,6 +18,7 @@ DEFAULT_SOURCE_ROOT = PROFILES_REPO.parent
 
 UNIT_PROFILES = {
     "melsec:iq-r:rj71en71": "melsec:iq-r",
+    "melsec:mx-r:rj71en71": "melsec:mx-r",
     "melsec:qcpu:qj71e71-100": "melsec:qcpu",
     "melsec:qnu:qj71e71-100": "melsec:qnu",
     "melsec:qnudv:qj71e71-100": "melsec:qnudv",
@@ -103,7 +104,10 @@ def audit_profile_json(audit: Audit, profiles_repo: Path) -> None:
             f"{profile_id} must be scope=ethernet-unit",
         )
         audit.check(profile.get("frame") == "4E", f"{profile_id} must use 4E frame")
-        expected_compat = "iQ-R" if profile_id == "melsec:iq-r:rj71en71" else "Q/L"
+        expected_compat = "iQ-R" if profile_id in {
+            "melsec:iq-r:rj71en71",
+            "melsec:mx-r:rj71en71",
+        } else "Q/L"
         audit.check(
             profile.get("compat") == expected_compat,
             f"{profile_id} must use {expected_compat} compatibility",
@@ -120,6 +124,7 @@ def audit_profile_json(audit: Audit, profiles_repo: Path) -> None:
 def audit_profile_definition_files(audit: Audit, profiles_repo: Path) -> None:
     required = [
         "iq-r_rj71en71_profile_definition.md",
+        "mx-r_rj71en71_profile_definition.md",
         "qcpu_qj71e71-100_profile_definition.md",
         "qnu_qj71e71-100_profile_definition.md",
         "qnudv_qj71e71-100_profile_definition.md",
@@ -165,7 +170,10 @@ def audit_downstream_fixture(
         audit.check(
             profile.get("frame") == "4E", f"{repo}: {profile_id} fixture frame mismatch"
         )
-        expected_compat = "iQ-R" if profile_id == "melsec:iq-r:rj71en71" else "Q/L"
+        expected_compat = "iQ-R" if profile_id in {
+            "melsec:iq-r:rj71en71",
+            "melsec:mx-r:rj71en71",
+        } else "Q/L"
         audit.check(
             profile.get("compat") == expected_compat,
             f"{repo}: {profile_id} fixture compat mismatch",

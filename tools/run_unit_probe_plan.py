@@ -136,7 +136,7 @@ def render_summary_markdown(summary: dict[str, Any], result_path: Path) -> str:
     profile = summary.get("profile", {})
     plan = summary.get("plan", "")
     plan_display = str(plan).replace("\\", "/")
-    title = Path(plan).stem if plan else result_path.stem
+    title = Path(plan_display).stem if plan_display else result_path.stem
     rows = summary.get("results", [])
     waived = summary.get("waived", [])
     errors = summary.get("errors", [])

@@ -22,7 +22,7 @@ live PLC response.
 | Item | Value |
 | --- | --- |
 | schema_version | 1 |
-| date | 2026-07-05 |
+| date | 2026-07-14 |
 | description | Rules for SLMP device range discovery from SD block reads. Generated from device-ranges/slmp_device_range_rules.md. |
 
 ## Value Kinds
@@ -110,6 +110,7 @@ live PLC response.
 | melsec:iq-l | 260 | 50 | - |
 | melsec:mx-f | 260 | 50 | - |
 | melsec:mx-r | 260 | 50 | - |
+| melsec:mx-r:rj71en71 | 260 | 50 | melsec:mx-r |
 | melsec:iq-f | 260 | 46 | - |
 | melsec:qcpu | 290 | 15 | - |
 | melsec:qcpu:qj71e71-100 | 290 | 15 | melsec:qcpu |

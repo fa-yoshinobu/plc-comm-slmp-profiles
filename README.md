@@ -27,8 +27,10 @@ Communication libraries may use device-range data to reject unsupported device f
 ## Supported connection profiles
 
 - `melsec:iq-r`
+- `melsec:iq-r:rj71en71`
 - `melsec:iq-l`
 - `melsec:mx-r`
+- `melsec:mx-r:rj71en71`
 - `melsec:mx-f`
 - `melsec:iq-f`
 - `melsec:qcpu:qj71e71-100`

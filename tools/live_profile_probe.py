@@ -172,14 +172,12 @@ def format_device(code: str, number: int) -> str:
 
 def parse_extended_device(device: str) -> tuple[str, int, int, int]:
     text = device.strip().upper()
-    qualifier = ""
     extension_specification = 0
     direct_memory = 0x00
     if "\\" in text or "/" in text:
         sep = "\\" if "\\" in text else "/"
         prefix, raw_device = text.split(sep, 1)
         if prefix.startswith("U"):
-            qualifier = prefix
             extension_specification = int(prefix[1:], 16)
             code, number = parse_device(raw_device)
             if code == "G":
@@ -188,7 +186,6 @@ def parse_extended_device(device: str) -> tuple[str, int, int, int]:
                 direct_memory = 0xFA
             return code, number, extension_specification, direct_memory
         if prefix.startswith("J"):
-            qualifier = prefix
             extension_specification = int(prefix[1:], 16)
             code, number = parse_device(raw_device)
             direct_memory = 0xF9
@@ -350,7 +347,21 @@ def extended_device_payload(profile: Profile, device: str, points: int, data: by
 
 
 def emit(result: dict[str, Any]) -> None:
-    print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+    # Keep the one-line JSON contract writable on Windows consoles using a
+    # legacy code page such as CP932. Consumers still recover the original
+    # Unicode value when they parse the JSON escape sequence.
+    print(json.dumps(result, ensure_ascii=True, sort_keys=True))
+
+
+def type_name_fields(data: bytes) -> dict[str, str]:
+    """Split a type-name response into its fixed-width name and type code."""
+    fields = {
+        "raw_hex": data.hex(),
+        "text": data[:16].rstrip(b"\x00 ").decode("ascii", errors="replace"),
+    }
+    if len(data) >= 18:
+        fields["type_code_hex"] = data[16:18].hex()
+    return fields
 
 
 def generated_devices(template: str, count: int) -> list[str]:
@@ -1070,8 +1081,7 @@ def run_type_name(args: argparse.Namespace) -> None:
         "end_code": f"{response.end_code:04X}",
     }
     if response.end_code == 0:
-        result["raw_hex"] = response.data.hex()
-        result["text"] = response.data.rstrip(b"\x00 ").decode("ascii", errors="replace")
+        result.update(type_name_fields(response.data))
     emit(result)
 
 
