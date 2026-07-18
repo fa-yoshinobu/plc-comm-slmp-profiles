@@ -11,10 +11,10 @@ Do not run this tool against a production machine or a PLC that controls live eq
 
 ## Basic Run
 
-Always dry-run first and review the printed write targets:
+Open a command prompt at the repository root. Always dry-run first and review
+the printed write targets:
 
 ```bat
-cd /d D:\APP\plc-comm-slmp-profiles
 python tools\run_unit_probe_plan.py --plan evidence\unit-investigations\plans\qj71e71-100_q12hcpu.json --dry-run
 ```
 
